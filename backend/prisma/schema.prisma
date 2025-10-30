@@ -1,0 +1,277 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Énumération pour les rôles dans un foyer
+enum HouseholdRole {
+  ADMIN
+  MEMBER
+}
+
+// Énumération pour les modes de partage
+enum SharingMode {
+  EQUAL          // 50/50
+  PROPORTIONAL   // Proportionnel aux revenus
+  CUSTOM         // Personnalisé
+}
+
+// Énumération pour les types de compte
+enum AccountType {
+  CHECKING // Compte courant
+  SAVINGS  // Épargne
+  JOINT    // Compte joint
+}
+
+// Énumération pour les types de transaction
+enum TransactionType {
+  DEBIT  // Dépense
+  CREDIT // Revenu
+}
+
+// Énumération pour la fréquence des récurrences
+enum RecurringFrequency {
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+// Énumération pour la période des budgets
+enum BudgetPeriod {
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+// Énumération pour le statut des équilibrages
+enum BalancingStatus {
+  PENDING
+  COMPLETED
+}
+
+// Table des utilisateurs
+model User {
+  id                String   @id @default(uuid())
+  email             String   @unique
+  passwordHash      String   @map("password_hash")
+  firstName         String   @map("first_name")
+  lastName          String   @map("last_name")
+  monthlyIncome     Decimal  @default(0) @map("monthly_income") @db.Decimal(10, 2)
+  profilePictureUrl String?  @map("profile_picture_url")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  households         UserHousehold[]
+  accountOwnerships  AccountOwner[]
+  transactions       Transaction[]
+  balancesFrom       BalancingRecord[] @relation("BalancingFrom")
+  balancesTo         BalancingRecord[] @relation("BalancingTo")
+
+  @@map("users")
+}
+
+// Table des foyers
+model Household {
+  id          String       @id @default(uuid())
+  name        String
+  sharingMode SharingMode  @default(PROPORTIONAL) @map("sharing_mode")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+
+  // Relations
+  members               UserHousehold[]
+  accounts              Account[]
+  categories            Category[]
+  budgets               Budget[]
+  categorizationRules   CategorizationRule[]
+  balancingRecords      BalancingRecord[]
+
+  @@map("households")
+}
+
+// Table de liaison utilisateurs-foyers
+model UserHousehold {
+  id          String        @id @default(uuid())
+  userId      String        @map("user_id")
+  householdId String        @map("household_id")
+  role        HouseholdRole @default(MEMBER)
+  joinedAt    DateTime      @default(now()) @map("joined_at")
+
+  // Relations
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, householdId])
+  @@map("user_households")
+}
+
+// Table des comptes bancaires
+model Account {
+  id             String      @id @default(uuid())
+  householdId    String      @map("household_id")
+  name           String
+  type           AccountType @default(CHECKING)
+  initialBalance Decimal     @default(0) @map("initial_balance") @db.Decimal(10, 2)
+  currentBalance Decimal     @default(0) @map("current_balance") @db.Decimal(10, 2)
+  currency       String      @default("EUR")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+
+  // Relations
+  household    Household      @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  owners       AccountOwner[]
+  transactions Transaction[]
+
+  @@map("accounts")
+}
+
+// Table de liaison comptes-utilisateurs
+model AccountOwner {
+  id                  String  @id @default(uuid())
+  accountId           String  @map("account_id")
+  userId              String  @map("user_id")
+  ownershipPercentage Decimal @default(100) @map("ownership_percentage") @db.Decimal(5, 2)
+
+  // Relations
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([accountId, userId])
+  @@map("account_owners")
+}
+
+// Table des catégories
+model Category {
+  id               String    @id @default(uuid())
+  householdId      String?   @map("household_id")
+  name             String
+  color            String    @default("#3f51b5")
+  icon             String?
+  parentCategoryId String?   @map("parent_category_id")
+  isSystem         Boolean   @default(false) @map("is_system")
+  createdAt        DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  household           Household?            @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  parentCategory      Category?             @relation("CategoryHierarchy", fields: [parentCategoryId], references: [id], onDelete: SetNull)
+  subCategories       Category[]            @relation("CategoryHierarchy")
+  transactions        Transaction[]
+  recurringPatterns   RecurringPattern[]
+  budgets             Budget[]
+  categorizationRules CategorizationRule[]
+
+  @@map("categories")
+}
+
+// Table des transactions
+model Transaction {
+  id                  String          @id @default(uuid())
+  accountId           String          @map("account_id")
+  userId              String          @map("user_id")
+  categoryId          String?         @map("category_id")
+  amount              Decimal         @db.Decimal(10, 2)
+  type                TransactionType @default(DEBIT)
+  description         String
+  transactionDate     DateTime        @map("transaction_date")
+  isRecurring         Boolean         @default(false) @map("is_recurring")
+  recurringPatternId  String?         @map("recurring_pattern_id")
+  attachmentUrl       String?         @map("attachment_url")
+  notes               String?
+  createdAt           DateTime        @default(now()) @map("created_at")
+  updatedAt           DateTime        @updatedAt @map("updated_at")
+
+  // Relations
+  account          Account           @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category         Category?         @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  recurringPattern RecurringPattern? @relation(fields: [recurringPatternId], references: [id], onDelete: SetNull)
+
+  @@index([accountId, transactionDate])
+  @@index([userId, transactionDate])
+  @@index([categoryId])
+  @@map("transactions")
+}
+
+// Table des motifs récurrents
+model RecurringPattern {
+  id               String             @id @default(uuid())
+  name             String
+  frequency        RecurringFrequency
+  expectedAmount   Decimal            @map("expected_amount") @db.Decimal(10, 2)
+  categoryId       String             @map("category_id")
+  nextExpectedDate DateTime           @map("next_expected_date")
+  isActive         Boolean            @default(true) @map("is_active")
+  createdAt        DateTime           @default(now()) @map("created_at")
+
+  // Relations
+  category     Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@map("recurring_patterns")
+}
+
+// Table des budgets
+model Budget {
+  id          String       @id @default(uuid())
+  householdId String       @map("household_id")
+  categoryId  String       @map("category_id")
+  amount      Decimal      @db.Decimal(10, 2)
+  period      BudgetPeriod @default(MONTHLY)
+  startDate   DateTime     @map("start_date")
+  endDate     DateTime?    @map("end_date")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+
+  // Relations
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  category  Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([householdId, categoryId])
+  @@map("budgets")
+}
+
+// Table des règles de catégorisation
+model CategorizationRule {
+  id          String   @id @default(uuid())
+  householdId String   @map("household_id")
+  keyword     String
+  categoryId  String   @map("category_id")
+  priority    Int      @default(0)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relations
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  category  Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@map("categorization_rules")
+}
+
+// Table des équilibrages
+model BalancingRecord {
+  id          String          @id @default(uuid())
+  householdId String          @map("household_id")
+  fromUserId  String          @map("from_user_id")
+  toUserId    String          @map("to_user_id")
+  amount      Decimal         @db.Decimal(10, 2)
+  periodStart DateTime        @map("period_start")
+  periodEnd   DateTime        @map("period_end")
+  status      BalancingStatus @default(PENDING)
+  createdAt   DateTime        @default(now()) @map("created_at")
+
+  // Relations
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  fromUser  User      @relation("BalancingFrom", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser    User      @relation("BalancingTo", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  @@map("balancing_records")
+}

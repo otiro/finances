@@ -1,0 +1,243 @@
+finances/
+│
+├── 📄 README.md                    - Documentation principale du projet
+├── 📄 INSTALLATION.md              - Guide d'installation détaillé
+├── 📄 QUICKSTART.md                - Démarrage rapide en 5 minutes
+├── 📄 STRUCTURE.md                 - Architecture et structure détaillée
+├── 📄 PROJECT_STATUS.md            - État actuel du projet et prochaines étapes
+├── 📄 guide.md (CLAUDE.md)         - Cahier des charges complet
+├── 📄 .gitignore                   - Fichiers à ignorer par Git
+├── 🔧 setup.sh                     - Script d'installation Linux/macOS
+├── 🔧 setup.bat                    - Script d'installation Windows
+│
+├── 📁 backend/                     - API Backend (Node.js + Express + Prisma)
+│   │
+│   ├── 📁 src/                     - Code source
+│   │   │
+│   │   ├── 📁 config/              - Configuration
+│   │   │   ├── 📄 database.ts      ✅ Configuration Prisma
+│   │   │   ├── 📄 auth.ts          ⏳ Configuration JWT (à créer)
+│   │   │   └── 📄 server.ts        ⏳ Configuration serveur (à créer)
+│   │   │
+│   │   ├── 📁 controllers/         - Contrôleurs API
+│   │   │   ├── 📄 auth.controller.ts         ⏳ À créer Phase 2
+│   │   │   ├── 📄 user.controller.ts         ⏳ À créer Phase 2
+│   │   │   ├── 📄 household.controller.ts    ⏳ À créer Phase 2
+│   │   │   ├── 📄 account.controller.ts      ⏳ À créer Phase 3
+│   │   │   ├── 📄 transaction.controller.ts  ⏳ À créer Phase 4
+│   │   │   ├── 📄 category.controller.ts     ⏳ À créer Phase 5
+│   │   │   ├── 📄 budget.controller.ts       ⏳ À créer Phase 5
+│   │   │   ├── 📄 recurring.controller.ts    ⏳ À créer Phase 7
+│   │   │   └── 📄 analytics.controller.ts    ⏳ À créer Phase 6
+│   │   │
+│   │   ├── 📁 models/              - Modèles TypeScript
+│   │   │   ├── 📄 User.ts          ⏳ À créer Phase 2
+│   │   │   ├── 📄 Household.ts     ⏳ À créer Phase 2
+│   │   │   ├── 📄 Account.ts       ⏳ À créer Phase 3
+│   │   │   ├── 📄 Transaction.ts   ⏳ À créer Phase 4
+│   │   │   ├── 📄 Category.ts      ⏳ À créer Phase 5
+│   │   │   └── 📄 Budget.ts        ⏳ À créer Phase 5
+│   │   │
+│   │   ├── 📁 routes/              - Routes API
+│   │   │   ├── 📄 auth.routes.ts         ⏳ À créer Phase 2
+│   │   │   ├── 📄 user.routes.ts         ⏳ À créer Phase 2
+│   │   │   ├── 📄 household.routes.ts    ⏳ À créer Phase 2
+│   │   │   ├── 📄 account.routes.ts      ⏳ À créer Phase 3
+│   │   │   ├── 📄 transaction.routes.ts  ⏳ À créer Phase 4
+│   │   │   ├── 📄 category.routes.ts     ⏳ À créer Phase 5
+│   │   │   ├── 📄 budget.routes.ts       ⏳ À créer Phase 5
+│   │   │   ├── 📄 recurring.routes.ts    ⏳ À créer Phase 7
+│   │   │   └── 📄 analytics.routes.ts    ⏳ À créer Phase 6
+│   │   │
+│   │   ├── 📁 middleware/          - Middlewares Express
+│   │   │   ├── 📄 auth.middleware.ts       ⏳ À créer Phase 2
+│   │   │   ├── 📄 validation.middleware.ts ⏳ À créer Phase 2
+│   │   │   ├── 📄 error.middleware.ts      ✅ Créé
+│   │   │   ├── 📄 notFound.middleware.ts   ✅ Créé
+│   │   │   ├── 📄 rateLimit.middleware.ts  ⏳ À créer Phase 8
+│   │   │   └── 📄 upload.middleware.ts     ⏳ À créer Phase 4
+│   │   │
+│   │   ├── 📁 services/            - Logique métier
+│   │   │   ├── 📄 auth.service.ts          ⏳ À créer Phase 2
+│   │   │   ├── 📄 transaction.service.ts   ⏳ À créer Phase 4
+│   │   │   ├── 📄 analytics.service.ts     ⏳ À créer Phase 6
+│   │   │   ├── 📄 budget.service.ts        ⏳ À créer Phase 5
+│   │   │   ├── 📄 balancing.service.ts     ⏳ À créer Phase 7
+│   │   │   ├── 📄 categorization.service.ts ⏳ À créer Phase 5
+│   │   │   ├── 📄 recurring.service.ts     ⏳ À créer Phase 7
+│   │   │   └── 📄 export.service.ts        ⏳ À créer Phase 8
+│   │   │
+│   │   ├── 📁 utils/               - Utilitaires
+│   │   │   ├── 📄 logger.ts        ✅ Créé (Pino)
+│   │   │   ├── 📄 encryption.ts    ⏳ À créer Phase 2
+│   │   │   ├── 📄 validators.ts    ⏳ À créer Phase 2
+│   │   │   ├── 📄 formatters.ts    ⏳ À créer Phase 4
+│   │   │   └── 📄 constants.ts     ⏳ À créer Phase 2
+│   │   │
+│   │   └── 📄 index.ts             ✅ Point d'entrée serveur
+│   │
+│   ├── 📁 prisma/                  - Prisma ORM
+│   │   ├── 📄 schema.prisma        ✅ Schéma DB complet (11 tables)
+│   │   ├── 📁 migrations/          ⏳ Créé après npm run prisma:migrate
+│   │   └── 📄 seed.ts              ⏳ Optionnel - données de test
+│   │
+│   ├── 📁 tests/                   - Tests
+│   │   ├── 📁 unit/                ⏳ Tests unitaires Phase 9
+│   │   ├── 📁 integration/         ⏳ Tests d'intégration Phase 9
+│   │   └── 📄 setup.ts             ⏳ Configuration tests
+│   │
+│   ├── 📁 uploads/                 ⏳ Fichiers uploadés (gitignored)
+│   │
+│   ├── 📄 package.json             ✅ Dépendances npm
+│   ├── 📄 tsconfig.json            ✅ Configuration TypeScript
+│   ├── 📄 nodemon.json             ✅ Configuration Nodemon
+│   ├── 📄 .eslintrc.json           ✅ Configuration ESLint
+│   ├── 📄 .env.example             ✅ Template environnement
+│   ├── 📄 .env                     ⏳ À créer (gitignored)
+│   └── 📄 .gitignore               ✅ Fichiers à ignorer
+│
+└── 📁 frontend/                    - Application React
+    │
+    ├── 📁 src/                     - Code source
+    │   │
+    │   ├── 📁 components/          - Composants React
+    │   │   │
+    │   │   ├── 📁 common/          - Composants génériques
+    │   │   │   ├── 📄 Button.tsx           ⏳ À créer Phase 2
+    │   │   │   ├── 📄 Input.tsx            ⏳ À créer Phase 2
+    │   │   │   ├── 📄 Select.tsx           ⏳ À créer Phase 3
+    │   │   │   ├── 📄 Modal.tsx            ⏳ À créer Phase 3
+    │   │   │   ├── 📄 Card.tsx             ⏳ À créer Phase 3
+    │   │   │   ├── 📄 Table.tsx            ⏳ À créer Phase 4
+    │   │   │   ├── 📄 Loading.tsx          ⏳ À créer Phase 2
+    │   │   │   ├── 📄 Alert.tsx            ⏳ À créer Phase 2
+    │   │   │   └── 📄 ConfirmDialog.tsx    ⏳ À créer Phase 3
+    │   │   │
+    │   │   ├── 📁 layout/          - Layout
+    │   │   │   ├── 📄 Header.tsx           ⏳ À créer Phase 2
+    │   │   │   ├── 📄 Sidebar.tsx          ⏳ À créer Phase 2
+    │   │   │   ├── 📄 Footer.tsx           ⏳ À créer Phase 2
+    │   │   │   ├── 📄 Layout.tsx           ⏳ À créer Phase 2
+    │   │   │   └── 📄 Navigation.tsx       ⏳ À créer Phase 2
+    │   │   │
+    │   │   ├── 📁 auth/            - Authentification
+    │   │   │   ├── 📄 LoginForm.tsx        ⏳ À créer Phase 2
+    │   │   │   ├── 📄 RegisterForm.tsx     ⏳ À créer Phase 2
+    │   │   │   ├── 📄 PasswordReset.tsx    ⏳ À créer Phase 2
+    │   │   │   └── 📄 ProtectedRoute.tsx   ⏳ À créer Phase 2
+    │   │   │
+    │   │   ├── 📁 dashboard/       - Tableau de bord
+    │   │   │   ├── 📄 DashboardCard.tsx    ⏳ À créer Phase 6
+    │   │   │   ├── 📄 BalanceChart.tsx     ⏳ À créer Phase 6
+    │   │   │   ├── 📄 RecentTransactions.tsx ⏳ À créer Phase 6
+    │   │   │   ├── 📄 BudgetOverview.tsx   ⏳ À créer Phase 6
+    │   │   │   └── 📄 QuickActions.tsx     ⏳ À créer Phase 6
+    │   │   │
+    │   │   ├── 📁 transactions/    - Transactions
+    │   │   │   ├── 📄 TransactionList.tsx  ⏳ À créer Phase 4
+    │   │   │   ├── 📄 TransactionForm.tsx  ⏳ À créer Phase 4
+    │   │   │   ├── 📄 TransactionItem.tsx  ⏳ À créer Phase 4
+    │   │   │   ├── 📄 TransactionFilter.tsx ⏳ À créer Phase 4
+    │   │   │   ├── 📄 CategorySelect.tsx   ⏳ À créer Phase 4
+    │   │   │   └── 📄 ImportCSV.tsx        ⏳ À créer Phase 4
+    │   │   │
+    │   │   ├── 📁 analytics/       - Analyses
+    │   │   │   ├── 📄 CategoryChart.tsx    ⏳ À créer Phase 6
+    │   │   │   ├── 📄 TrendChart.tsx       ⏳ À créer Phase 6
+    │   │   │   ├── 📄 BudgetProgress.tsx   ⏳ À créer Phase 6
+    │   │   │   ├── 📄 ExpenseBreakdown.tsx ⏳ À créer Phase 6
+    │   │   │   └── 📄 SavingsGoal.tsx      ⏳ À créer Phase 6
+    │   │   │
+    │   │   └── 📁 accounts/        - Comptes
+    │   │       ├── 📄 AccountList.tsx      ⏳ À créer Phase 3
+    │   │       ├── 📄 AccountForm.tsx      ⏳ À créer Phase 3
+    │   │       ├── 📄 AccountCard.tsx      ⏳ À créer Phase 3
+    │   │       └── 📄 AccountBalance.tsx   ⏳ À créer Phase 3
+    │   │
+    │   ├── 📁 pages/               - Pages
+    │   │   ├── 📄 Login.tsx                ⏳ À créer Phase 2
+    │   │   ├── 📄 Register.tsx             ⏳ À créer Phase 2
+    │   │   ├── 📄 Dashboard.tsx            ⏳ À créer Phase 6
+    │   │   ├── 📄 Transactions.tsx         ⏳ À créer Phase 4
+    │   │   ├── 📄 Analytics.tsx            ⏳ À créer Phase 6
+    │   │   ├── 📄 Budgets.tsx              ⏳ À créer Phase 5
+    │   │   ├── 📄 Accounts.tsx             ⏳ À créer Phase 3
+    │   │   ├── 📄 Categories.tsx           ⏳ À créer Phase 5
+    │   │   ├── 📄 Recurring.tsx            ⏳ À créer Phase 7
+    │   │   ├── 📄 Settings.tsx             ⏳ À créer Phase 8
+    │   │   └── 📄 NotFound.tsx             ⏳ À créer Phase 2
+    │   │
+    │   ├── 📁 services/            - Services API
+    │   │   ├── 📄 api.ts                   ✅ Client Axios configuré
+    │   │   ├── 📄 auth.service.ts          ⏳ À créer Phase 2
+    │   │   ├── 📄 user.service.ts          ⏳ À créer Phase 2
+    │   │   ├── 📄 account.service.ts       ⏳ À créer Phase 3
+    │   │   ├── 📄 transaction.service.ts   ⏳ À créer Phase 4
+    │   │   ├── 📄 category.service.ts      ⏳ À créer Phase 5
+    │   │   ├── 📄 budget.service.ts        ⏳ À créer Phase 5
+    │   │   └── 📄 analytics.service.ts     ⏳ À créer Phase 6
+    │   │
+    │   ├── 📁 store/               - State Management (Zustand)
+    │   │   ├── 📁 slices/
+    │   │   │   ├── 📄 authSlice.ts         ⏳ À créer Phase 2
+    │   │   │   ├── 📄 userSlice.ts         ⏳ À créer Phase 2
+    │   │   │   ├── 📄 accountSlice.ts      ⏳ À créer Phase 3
+    │   │   │   ├── 📄 transactionSlice.ts  ⏳ À créer Phase 4
+    │   │   │   ├── 📄 categorySlice.ts     ⏳ À créer Phase 5
+    │   │   │   └── 📄 budgetSlice.ts       ⏳ À créer Phase 5
+    │   │   └── 📄 store.ts                 ⏳ À créer Phase 2
+    │   │
+    │   ├── 📁 hooks/               - Custom Hooks
+    │   │   ├── 📄 useAuth.ts               ⏳ À créer Phase 2
+    │   │   ├── 📄 useTransactions.ts       ⏳ À créer Phase 4
+    │   │   ├── 📄 useAccounts.ts           ⏳ À créer Phase 3
+    │   │   ├── 📄 useAnalytics.ts          ⏳ À créer Phase 6
+    │   │   ├── 📄 useBudgets.ts            ⏳ À créer Phase 5
+    │   │   └── 📄 useDebounce.ts           ⏳ À créer Phase 4
+    │   │
+    │   ├── 📁 utils/               - Utilitaires
+    │   │   ├── 📄 formatters.ts            ⏳ À créer Phase 4
+    │   │   ├── 📄 validators.ts            ⏳ À créer Phase 2
+    │   │   ├── 📄 constants.ts             ✅ Créé
+    │   │   ├── 📄 theme.ts                 ✅ Thème MUI créé
+    │   │   └── 📄 helpers.ts               ⏳ À créer Phase 4
+    │   │
+    │   ├── 📁 types/               - Types TypeScript
+    │   │   ├── 📄 index.ts                 ✅ Types complets créés
+    │   │   ├── 📄 api.types.ts             ⏳ À créer Phase 2
+    │   │   └── 📄 form.types.ts            ⏳ À créer Phase 2
+    │   │
+    │   ├── 📄 App.tsx              ✅ Composant racine
+    │   ├── 📄 main.tsx             ✅ Point d'entrée React
+    │   └── 📄 vite-env.d.ts        ⏳ Généré par Vite
+    │
+    ├── 📁 public/                  - Fichiers statiques
+    │   ├── 📄 favicon.ico          ⏳ À ajouter
+    │   └── 📄 robots.txt           ⏳ À ajouter
+    │
+    ├── 📄 index.html               ✅ HTML racine
+    ├── 📄 package.json             ✅ Dépendances npm
+    ├── 📄 tsconfig.json            ✅ Configuration TypeScript
+    ├── 📄 tsconfig.node.json       ✅ Config TypeScript Vite
+    ├── 📄 vite.config.ts           ✅ Configuration Vite
+    ├── 📄 .eslintrc.cjs            ✅ Configuration ESLint
+    ├── 📄 .env.example             ✅ Template environnement
+    ├── 📄 .env                     ⏳ À créer (gitignored)
+    └── 📄 .gitignore               ✅ Fichiers à ignorer
+
+Légende :
+✅ = Créé et configuré
+⏳ = À créer dans les phases suivantes
+📁 = Dossier
+📄 = Fichier
+🔧 = Script
+
+Statistiques :
+- Fichiers créés : 30+
+- Dossiers structurés : 35+
+- Tables de base de données : 11
+- Types TypeScript : 30+
+- Lignes de documentation : 2000+
+
+Statut : ✅ Phase 1 (Configuration) TERMINÉE
+Prochaine étape : Phase 2 (Authentification)
