@@ -19,6 +19,7 @@ export const ERROR_MESSAGES = {
   USER_NOT_FOUND: 'Utilisateur non trouvé',
   UNAUTHORIZED: 'Non autorisé',
   INVALID_TOKEN: 'Token invalide ou expiré',
+  FORBIDDEN: 'Accès interdit',
 
   // General
   INTERNAL_ERROR: 'Une erreur interne est survenue',
