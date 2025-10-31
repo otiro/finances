@@ -111,7 +111,7 @@ GRANT ALL PRIVILEGES ON DATABASE finances_db TO finances_user;
 #### 5. Cloner et configurer le projet
 
 ```bash
-cd /home/pi
+cd /home/julien
 git clone <votre-repo> finances
 cd finances
 ```
@@ -304,9 +304,9 @@ npm run prisma:studio
 
 ```bash
 #!/bin/bash
-# Créer le fichier: /home/pi/backup-db.sh
+# Créer le fichier: /home/julien/backup-db.sh
 
-BACKUP_DIR="/home/pi/backups"
+BACKUP_DIR="/home/julien/backups"
 DATE=$(date +%Y%m%d_%H%M%S)
 mkdir -p $BACKUP_DIR
 
@@ -321,11 +321,11 @@ echo "Backup completed: finances_db_$DATE.sql"
 
 **Automatiser avec cron:**
 ```bash
-chmod +x /home/pi/backup-db.sh
+chmod +x /home/julien/backup-db.sh
 crontab -e
 
 # Ajouter cette ligne pour une sauvegarde quotidienne à 2h du matin :
-0 2 * * * /home/pi/backup-db.sh >> /home/pi/backup.log 2>&1
+0 2 * * * /home/julien/backup-db.sh >> /home/julien/backup.log 2>&1
 ```
 
 ## 🧪 Tests

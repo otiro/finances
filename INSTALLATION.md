@@ -141,7 +141,7 @@ GRANT ALL PRIVILEGES ON DATABASE finances_db TO finances_user;
 ### 4. Cloner et installer le projet
 
 ```bash
-cd /home/pi
+cd /home/julien
 git clone <votre-repo> finances
 cd finances
 
@@ -167,12 +167,12 @@ npm run build
 sudo npm install -g pm2
 
 # Démarrer le backend
-cd /home/pi/finances/backend
+cd /home/julien/finances/backend
 pm2 start dist/index.js --name finances-api
 
 # Démarrer le frontend avec serve
 sudo npm install -g serve
-cd /home/pi/finances/frontend
+cd /home/julien/finances/frontend
 pm2 start "serve -s dist -l 5173" --name finances-frontend
 
 # Sauvegarder la configuration PM2
@@ -332,7 +332,7 @@ Consultez le [README.md](README.md) pour plus d'informations sur l'utilisation d
 ## Mise à jour
 
 ```bash
-cd /home/pi/finances
+cd /home/julien/finances
 git pull
 
 # Backend
