@@ -20,7 +20,7 @@ npm run dev
 ```bash
 curl -X POST http://localhost:3030/api/households \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer VOTRE_TOKEN_JWT" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk0OTM3NSwiZXhwIjoxNzYyMDM1Nzc1fQ.MzdcPki7aulKdU4pmf0VjycZNkGljOfXJ4LWnwHqMCk" \
   -d '{
     "name": "Famille Test",
     "sharingMode": "PROPORTIONAL"
