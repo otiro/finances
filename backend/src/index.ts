@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import { logger } from './utils/logger';
 import { errorHandler } from './middleware/error.middleware';
 import { notFoundHandler } from './middleware/notFound.middleware';
+import './config/database'; // Import database connection
 
 // Import routes (à créer)
 // import authRoutes from './routes/auth.routes';
