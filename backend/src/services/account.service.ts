@@ -2,13 +2,14 @@ import prisma from '../config/database';
 import { CreateAccountInput, UpdateAccountInput } from '../utils/validators';
 import { HTTP_STATUS, ERROR_MESSAGES } from '../utils/constants';
 import { Decimal } from '@prisma/client/runtime/library';
+import { AccountType, TransactionType } from '@prisma/client';
 
 /**
  * Calcule les parts de propriété pour chaque utilisateur
  */
 const calculateOwnershipShares = async (
   ownerIds: string[],
-  householdId: string,
+  _householdId: string,
   sharingMode: 'EQUAL' | 'PROPORTIONAL' | 'CUSTOM'
 ): Promise<Record<string, number>> => {
   if (sharingMode === 'EQUAL') {
@@ -108,7 +109,7 @@ export const createAccount = async (userId: string, data: CreateAccountInput) =>
   const account = await prisma.account.create({
     data: {
       name: data.name,
-      type: data.type,
+      type: data.type as AccountType,
       householdId: data.householdId,
       initialBalance: new Decimal(data.initialBalance || 0),
       owners: {
@@ -233,7 +234,7 @@ export const getAccountById = async (accountId: string, userId: string) => {
       transactions: {
         take: 10,
         orderBy: {
-          date: 'desc',
+          createdAt: 'desc',
         },
         include: {
           category: true,
@@ -403,7 +404,7 @@ export const getAccountBalance = async (accountId: string, userId: string) => {
 
   // Calculer le solde : initialBalance + somme des revenus - somme des dépenses
   const balance = account.transactions.reduce((sum, transaction) => {
-    if (transaction.type === 'INCOME') {
+    if (transaction.type === TransactionType.INCOME) {
       return sum + Number(transaction.amount);
     } else {
       return sum - Number(transaction.amount);
