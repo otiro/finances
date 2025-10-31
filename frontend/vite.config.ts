@@ -19,7 +19,12 @@ export default defineConfig({
   },
   server: {
     port: 5173,
-    host: true, // Écouter sur toutes les interfaces réseau
+    host: '0.0.0.0', // Écouter sur toutes les interfaces réseau
+    allowedHosts: [
+      'moneypi.local',
+      'localhost',
+      '.local', // Autoriser tous les domaines .local
+    ],
     proxy: {
       '/api': {
         target: 'http://localhost:3030',
