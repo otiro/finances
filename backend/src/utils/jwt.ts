@@ -14,14 +14,16 @@ export interface TokenPayload {
  * Génère un token d'accès JWT
  */
 export const generateAccessToken = (payload: TokenPayload): string => {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN as string });
+  // @ts-expect-error - TypeScript strict check on expiresIn type
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 };
 
 /**
  * Génère un token de rafraîchissement JWT
  */
 export const generateRefreshToken = (payload: TokenPayload): string => {
-  return jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: JWT_REFRESH_EXPIRES_IN as string });
+  // @ts-expect-error - TypeScript strict check on expiresIn type
+  return jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: JWT_REFRESH_EXPIRES_IN });
 };
 
 /**
