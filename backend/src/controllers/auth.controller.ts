@@ -42,13 +42,14 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
  * Récupérer le profil de l'utilisateur connecté
  * GET /api/auth/me
  */
-export const getProfile = async (req: Request, res: Response, next: NextFunction) => {
+export const getProfile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     if (!req.userId) {
-      return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+      res.status(HTTP_STATUS.UNAUTHORIZED).json({
         status: 'error',
         message: 'Non autorisé',
       });
+      return;
     }
 
     const user = await authService.getUserById(req.userId);
