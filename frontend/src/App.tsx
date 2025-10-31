@@ -1,9 +1,14 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
-import { Box } from '@mui/material'
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { Box } from '@mui/material';
+import { useAuthStore } from './store/slices/authSlice';
 
-// Pages (à créer)
-// import Login from '@pages/Login'
-// import Dashboard from '@pages/Dashboard'
+// Pages
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import ProtectedRoute from './components/ProtectedRoute';
+
+// Pages à créer dans les prochaines phases
 // import Transactions from '@pages/Transactions'
 // import Analytics from '@pages/Analytics'
 // import Budgets from '@pages/Budgets'
@@ -11,38 +16,59 @@ import { Box } from '@mui/material'
 // import Settings from '@pages/Settings'
 
 function App() {
+  const { isAuthenticated } = useAuthStore();
+
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <Routes>
-        {/* Temporary landing page */}
-        <Route path="/" element={
-          <Box sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            flexDirection: 'column',
-            gap: 2
-          }}>
-            <h1>Finances Familiales</h1>
-            <p>Application en cours de développement...</p>
-          </Box>
-        } />
+        {/* Page d'accueil - redirige selon l'état d'authentification */}
+        <Route
+          path="/"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
 
-        {/* Routes à implémenter */}
-        {/* <Route path="/login" element={<Login />} /> */}
-        {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-        {/* <Route path="/transactions" element={<Transactions />} /> */}
-        {/* <Route path="/analytics" element={<Analytics />} /> */}
-        {/* <Route path="/budgets" element={<Budgets />} /> */}
-        {/* <Route path="/accounts" element={<Accounts />} /> */}
-        {/* <Route path="/settings" element={<Settings />} /> */}
+        {/* Routes publiques (accessibles uniquement si NON authentifié) */}
+        <Route
+          path="/login"
+          element={
+            isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />
+          }
+        />
 
-        {/* Catch all */}
+        {/* Routes protégées (accessibles uniquement si authentifié) */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Routes à implémenter dans les prochaines phases */}
+        {/* <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} /> */}
+        {/* <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} /> */}
+        {/* <Route path="/budgets" element={<ProtectedRoute><Budgets /></ProtectedRoute>} /> */}
+        {/* <Route path="/accounts" element={<ProtectedRoute><Accounts /></ProtectedRoute>} /> */}
+        {/* <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} /> */}
+
+        {/* Catch all - redirige vers l'accueil */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Box>
-  )
+  );
 }
 
 export default App
