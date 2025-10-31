@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import * as householdService from '../services/household.service';
-import { HTTP_STATUS, SUCCESS_MESSAGES } from '../utils/constants';
+import { HTTP_STATUS } from '../utils/constants';
 
 /**
  * Crée un nouveau foyer
