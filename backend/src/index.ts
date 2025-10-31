@@ -8,8 +8,8 @@ import { errorHandler } from './middleware/error.middleware';
 import { notFoundHandler } from './middleware/notFound.middleware';
 import './config/database'; // Import database connection
 
-// Import routes (à créer)
-// import authRoutes from './routes/auth.routes';
+// Import routes
+import authRoutes from './routes/auth.routes';
 // import userRoutes from './routes/user.routes';
 // import accountRoutes from './routes/account.routes';
 // import transactionRoutes from './routes/transaction.routes';
@@ -39,7 +39,7 @@ app.get('/health', (_req, res) => {
 });
 
 // API routes
-// app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 // app.use('/api/users', userRoutes);
 // app.use('/api/accounts', accountRoutes);
 // app.use('/api/transactions', transactionRoutes);
