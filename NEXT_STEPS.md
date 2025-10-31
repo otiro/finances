@@ -124,7 +124,7 @@ npm run dev
 
 ✅ **Si vous voyez ça, c'est bon :**
 ```
-[INFO] Server is running on port 3000
+[INFO] Server is running on port 3030
 [INFO] Environment: development
 [INFO] Database connected successfully
 ```
@@ -152,7 +152,7 @@ nano .env
 
 Le contenu par défaut devrait fonctionner :
 ```env
-VITE_API_URL=http://localhost:3000/api
+VITE_API_URL=http://localhost:3030/api
 VITE_API_TIMEOUT=30000
 VITE_APP_NAME=Finances Familiales
 VITE_APP_VERSION=1.0.0
@@ -199,7 +199,7 @@ Vous devriez voir la page "Finances Familiales - Application en cours de dévelo
 Dans un nouveau terminal :
 
 ```bash
-curl http://localhost:3000/health
+curl http://localhost:3030/health
 ```
 
 Réponse attendue :
@@ -236,7 +236,7 @@ npm run dev
 
 ## 📊 Ports Utilisés
 
-- **Backend API :** http://localhost:3000
+- **Backend API :** http://localhost:3030
 - **Frontend :** http://localhost:5173
 - **Prisma Studio :** http://localhost:5555 (quand lancé)
 - **PostgreSQL :** localhost:5432
@@ -257,11 +257,11 @@ npm run dev
    psql -U finances_user -d finances_db -h localhost
    ```
 
-### "Port 3000 already in use"
+### "Port 3030 already in use"
 
 Tuez le processus :
 ```bash
-lsof -ti:3000 | xargs kill -9
+lsof -ti:3030 | xargs kill -9
 ```
 
 ### Prisma generate échoue
@@ -306,9 +306,9 @@ Avant de passer au développement, vérifiez que :
 - [ ] JWT secrets générés et configurés
 - [ ] `npm run prisma:generate` exécuté sans erreur
 - [ ] `npm run prisma:migrate` exécuté sans erreur
-- [ ] Backend démarre avec `npm run dev` (port 3000)
+- [ ] Backend démarre avec `npm run dev` (port 3030)
 - [ ] Frontend démarre avec `npm run dev` (port 5173)
-- [ ] `curl http://localhost:3000/health` retourne `{"status":"ok"}`
+- [ ] `curl http://localhost:3030/health` retourne `{"status":"ok"}`
 - [ ] Page frontend accessible dans le navigateur
 
 Si tous les points sont cochés : **🎉 Bravo ! Vous êtes prêt à développer !**
