@@ -404,7 +404,7 @@ export const getAccountBalance = async (accountId: string, userId: string) => {
 
   // Calculer le solde : initialBalance + somme des revenus - somme des dépenses
   const balance = account.transactions.reduce((sum, transaction) => {
-    if (transaction.type === TransactionType.INCOME) {
+    if (transaction.type === TransactionType.CREDIT) {
       return sum + Number(transaction.amount);
     } else {
       return sum - Number(transaction.amount);
