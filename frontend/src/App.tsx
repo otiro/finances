@@ -6,13 +6,16 @@ import { useAuthStore } from './store/slices/authSlice';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Households from './pages/Households';
+import HouseholdDetails from './pages/HouseholdDetails';
+import Accounts from './pages/Accounts';
+import AccountDetails from './pages/AccountDetails';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages à créer dans les prochaines phases
 // import Transactions from '@pages/Transactions'
 // import Analytics from '@pages/Analytics'
 // import Budgets from '@pages/Budgets'
-// import Accounts from '@pages/Accounts'
 // import Settings from '@pages/Settings'
 
 function App() {
@@ -57,11 +60,44 @@ function App() {
           }
         />
 
+        {/* Phase 3 - Foyers et comptes */}
+        <Route
+          path="/households"
+          element={
+            <ProtectedRoute>
+              <Households />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/households/:id"
+          element={
+            <ProtectedRoute>
+              <HouseholdDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/accounts"
+          element={
+            <ProtectedRoute>
+              <Accounts />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/accounts/:id"
+          element={
+            <ProtectedRoute>
+              <AccountDetails />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Routes à implémenter dans les prochaines phases */}
         {/* <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} /> */}
         {/* <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} /> */}
         {/* <Route path="/budgets" element={<ProtectedRoute><Budgets /></ProtectedRoute>} /> */}
-        {/* <Route path="/accounts" element={<ProtectedRoute><Accounts /></ProtectedRoute>} /> */}
         {/* <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} /> */}
 
         {/* Catch all - redirige vers l'accueil */}

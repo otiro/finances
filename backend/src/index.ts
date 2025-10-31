@@ -10,8 +10,8 @@ import './config/database'; // Import database connection
 
 // Import routes
 import authRoutes from './routes/auth.routes';
-// import userRoutes from './routes/user.routes';
-// import accountRoutes from './routes/account.routes';
+import householdRoutes from './routes/household.routes';
+import accountRoutes from './routes/account.routes';
 // import transactionRoutes from './routes/transaction.routes';
 // import categoryRoutes from './routes/category.routes';
 // import budgetRoutes from './routes/budget.routes';
@@ -40,8 +40,8 @@ app.get('/health', (_req, res) => {
 
 // API routes
 app.use('/api/auth', authRoutes);
-// app.use('/api/users', userRoutes);
-// app.use('/api/accounts', accountRoutes);
+app.use('/api/households', householdRoutes);
+app.use('/api/accounts', accountRoutes);
 // app.use('/api/transactions', transactionRoutes);
 // app.use('/api/categories', categoryRoutes);
 // app.use('/api/budgets', budgetRoutes);
