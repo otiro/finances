@@ -363,24 +363,34 @@ export const calculateDebts = async (
     const ownerDebts = new Map<string, number>(); // Map<userId, debtAmount>
 
     // D'abord, calculer la dette pour chaque propriétaire
+    console.log(`\n=== Compte: ${account.id} (type: ${account.type}) ===`);
+    console.log(`Total Balance: ${totalBalance}`);
+    console.log(`User Payments:`, Object.fromEntries(userPayments));
+
     for (const owner of account.owners) {
       const ownershipPercent = Number(owner.ownershipPercentage) / 100;
       const ownerShare = totalBalance * ownershipPercent;
       const ownerPaid = userPayments.get(owner.userId) || 0;
       const ownerDebt = ownerShare - ownerPaid;
       ownerDebts.set(owner.userId, ownerDebt);
+      console.log(`User ${owner.userId}: share=${ownerShare}, paid=${ownerPaid}, debt=${ownerDebt}`);
     }
 
     // Maintenant, créer les dettes entre propriétaires
     // ownerDebt > 0 signifie que le propriétaire doit de l'argent
     // ownerDebt < 0 signifie que le propriétaire doit recevoir de l'argent
+    console.log(`Owner Debts Map:`, Object.fromEntries(ownerDebts));
+
     for (const debtor of account.owners) {
       const debtorAmount = ownerDebts.get(debtor.userId) || 0;
 
       // Sauter si ce propriétaire n'a rien à payer
       if (debtorAmount <= 0.01) {
+        console.log(`Skipping debtor ${debtor.userId}: amount=${debtorAmount} (<=0.01)`);
         continue;
       }
+
+      console.log(`Processing debtor ${debtor.userId}: amount=${debtorAmount}`);
 
       // Chercher des créanciers qui doivent recevoir de l'argent
       let remainingDebt = debtorAmount;
@@ -401,11 +411,15 @@ export const calculateDebts = async (
           const existing = debtsMap.get(creditor.userId)?.get(debtor.userId) || 0;
           debtsMap.get(creditor.userId)?.set(debtor.userId, existing + debtToTransfer);
 
+          console.log(`  -> Transfer ${debtToTransfer} from ${debtor.userId} to creditor ${creditor.userId}`);
+
           remainingDebt -= debtToTransfer;
           ownerDebts.set(creditor.userId, creditorAmount + debtToTransfer);
         }
       }
     }
+
+    console.log(`Final debtsMap:`, debtsMap);
   }
 
   // Convertir la Map en tableau lisible et créer les BalancingRecords
