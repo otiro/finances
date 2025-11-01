@@ -393,11 +393,14 @@ export const calculateDebts = async (
     }
   }
 
-  // Convertir la Map en tableau lisible
+  // Convertir la Map en tableau lisible et créer les BalancingRecords
   const debts: Array<{
+    id: string;
     creditor: { id: string; firstName: string; lastName: string; email: string };
     debtor: { id: string; firstName: string; lastName: string; email: string };
     amount: number;
+    isPaid?: boolean;
+    paidAt?: string;
   }> = [];
 
   // Récupérer les infos utilisateur
@@ -425,10 +428,50 @@ export const calculateDebts = async (
         const debtor = usersMap.get(debtorId);
 
         if (creditor && debtor) {
+          const roundedAmount = Math.round(amount * 100) / 100;
+
+          // Chercher un enregistrement existant pour cette paire de débiteur/créancier
+          let balancingRecord = await prisma.balancingRecord.findFirst({
+            where: {
+              householdId,
+              fromUserId: creditorId,
+              toUserId: debtorId,
+            },
+          });
+
+          // Créer ou mettre à jour le BalancingRecord
+          if (balancingRecord) {
+            // Mettre à jour le montant et la date de fin
+            balancingRecord = await prisma.balancingRecord.update({
+              where: { id: balancingRecord.id },
+              data: {
+                amount: new Decimal(roundedAmount),
+                periodEnd: new Date(),
+              },
+            });
+          } else {
+            // Créer un nouveau BalancingRecord
+            balancingRecord = await prisma.balancingRecord.create({
+              data: {
+                householdId,
+                fromUserId: creditorId,
+                toUserId: debtorId,
+                amount: new Decimal(roundedAmount),
+                periodStart: new Date(),
+                periodEnd: new Date(),
+                status: 'PENDING' as const,
+                isPaid: false,
+              },
+            });
+          }
+
           debts.push({
+            id: balancingRecord.id,
             creditor,
             debtor,
-            amount: Math.round(amount * 100) / 100, // Arrondir à 2 décimales
+            amount: roundedAmount,
+            isPaid: balancingRecord.isPaid,
+            paidAt: balancingRecord.paidAt?.toISOString(),
           });
         }
       }

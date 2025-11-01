@@ -94,15 +94,11 @@ export default function Debts() {
     }, 0);
   };
 
-  const handleMarkAsPaid = async (householdId: string, debtIndex: number, currentPaidStatus: boolean) => {
-    const debtId = `${householdId}-${debtIndex}`;
+  const handleMarkAsPaid = async (householdId: string, debtIndex: number, currentPaidStatus: boolean, recordId: string) => {
+    const debtId = `${recordId}-${debtIndex}`;
     setMarkingPaid(debtId);
 
     try {
-      // For now, since we don't have balancingRecordId from calculated debts,
-      // we'll use a placeholder. In production, you'd get the actual ID from backend
-      const recordId = debtId;
-
       await transactionService.markDebtAsPaid(householdId, recordId, !currentPaidStatus);
 
       // Update local state
@@ -245,8 +241,8 @@ export default function Debts() {
                               />
                               <Checkbox
                                 checked={debt.isPaid || false}
-                                onChange={() => handleMarkAsPaid(householdId, index, debt.isPaid || false)}
-                                disabled={markingPaid === `${householdId}-${index}`}
+                                onChange={() => handleMarkAsPaid(householdId, index, debt.isPaid || false, debt.id || '')}
+                                disabled={markingPaid === `${debt.id}-${index}` || !debt.id}
                                 title={debt.isPaid ? 'Marquer comme non payée' : 'Marquer comme payée'}
                               />
                             </Box>
