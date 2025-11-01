@@ -97,6 +97,44 @@ export const updateTransactionSchema = z.object({
 }).strict();
 
 export type RegisterInput = z.infer<typeof registerSchema>;
+/**
+ * Schéma de validation pour la création d'un motif de transaction récurrente
+ */
+export const createRecurringPatternSchema = z.object({
+  accountId: z.string().min(1, 'L\'ID du compte est requis'),
+  name: z.string().min(1, 'Le nom est requis'),
+  description: z.string().optional(),
+  frequency: z.enum(['DAILY', 'WEEKLY', 'BIWEEKLY', 'MONTHLY', 'QUARTERLY', 'YEARLY'], {
+    errorMap: () => ({ message: 'Fréquence invalide' }),
+  }),
+  type: z.enum(['DEBIT', 'CREDIT'], {
+    errorMap: () => ({ message: 'Type de transaction invalide' }),
+  }),
+  amount: z.number().positive('Le montant doit être positif'),
+  categoryId: z.string().optional(),
+  startDate: z.string().datetime('Date de début invalide'),
+  endDate: z.string().datetime('Date de fin invalide').optional(),
+  dayOfMonth: z.number().min(1).max(31).optional(),
+  dayOfWeek: z.number().min(0).max(6).optional(),
+});
+
+/**
+ * Schéma de validation pour la mise à jour d'un motif de transaction récurrente
+ */
+export const updateRecurringPatternSchema = z.object({
+  name: z.string().min(1).optional(),
+  description: z.string().optional(),
+  frequency: z.enum(['DAILY', 'WEEKLY', 'BIWEEKLY', 'MONTHLY', 'QUARTERLY', 'YEARLY']).optional(),
+  type: z.enum(['DEBIT', 'CREDIT']).optional(),
+  amount: z.number().positive().optional(),
+  categoryId: z.string().optional().nullable(),
+  endDate: z.string().datetime().optional().nullable(),
+  dayOfMonth: z.number().min(1).max(31).optional().nullable(),
+  dayOfWeek: z.number().min(0).max(6).optional().nullable(),
+  isActive: z.boolean().optional(),
+  isPaused: z.boolean().optional(),
+});
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
 export type CreateHouseholdInput = z.infer<typeof createHouseholdSchema>;
@@ -105,3 +143,5 @@ export type CreateAccountInput = z.infer<typeof createAccountSchema>;
 export type UpdateAccountInput = z.infer<typeof updateAccountSchema>;
 export type CreateTransactionInput = z.infer<typeof createTransactionSchema>;
 export type UpdateTransactionInput = z.infer<typeof updateTransactionSchema>;
+export type CreateRecurringPatternInput = z.infer<typeof createRecurringPatternSchema>;
+export type UpdateRecurringPatternInput = z.infer<typeof updateRecurringPatternSchema>;

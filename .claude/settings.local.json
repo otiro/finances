@@ -1,26 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(mkdir:*)",
-      "Bash(dir /s /b)",
-      "Bash(findstr:*)",
-      "Bash(tree:*)",
-      "Bash(awk:*)",
-      "Bash(npm run build:*)",
-      "Bash(git add:*)",
-      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: Implement Phase 4.5 - Transaction Enhancements\n\n- Add category service and controller for managing transaction categories\n- Implement category retrieval endpoints (system and household categories)\n- Add support for creating custom categories\n- Update AddTransactionDialog to include category selection with color preview\n- Load categories dynamically when dialog opens\n- Fix Prisma composite key issue in transaction update/delete using verifyHouseholdMembership helper\n- Add transaction editing capability (already supported in service)\n- Create comprehensive TESTING_PHASE4.5.md test guide with:\n  - Backend API tests for category endpoints\n  - Frontend integration tests for category selection\n  - Transaction filtering tests (future implementation)\n  - Debt payment tracking tests (future implementation)\n  - Security and persistence tests\n  - Complete scenario testing\n\nThe following features are tested in TESTING_PHASE4.5.md:\n- Category management (create, list, use in transactions)\n- Transaction categorization\n- Category filtering (template for frontend implementation)\n- Debt payment status tracking (template for implementation)\n- Security and isolation by household\n\n🤖 Generated with Claude Code\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
-      "Bash(find:*)",
-      "Bash(cat:*)",
-      "Bash(npx tsc:*)",
-      "Bash(npm install)",
-      "Bash(lsof:*)",
-      "Bash(xargs kill:*)",
-      "Bash(netstat:*)",
-      "Bash(taskkill:*)",
-      "Bash(for file in TESTING_PHASE2.md TESTING_PHASE3.md PHASE3_PROGRESS.md NEXT_STEPS.md README_JULIEN.md guide.md FLUX_8-10_*.md README_FLUX_8-10.md TESTING_FLUX_8-10.md TESTING_FLUX_8-10_FIX.md CONTINUATION_SUMMARY.md CRITICAL_BUG_FIX_REQUIRED.md DEPLOYMENT_STATUS.md SESSION_COMPLETION_REPORT.md PHASE4_TRANSACTIONS.md TESTING_PHASE4.5.md CLEANUP_PLAN.md)",
-      "Bash(do mv \"$file\" docs/archive/)",
-      "Bash(echo:*)",
-      "Bash(done)"
+      "Bash(git commit:*)",
+      "Bash(npx prisma migrate dev:*)",
+      "Bash(npx prisma migrate create:*)",
+      "Bash(npm ls:*)",
+      "Bash(npx prisma generate:*)"
     ],
     "deny": [],
     "ask": []

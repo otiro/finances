@@ -38,6 +38,7 @@ enum TransactionType {
 
 // Énumération pour la fréquence des récurrences
 enum RecurringFrequency {
+  DAILY
   WEEKLY
   BIWEEKLY
   MONTHLY
@@ -56,6 +57,13 @@ enum BudgetPeriod {
 enum BalancingStatus {
   PENDING
   COMPLETED
+}
+
+// Énumération pour le statut de génération des transactions récurrentes
+enum RecurringTransactionLogStatus {
+  SUCCESS
+  FAILED
+  SKIPPED
 }
 
 // Table des utilisateurs
@@ -95,6 +103,7 @@ model Household {
   budgets               Budget[]
   categorizationRules   CategorizationRule[]
   balancingRecords      BalancingRecord[]
+  recurringPatterns     RecurringPattern[]
 
   @@map("households")
 }
@@ -128,9 +137,10 @@ model Account {
   updatedAt      DateTime    @updatedAt @map("updated_at")
 
   // Relations
-  household    Household      @relation(fields: [householdId], references: [id], onDelete: Cascade)
-  owners       AccountOwner[]
-  transactions Transaction[]
+  household         Household          @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  owners            AccountOwner[]
+  transactions      Transaction[]
+  recurringPatterns RecurringPattern[]
 
   @@map("accounts")
 }
@@ -204,19 +214,42 @@ model Transaction {
 
 // Table des motifs récurrents
 model RecurringPattern {
-  id               String             @id @default(uuid())
-  name             String
-  frequency        RecurringFrequency
-  expectedAmount   Decimal            @map("expected_amount") @db.Decimal(10, 2)
-  categoryId       String             @map("category_id")
-  nextExpectedDate DateTime           @map("next_expected_date")
-  isActive         Boolean            @default(true) @map("is_active")
-  createdAt        DateTime           @default(now()) @map("created_at")
+  id                     String             @id @default(uuid())
+  householdId            String             @map("household_id")
+  accountId              String             @map("account_id")
+  categoryId             String?            @map("category_id")
+  name                   String
+  description            String?
+  frequency              RecurringFrequency
+  type                   TransactionType    @default(DEBIT)
+  amount                 Decimal            @db.Decimal(10, 2)
+
+  // Scheduling fields
+  startDate              DateTime           @map("start_date")
+  endDate                DateTime?          @map("end_date")
+  dayOfMonth             Int?               @map("day_of_month")    // For monthly patterns (1-31)
+  dayOfWeek              Int?               @map("day_of_week")     // For weekly patterns (0=Sunday, 6=Saturday)
+
+  // Generation tracking
+  nextGenerationDate     DateTime           @map("next_generation_date")
+  lastGeneratedDate      DateTime?          @map("last_generated_date")
+
+  // Status
+  isActive               Boolean            @default(true) @map("is_active")
+  isPaused               Boolean            @default(false) @map("is_paused")
+
+  createdAt              DateTime           @default(now()) @map("created_at")
+  updatedAt              DateTime           @updatedAt @map("updated_at")
 
   // Relations
-  category     Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  transactions Transaction[]
+  household              Household          @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  account                Account            @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  category               Category?          @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  transactions           Transaction[]
+  generationLogs         RecurringTransactionLog[]
 
+  @@index([householdId, isActive])
+  @@index([accountId, nextGenerationDate])
   @@map("recurring_patterns")
 }
 
@@ -254,6 +287,23 @@ model CategorizationRule {
   category  Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@map("categorization_rules")
+}
+
+// Table des logs de génération des transactions récurrentes
+model RecurringTransactionLog {
+  id                    String                        @id @default(uuid())
+  recurringPatternId    String                        @map("recurring_pattern_id")
+  generatedTransactionId String?                      @map("generated_transaction_id")
+  generatedDate         DateTime                      @map("generated_date")
+  status                RecurringTransactionLogStatus @default(SUCCESS)
+  errorMessage          String?                       @map("error_message")
+  createdAt             DateTime                      @default(now()) @map("created_at")
+
+  // Relations
+  recurringPattern      RecurringPattern              @relation(fields: [recurringPatternId], references: [id], onDelete: Cascade)
+
+  @@index([recurringPatternId, generatedDate])
+  @@map("recurring_transaction_logs")
 }
 
 // Table des équilibrages
