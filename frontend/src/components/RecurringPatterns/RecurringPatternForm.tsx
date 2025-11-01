@@ -30,7 +30,14 @@ const recurringPatternSchema = z.object({
   description: z.string().max(500, 'La description ne doit pas dépasser 500 caractères').optional().or(z.literal('')),
   frequency: z.enum(['DAILY', 'WEEKLY', 'BIWEEKLY', 'MONTHLY', 'QUARTERLY', 'YEARLY']),
   type: z.enum(['DEBIT', 'CREDIT']),
-  amount: z.number().positive('Le montant doit être positif'),
+  amount: z.union([
+    z.number().positive('Le montant doit être positif'),
+    z.string().transform((val) => {
+      const num = parseFloat(val);
+      if (isNaN(num)) throw new Error('Le montant doit être un nombre');
+      return num;
+    }).refine((num) => num > 0, 'Le montant doit être positif'),
+  ]),
   categoryId: z.string().optional().or(z.literal('')),
   startDate: z.string().min(1, 'La date de début est requise'),
   endDate: z.string().optional().or(z.literal('')),
