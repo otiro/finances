@@ -327,6 +327,7 @@ export const calculateDebts = async (
 
   // Structure pour tracker les dettes: Map<creditorId, Map<debtorId, amount>>
   const debtsMap = new Map<string, Map<string, number>>();
+  const householdIdForBalancing = householdId; // Sauvegarder le householdId pour utilisation plus tard
 
   // Traiter chaque compte
   for (const account of accounts) {
@@ -462,7 +463,7 @@ export const calculateDebts = async (
           // Chercher un enregistrement existant pour cette paire de débiteur/créancier
           let balancingRecord = await prisma.balancingRecord.findFirst({
             where: {
-              householdId,
+              householdId: householdIdForBalancing,
               fromUserId: creditorId,
               toUserId: debtorId,
             },
@@ -482,7 +483,7 @@ export const calculateDebts = async (
             // Créer un nouveau BalancingRecord
             balancingRecord = await prisma.balancingRecord.create({
               data: {
-                householdId,
+                householdId: householdIdForBalancing,
                 fromUserId: creditorId,
                 toUserId: debtorId,
                 amount: new Decimal(roundedAmount),
