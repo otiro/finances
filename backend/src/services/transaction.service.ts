@@ -311,14 +311,11 @@ export const deleteTransaction = async (
 
 // Helper function pour éviter le bug Prisma
 const verifyHouseholdMembership = async (userId: string, householdId: string) => {
-  const whereClause = {
-    userId_householdId: {
+  return await prisma.userHousehold.findFirst({
+    where: {
       userId: userId,
       householdId: householdId,
     },
-  };
-  return await prisma.userHousehold.findUnique({
-    where: whereClause,
   });
 };
 
