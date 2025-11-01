@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Box, Container, Typography, CircularProgress, Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
   selectRecurringPatterns,
@@ -20,11 +21,16 @@ import AddRecurringPatternDialog from '../components/Dialogs/AddRecurringPattern
 const RecurringTransactionsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const householdId = id;
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const patterns = useAppSelector(selectRecurringPatterns);
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
   const [openAddDialog, setOpenAddDialog] = useState(false);
+
+  const handleGoBack = () => {
+    navigate(`/households/${householdId}`);
+  };
 
   // Charger les patterns au montage
   useEffect(() => {
@@ -59,14 +65,24 @@ const RecurringTransactionsPage: React.FC = () => {
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* Header */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-        <div>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 600, mb: 1 }}>
-            Transactions Récurrentes
-          </Typography>
-          <Typography variant="body2" color="textSecondary">
-            Gérez vos transactions automatiques (loyer, salaire, etc.)
-          </Typography>
-        </div>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Button
+            variant="text"
+            startIcon={<ArrowBackIcon />}
+            onClick={handleGoBack}
+            sx={{ minWidth: 'auto' }}
+          >
+            Retour
+          </Button>
+          <div>
+            <Typography variant="h4" component="h1" sx={{ fontWeight: 600, mb: 1 }}>
+              Transactions Récurrentes
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+              Gérez vos transactions automatiques (loyer, salaire, etc.)
+            </Typography>
+          </div>
+        </Box>
         <Box sx={{ display: 'flex', gap: 1 }}>
           <Button
             variant="outlined"
