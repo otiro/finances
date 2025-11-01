@@ -25,9 +25,9 @@ npm run dev
 ### Test 1 : Créer une transaction (DEBIT)
 
 ```bash
-curl -X POST http://localhost:3030/api/accounts/ACCOUNT_ID/transactions \
+curl -X POST http://localhost:3030/api/accounts/9235729d-9109-44a6-b518-c95d314ea8cc/transactions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk1MTA0MSwiZXhwIjoxNzYyMDM3NDQxfQ.OtOCDtdXCBCX1GbJ1bCz0OGICUa708kS1L6-Hy8znSQ" \
   -d '{
     "amount": 50.50,
     "type": "DEBIT",
@@ -47,9 +47,9 @@ curl -X POST http://localhost:3030/api/accounts/ACCOUNT_ID/transactions \
 ### Test 2 : Créer une transaction (CREDIT)
 
 ```bash
-curl -X POST http://localhost:3030/api/accounts/ACCOUNT_ID/transactions \
+curl -X POST http://localhost:3030/api/accounts/9235729d-9109-44a6-b518-c95d314ea8cc/transactions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk1MTA0MSwiZXhwIjoxNzYyMDM3NDQxfQ.OtOCDtdXCBCX1GbJ1bCz0OGICUa708kS1L6-Hy8znSQ" \
   -d '{
     "amount": 100.00,
     "type": "CREDIT",
@@ -68,8 +68,8 @@ curl -X POST http://localhost:3030/api/accounts/ACCOUNT_ID/transactions \
 ### Test 3 : Récupérer les transactions d'un compte
 
 ```bash
-curl http://localhost:3030/api/accounts/ACCOUNT_ID/transactions?limit=10&offset=0 \
-  -H "Authorization: Bearer YOUR_TOKEN"
+curl http://localhost:3030/api/accounts/9235729d-9109-44a6-b518-c95d314ea8cc/transactions?limit=10&offset=0 \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk4NjU0MiwiZXhwIjoxNzYyMDcyOTQyfQ.BYb_YZ-iw_tZknQCuXkArmCfYhywJ62bIqh80Oq-U44"
 ```
 
 **Résultat attendu :**
@@ -83,8 +83,8 @@ curl http://localhost:3030/api/accounts/ACCOUNT_ID/transactions?limit=10&offset=
 ### Test 4 : Récupérer une transaction spécifique
 
 ```bash
-curl http://localhost:3030/api/accounts/ACCOUNT_ID/transactions/TRANSACTION_ID \
-  -H "Authorization: Bearer YOUR_TOKEN"
+curl http://localhost:3030/api/accounts/9235729d-9109-44a6-b518-c95d314ea8cc/transactions/a83f6ac6-a99b-45ed-8996-fb5b17abaffa \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk4NjU0MiwiZXhwIjoxNzYyMDcyOTQyfQ.BYb_YZ-iw_tZknQCuXkArmCfYhywJ62bIqh80Oq-U44"
 ```
 
 **Résultat attendu :**
@@ -97,9 +97,9 @@ curl http://localhost:3030/api/accounts/ACCOUNT_ID/transactions/TRANSACTION_ID \
 ### Test 5 : Modifier une transaction
 
 ```bash
-curl -X PATCH http://localhost:3030/api/accounts/ACCOUNT_ID/transactions/TRANSACTION_ID \
+curl -X PATCH http://localhost:3030/api/accounts/9235729d-9109-44a6-b518-c95d314ea8cc/transactions/79c30f95-a268-4d9c-8879-b7a5d29221e4 \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk4NjU0MiwiZXhwIjoxNzYyMDcyOTQyfQ.BYb_YZ-iw_tZknQCuXkArmCfYhywJ62bIqh80Oq-U44" \
   -d '{
     "description": "Courses - MODIFIÉE",
     "amount": 55.75
@@ -116,8 +116,8 @@ curl -X PATCH http://localhost:3030/api/accounts/ACCOUNT_ID/transactions/TRANSAC
 ### Test 6 : Supprimer une transaction
 
 ```bash
-curl -X DELETE http://localhost:3030/api/accounts/ACCOUNT_ID/transactions/TRANSACTION_ID \
-  -H "Authorization: Bearer YOUR_TOKEN"
+curl -X DELETE http://localhost:3030/api/accounts/9235729d-9109-44a6-b518-c95d314ea8cc/transactions/79c30f95-a268-4d9c-8879-b7a5d29221e4 \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk4NjU0MiwiZXhwIjoxNzYyMDcyOTQyfQ.BYb_YZ-iw_tZknQCuXkArmCfYhywJ62bIqh80Oq-U44"
 ```
 
 **Résultat attendu :**
@@ -146,8 +146,8 @@ Résultat attendu:
 2. Appeler l'endpoint :
 
 ```bash
-curl http://localhost:3030/api/households/HOUSEHOLD_ID/debts \
-  -H "Authorization: Bearer YOUR_TOKEN"
+curl http://localhost:3030/api/households/ea433d78-6001-464c-8071-21d3565b5da3/debts \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk4NjU0MiwiZXhwIjoxNzYyMDcyOTQyfQ.BYb_YZ-iw_tZknQCuXkArmCfYhywJ62bIqh80Oq-U44"
 ```
 
 **Résultat attendu :**
@@ -220,7 +220,7 @@ curl -X DELETE http://localhost:3030/api/accounts/ACCOUNT_ID/transactions/TRANSA
 ```bash
 curl -X POST http://localhost:3030/api/accounts/ACCOUNT_ID/transactions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk4NjU0MiwiZXhwIjoxNzYyMDcyOTQyfQ.BYb_YZ-iw_tZknQCuXkArmCfYhywJ62bIqh80Oq-U44" \
   -d '{ "amount": -50, "type": "DEBIT", "description": "Test" }'
 ```
 
@@ -232,7 +232,7 @@ curl -X POST http://localhost:3030/api/accounts/ACCOUNT_ID/transactions \
 ```bash
 curl -X POST http://localhost:3030/api/accounts/ACCOUNT_ID/transactions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk4NjU0MiwiZXhwIjoxNzYyMDcyOTQyfQ.BYb_YZ-iw_tZknQCuXkArmCfYhywJ62bIqh80Oq-U44" \
   -d '{ "amount": 50, "type": "DEBIT", "description": "" }'
 ```
 
