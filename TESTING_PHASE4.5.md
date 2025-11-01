@@ -123,6 +123,43 @@ curl -X POST http://localhost:3030/api/households/HOUSEHOLD_ID/categories \
 
 ---
 
+### Test 6 : Modifier une catégorie
+
+```bash
+curl -X PATCH http://localhost:3030/api/households/ea433d78-6001-464c-8071-21d3565b5da3/categories/CATEGORY_ID \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk4NjU0MiwiZXhwIjoxNzYyMDcyOTQyfQ.BYb_YZ-iw_tZknQCuXkArmCfYhywJ62bIqh80Oq-U44" \
+  -d '{
+    "name": "Restaurant Premium",
+    "color": "#FF6B9D"
+  }'
+```
+
+**Résultat attendu :**
+- Status 200
+- Catégorie mise à jour avec nouveau nom et couleur
+- Retourne l'objet catégorie modifié
+
+---
+
+### Test 7 : Supprimer une catégorie (si non utilisée)
+
+```bash
+curl -X DELETE http://localhost:3030/api/households/ea433d78-6001-464c-8071-21d3565b5da3/categories/CATEGORY_ID \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk4NjU0MiwiZXhwIjoxNzYyMDcyOTQyfQ.BYb_YZ-iw_tZknQCuXkArmCfYhywJ62bIqh80Oq-U44"
+```
+
+**Résultat attendu :**
+- Status 200
+- Catégorie supprimée (si aucune transaction ne l'utilise)
+- Message : "Catégorie supprimée avec succès"
+
+**Si la catégorie est utilisée :**
+- Status 409 (Conflict)
+- Message : "Impossible de supprimer une catégorie utilisée par des transactions"
+
+---
+
 ## Tests Frontend (Interface)
 
 ### Flux 1 : Ajouter une transaction avec catégorie
@@ -228,6 +265,44 @@ curl -X POST http://localhost:3030/api/households/HOUSEHOLD_ID/categories \
 - Chaque transaction affiche son badge de catégorie
 - Format: `[Catégorie avec couleur] Montant`
 - Les catégories sans couleur ont une couleur par défaut
+
+---
+
+### Flux 7b : Modifier une catégorie personnalisée
+
+1. Aller à la page du foyer (`/households/:id`)
+2. Cliquer sur l'onglet "Catégories"
+3. Localiser une catégorie personnalisée (pas "système")
+4. Cliquer sur le bouton **Modifier** (icône crayon)
+5. Un dialog s'ouvre pour modifier le nom et la couleur
+6. Modifier le nom: "Alimentaire" → "Alimentation"
+7. Changer la couleur
+8. Cliquer "Enregistrer"
+
+**Résultat attendu :**
+- La catégorie est mise à jour dans la liste
+- Les transactions utilisant cette catégorie reflètent le nouveau nom
+- La couleur change dans les badges des transactions
+
+---
+
+### Flux 7c : Supprimer une catégorie personnalisée
+
+1. Aller à la page du foyer (`/households/:id`)
+2. Cliquer sur l'onglet "Catégories"
+3. Localiser une catégorie personnalisée (pas "système")
+4. Cliquer sur le bouton **Supprimer** (icône poubelle)
+5. Une confirmation apparaît
+6. Confirmer la suppression
+
+**Résultat attendu (si catégorie non utilisée) :**
+- La catégorie disparaît de la liste
+- Les transactions ne sont pas affectées
+- Message de succès
+
+**Résultat attendu (si catégorie utilisée par une transaction) :**
+- Une erreur apparaît: "Impossible de supprimer une catégorie utilisée par des transactions"
+- La catégorie reste dans la liste
 
 ---
 
@@ -376,6 +451,8 @@ Transactions initiales:
 - [ ] Test 3 : Modifier transaction ✅
 - [ ] Test 4 : Créer catégorie personnalisée ✅
 - [ ] Test 5 : Permission admin ✅
+- [ ] Test 6 : Modifier une catégorie ✅
+- [ ] Test 7 : Supprimer une catégorie ✅
 
 ### Frontend - Transactions
 - [ ] Flux 1 : Ajouter avec catégorie ✅
@@ -385,6 +462,8 @@ Transactions initiales:
 - [ ] Flux 5 : Filtrer par date ✅
 - [ ] Flux 6 : Réinitialiser filtres ✅
 - [ ] Flux 7 : Affichage catégories ✅
+- [ ] Flux 7b : Modifier une catégorie ✅
+- [ ] Flux 7c : Supprimer une catégorie ✅
 
 ### Frontend - Dettes
 - [ ] Flux 8 : Marquer comme remboursée ✅

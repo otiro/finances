@@ -124,3 +124,61 @@ export const createCategory = async (req: Request, res: Response) => {
     });
   }
 };
+
+/**
+ * PATCH /api/households/:householdId/categories/:categoryId
+ * Met à jour une catégorie
+ */
+export const updateCategory = async (req: Request, res: Response) => {
+  try {
+    const userId = req.userId!;
+    const { householdId, categoryId } = req.params;
+    const { name, color, icon } = req.body;
+
+    const category = await categoryService.updateCategory(householdId, userId, categoryId, {
+      name,
+      color,
+      icon,
+    });
+
+    res.status(HTTP_STATUS.OK).json({
+      status: 'success',
+      message: 'Catégorie mise à jour avec succès',
+      data: category,
+    });
+  } catch (error: any) {
+    const status = error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR;
+    const message = error.message || ERROR_MESSAGES.INTERNAL_ERROR;
+
+    res.status(status).json({
+      status: 'error',
+      message,
+    });
+  }
+};
+
+/**
+ * DELETE /api/households/:householdId/categories/:categoryId
+ * Supprime une catégorie
+ */
+export const deleteCategory = async (req: Request, res: Response) => {
+  try {
+    const userId = req.userId!;
+    const { householdId, categoryId } = req.params;
+
+    await categoryService.deleteCategory(householdId, userId, categoryId);
+
+    res.status(HTTP_STATUS.OK).json({
+      status: 'success',
+      message: 'Catégorie supprimée avec succès',
+    });
+  } catch (error: any) {
+    const status = error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR;
+    const message = error.message || ERROR_MESSAGES.INTERNAL_ERROR;
+
+    res.status(status).json({
+      status: 'error',
+      message,
+    });
+  }
+};

@@ -60,3 +60,29 @@ export const createCategory = async (
   );
   return response.data.data;
 };
+
+/**
+ * Met à jour une catégorie
+ */
+export const updateCategory = async (
+  householdId: string,
+  categoryId: string,
+  data: {
+    name?: string;
+    color?: string;
+    icon?: string;
+  }
+) => {
+  const response = await api.patch<ApiResponse<Category>>(
+    `/households/${householdId}/categories/${categoryId}`,
+    data
+  );
+  return response.data.data;
+};
+
+/**
+ * Supprime une catégorie
+ */
+export const deleteCategory = async (householdId: string, categoryId: string) => {
+  await api.delete(`/households/${householdId}/categories/${categoryId}`);
+};

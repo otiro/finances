@@ -130,3 +130,110 @@ export const getAllAvailableCategories = async (householdId: string, userId: str
     household: householdCategories,
   };
 };
+
+/**
+ * Met à jour une catégorie personnalisée
+ */
+export const updateCategory = async (
+  householdId: string,
+  userId: string,
+  categoryId: string,
+  data: {
+    name?: string;
+    color?: string;
+    icon?: string;
+  }
+) => {
+  // Vérifier que l'utilisateur est admin du foyer
+  const userHousehold = await prisma.userHousehold.findFirst({
+    where: {
+      userId,
+      householdId,
+    },
+  });
+
+  if (!userHousehold || userHousehold.role !== 'ADMIN') {
+    throw {
+      status: HTTP_STATUS.FORBIDDEN,
+      message: 'Seul un administrateur peut modifier une catégorie',
+    };
+  }
+
+  // Vérifier que la catégorie appartient au foyer
+  const category = await prisma.category.findUnique({
+    where: { id: categoryId },
+  });
+
+  if (!category || category.householdId !== householdId || category.isSystem) {
+    throw {
+      status: HTTP_STATUS.FORBIDDEN,
+      message: 'Impossible de modifier cette catégorie',
+    };
+  }
+
+  const updatedCategory = await prisma.category.update({
+    where: { id: categoryId },
+    data: {
+      ...(data.name && { name: data.name }),
+      ...(data.color && { color: data.color }),
+      ...(data.icon && { icon: data.icon }),
+    },
+  });
+
+  return updatedCategory;
+};
+
+/**
+ * Supprime une catégorie personnalisée
+ */
+export const deleteCategory = async (
+  householdId: string,
+  userId: string,
+  categoryId: string
+) => {
+  // Vérifier que l'utilisateur est admin du foyer
+  const userHousehold = await prisma.userHousehold.findFirst({
+    where: {
+      userId,
+      householdId,
+    },
+  });
+
+  if (!userHousehold || userHousehold.role !== 'ADMIN') {
+    throw {
+      status: HTTP_STATUS.FORBIDDEN,
+      message: 'Seul un administrateur peut supprimer une catégorie',
+    };
+  }
+
+  // Vérifier que la catégorie appartient au foyer
+  const category = await prisma.category.findUnique({
+    where: { id: categoryId },
+  });
+
+  if (!category || category.householdId !== householdId || category.isSystem) {
+    throw {
+      status: HTTP_STATUS.FORBIDDEN,
+      message: 'Impossible de supprimer cette catégorie',
+    };
+  }
+
+  // Vérifier qu'aucune transaction n'utilise cette catégorie
+  const transactionCount = await prisma.transaction.count({
+    where: {
+      categoryId,
+    },
+  });
+
+  if (transactionCount > 0) {
+    throw {
+      status: HTTP_STATUS.CONFLICT,
+      message: 'Impossible de supprimer une catégorie utilisée par des transactions',
+    };
+  }
+
+  await prisma.category.delete({
+    where: { id: categoryId },
+  });
+};
+

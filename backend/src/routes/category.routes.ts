@@ -31,4 +31,16 @@ router.get('/households/:householdId/categories/household', categoryController.g
  */
 router.post('/households/:householdId/categories', categoryController.createCategory);
 
+/**
+ * PATCH /api/households/:householdId/categories/:categoryId
+ * Met à jour une catégorie
+ */
+router.patch('/households/:householdId/categories/:categoryId', categoryController.updateCategory);
+
+/**
+ * DELETE /api/households/:householdId/categories/:categoryId
+ * Supprime une catégorie
+ */
+router.delete('/households/:householdId/categories/:categoryId', categoryController.deleteCategory);
+
 export default router;

@@ -23,6 +23,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import { useAuth } from '../hooks/useAuth';
 import { useHouseholdStore } from '../store/slices/householdSlice';
 import { useAccountStore } from '../store/slices/accountSlice';
@@ -33,6 +34,7 @@ import AddMemberDialog from '../components/AddMemberDialog';
 import CreateAccountDialog from '../components/CreateAccountDialog';
 import UpdateSharingModeDialog from '../components/UpdateSharingModeDialog';
 import CreateCategoryDialog from '../components/CreateCategoryDialog';
+import EditCategoryDialog from '../components/EditCategoryDialog';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -66,6 +68,8 @@ export default function HouseholdDetails() {
   const [createAccountDialogOpen, setCreateAccountDialogOpen] = useState(false);
   const [updateSharingModeDialogOpen, setUpdateSharingModeDialogOpen] = useState(false);
   const [createCategoryDialogOpen, setCreateCategoryDialogOpen] = useState(false);
+  const [editCategoryDialogOpen, setEditCategoryDialogOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<categoryService.Category | null>(null);
   const [categories, setCategories] = useState<categoryService.Category[]>([]);
   const [error, setError] = useState('');
 
@@ -106,6 +110,24 @@ export default function HouseholdDetails() {
       await loadHouseholdData();
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erreur lors de la suppression du membre');
+    }
+  };
+
+  const handleEditCategory = (category: categoryService.Category) => {
+    if (category.isSystem) return; // Cannot edit system categories
+    setEditingCategory(category);
+    setEditCategoryDialogOpen(true);
+  };
+
+  const handleDeleteCategory = async (category: categoryService.Category) => {
+    if (!id || category.isSystem) return; // Cannot delete system categories
+    if (!window.confirm(`Êtes-vous sûr de vouloir supprimer la catégorie "${category.name}" ?`)) return;
+
+    try {
+      await categoryService.deleteCategory(id, category.id);
+      await loadHouseholdData();
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Erreur lors de la suppression de la catégorie');
     }
   };
 
@@ -334,7 +356,30 @@ export default function HouseholdDetails() {
               {categories.map((category, index) => (
                 <Box key={category.id}>
                   {index > 0 && <Divider />}
-                  <ListItem>
+                  <ListItem
+                    secondaryAction={
+                      !category.isSystem && isAdmin ? (
+                        <Box sx={{ display: 'flex', gap: 1 }}>
+                          <IconButton
+                            edge="end"
+                            onClick={() => handleEditCategory(category)}
+                            color="primary"
+                            size="small"
+                          >
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            edge="end"
+                            onClick={() => handleDeleteCategory(category)}
+                            color="error"
+                            size="small"
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Box>
+                      ) : undefined
+                    }
+                  >
                     <Box
                       sx={{
                         width: 16,
@@ -387,6 +432,19 @@ export default function HouseholdDetails() {
           open={createCategoryDialogOpen}
           householdId={currentHousehold.id}
           onClose={() => setCreateCategoryDialogOpen(false)}
+          onSuccess={loadHouseholdData}
+        />
+      )}
+
+      {isAdmin && (
+        <EditCategoryDialog
+          open={editCategoryDialogOpen}
+          householdId={currentHousehold.id}
+          category={editingCategory}
+          onClose={() => {
+            setEditCategoryDialogOpen(false);
+            setEditingCategory(null);
+          }}
           onSuccess={loadHouseholdData}
         />
       )}
