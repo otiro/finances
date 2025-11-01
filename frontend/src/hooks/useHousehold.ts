@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useAppSelector } from '../store/hooks';
-import { selectAccountsByHousehold } from '../store/slices/accountSlice'; // Assurez-vous que ce selector existe
-import { selectCategoriesByHousehold } from '../store/slices/categorySlice'; // Assurez-vous que ce selector existe
+import { useMemo } from 'react';
+import { useAccountStore } from '../store/slices/accountSlice';
 
 interface Account {
   id: string;
@@ -18,13 +16,16 @@ interface Category {
  * Hook pour récupérer les comptes et catégories d'un foyer
  */
 export const useHousehold = (householdId: string) => {
-  // Récupérer depuis Redux (en supposant que les slices existent)
-  const accounts = useAppSelector((state) =>
-    selectAccountsByHousehold(state, householdId)
-  ) || [];
-  const categories = useAppSelector((state) =>
-    selectCategoriesByHousehold(state, householdId)
-  ) || [];
+  const { accounts: allAccounts } = useAccountStore();
+
+  // Filtrer les comptes par foyer
+  const accounts = useMemo(() => {
+    return (allAccounts || []).filter((account) => account.householdId === householdId);
+  }, [allAccounts, householdId]);
+
+  // Categories will be fetched via API when needed in components
+  // For now, return empty array as categories are managed per-component
+  const categories: Category[] = [];
 
   return {
     accounts,

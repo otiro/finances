@@ -9,11 +9,17 @@ import {
   Box,
 } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { createRecurringPattern, clearError } from '../../store/slices/recurringTransactionSlice';
-import { selectError, selectLoading } from '../../store/slices/recurringTransactionSlice';
+import { createRecurringPattern, selectError, selectLoading } from '../../store/slices/recurringTransactionSlice';
 import RecurringPatternForm from '../RecurringPatterns/RecurringPatternForm';
 import type { CreateRecurringPatternData } from '../../services/recurringTransaction.service';
 import { useHousehold } from '../../hooks/useHousehold';
+import * as categoryService from '../../services/category.service';
+
+interface Category {
+  id: string;
+  name: string;
+  color?: string;
+}
 
 interface AddRecurringPatternDialogProps {
   open: boolean;
@@ -34,15 +40,32 @@ const AddRecurringPatternDialog: React.FC<AddRecurringPatternDialogProps> = ({
   const dispatch = useAppDispatch();
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
-  const { accounts, categories } = useHousehold(householdId);
+  const { accounts } = useHousehold(householdId);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(false);
 
   useEffect(() => {
-    if (!open) {
+    if (open && householdId) {
+      loadCategories();
+    } else {
       setSubmitError(null);
-      dispatch(clearError());
+      setCategories([]);
     }
-  }, [open, dispatch]);
+  }, [open, householdId]);
+
+  const loadCategories = async () => {
+    setLoadingCategories(true);
+    try {
+      const result = await categoryService.getAllAvailableCategories(householdId);
+      const allCategories = [...(result.system || []), ...(result.household || [])];
+      setCategories(allCategories);
+    } catch (err) {
+      console.error('Error loading categories:', err);
+    } finally {
+      setLoadingCategories(false);
+    }
+  };
 
   const handleSubmit = async (data: CreateRecurringPatternData) => {
     try {
