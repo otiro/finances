@@ -66,7 +66,7 @@ export const getHouseholdCategories = async (req: Request, res: Response) => {
  * GET /api/categories/system
  * Récupère les catégories système
  */
-export const getSystemCategories = async (req: Request, res: Response) => {
+export const getSystemCategories = async (_req: Request, res: Response) => {
   try {
     const categories = await categoryService.getSystemCategories();
 
@@ -89,7 +89,7 @@ export const getSystemCategories = async (req: Request, res: Response) => {
  * POST /api/households/:householdId/categories
  * Crée une nouvelle catégorie personnalisée
  */
-export const createCategory = async (req: Request, res: Response) => {
+export const createCategory = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.userId!;
     const { householdId } = req.params;
@@ -108,7 +108,7 @@ export const createCategory = async (req: Request, res: Response) => {
       icon,
     });
 
-    res.status(HTTP_STATUS.CREATED).json({
+    return res.status(HTTP_STATUS.CREATED).json({
       status: 'success',
       message: 'Catégorie créée avec succès',
       data: category,
@@ -117,7 +117,7 @@ export const createCategory = async (req: Request, res: Response) => {
     const status = error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR;
     const message = error.message || ERROR_MESSAGES.INTERNAL_ERROR;
 
-    res.status(status).json({
+    return res.status(status).json({
       status: 'error',
       message,
     });
