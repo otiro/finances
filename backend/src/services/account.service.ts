@@ -191,7 +191,16 @@ export const getUserAccounts = async (userId: string) => {
     },
   });
 
-  return accounts;
+  // Convertir les Decimal en nombres
+  return accounts.map((account: any) => ({
+    ...account,
+    initialBalance: Number(account.initialBalance),
+    currentBalance: Number(account.currentBalance),
+    owners: account.owners.map((owner: any) => ({
+      ...owner,
+      ownershipPercentage: Number(owner.ownershipPercentage),
+    })),
+  }));
 };
 
 /**
@@ -240,7 +249,16 @@ export const getHouseholdAccounts = async (householdId: string, userId: string) 
     },
   });
 
-  return accounts;
+  // Convertir les Decimal en nombres
+  return accounts.map((account: any) => ({
+    ...account,
+    initialBalance: Number(account.initialBalance),
+    currentBalance: Number(account.currentBalance),
+    owners: account.owners.map((owner: any) => ({
+      ...owner,
+      ownershipPercentage: Number(owner.ownershipPercentage),
+    })),
+  }));
 };
 
 /**
@@ -304,7 +322,20 @@ export const getAccountById = async (accountId: string, userId: string) => {
     throw error;
   }
 
-  return account;
+  // Convertir les Decimal en nombres
+  return {
+    ...account,
+    initialBalance: Number(account.initialBalance),
+    currentBalance: Number(account.currentBalance),
+    owners: account.owners.map((owner: any) => ({
+      ...owner,
+      ownershipPercentage: Number(owner.ownershipPercentage),
+    })),
+    transactions: account.transactions.map((transaction: any) => ({
+      ...transaction,
+      amount: Number(transaction.amount),
+    })),
+  };
 };
 
 /**
