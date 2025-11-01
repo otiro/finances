@@ -183,7 +183,7 @@ export const deleteTransaction = async (req: Request, res: Response) => {
 export const getHouseholdDebts = async (req: Request, res: Response) => {
   try {
     const userId = req.userId!;
-    const { householdId } = req.params;
+    const { id: householdId } = req.params;
 
     const debts = await transactionService.calculateDebts(householdId, userId);
 
@@ -209,7 +209,7 @@ export const getHouseholdDebts = async (req: Request, res: Response) => {
 export const markDebtAsPaid = async (req: Request, res: Response) => {
   try {
     const userId = req.userId!;
-    const { householdId, recordId } = req.params;
+    const { id: householdId, recordId } = req.params;
     const { isPaid } = req.body;
 
     const result = await transactionService.markDebtAsPaid(
