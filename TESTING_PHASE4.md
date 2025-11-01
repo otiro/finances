@@ -218,7 +218,7 @@ curl -X DELETE http://localhost:3030/api/accounts/ACCOUNT_ID/transactions/TRANSA
 
 **Test montant négatif :**
 ```bash
-curl -X POST http://localhost:3030/api/accounts/ACCOUNT_ID/transactions \
+curl -X POST http://localhost:3030/api/accounts/9235729d-9109-44a6-b518-c95d314ea8cc/transactions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk4NjU0MiwiZXhwIjoxNzYyMDcyOTQyfQ.BYb_YZ-iw_tZknQCuXkArmCfYhywJ62bIqh80Oq-U44" \
   -d '{ "amount": -50, "type": "DEBIT", "description": "Test" }'
@@ -230,7 +230,7 @@ curl -X POST http://localhost:3030/api/accounts/ACCOUNT_ID/transactions \
 
 **Test description vide :**
 ```bash
-curl -X POST http://localhost:3030/api/accounts/ACCOUNT_ID/transactions \
+curl -X POST http://localhost:3030/api/accounts/9235729d-9109-44a6-b518-c95d314ea8cc/transactions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk4NjU0MiwiZXhwIjoxNzYyMDcyOTQyfQ.BYb_YZ-iw_tZknQCuXkArmCfYhywJ62bIqh80Oq-U44" \
   -d '{ "amount": 50, "type": "DEBIT", "description": "" }'

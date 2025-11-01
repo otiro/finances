@@ -123,6 +123,13 @@ export default function Dashboard() {
                 >
                   Voir les comptes
                 </Button>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={() => navigate('/debts')}
+                >
+                  Voir les dettes
+                </Button>
               </Box>
             </CardContent>
           </Card>
