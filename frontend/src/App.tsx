@@ -11,6 +11,7 @@ import HouseholdDetails from './pages/HouseholdDetails';
 import Accounts from './pages/Accounts';
 import AccountDetails from './pages/AccountDetails';
 import Debts from './pages/Debts';
+import RecurringTransactions from './pages/RecurringTransactions';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages à créer dans les prochaines phases
@@ -101,6 +102,16 @@ function App() {
           element={
             <ProtectedRoute>
               <Debts />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Phase 5 - Transactions Récurrentes */}
+        <Route
+          path="/households/:id/recurring-transactions"
+          element={
+            <ProtectedRoute>
+              <RecurringTransactions />
             </ProtectedRoute>
           }
         />

@@ -214,6 +214,7 @@ export default function HouseholdDetails() {
           <Tab label="Membres" />
           <Tab label="Comptes" />
           <Tab label="Catégories" />
+          <Tab label="Transactions Récurrentes" />
         </Tabs>
       </Box>
 
@@ -399,6 +400,26 @@ export default function HouseholdDetails() {
             </List>
           </Card>
         )}
+      </TabPanel>
+
+      <TabPanel value={tabValue} index={3}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography variant="h6">Transactions Récurrentes</Typography>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => navigate(`/households/${id}/recurring-transactions`)}
+          >
+            Gérer les transactions récurrentes
+          </Button>
+        </Box>
+        <Card>
+          <CardContent sx={{ textAlign: 'center', py: 4 }}>
+            <Typography variant="body1" color="text.secondary">
+              Cliquez sur le bouton ci-dessus pour gérer vos transactions récurrentes
+            </Typography>
+          </CardContent>
+        </Card>
       </TabPanel>
 
       {isAdmin && (

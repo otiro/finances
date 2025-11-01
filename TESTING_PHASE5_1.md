@@ -34,12 +34,12 @@ This document provides comprehensive testing procedures for Phase 5.1 (Recurring
 
 ```bash
 # Get your households
-curl -X GET http://localhost:3000/api/households \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+curl -X GET http://localhost:3030/api/households \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk1MTA0MSwiZXhwIjoxNzYyMDM3NDQxfQ.OtOCDtdXCBCX1GbJ1bCz0OGICUa708kS1L6-Hy8znSQ"
 
 # Get accounts for a household
-curl -X GET http://localhost:3000/api/households/{householdId}/accounts \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+curl -X GET http://localhost:3030/api/households/ea433d78-6001-464c-8071-21d3565b5da3/accounts \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk1MTA0MSwiZXhwIjoxNzYyMDM3NDQxfQ.OtOCDtdXCBCX1GbJ1bCz0OGICUa708kS1L6-Hy8znSQ"
 ```
 
 Save these IDs for use in tests below:
@@ -53,15 +53,15 @@ Save these IDs for use in tests below:
 
 ### Test 1: Create Recurring Pattern - Basic
 
-**Endpoint**: `POST /api/households/{householdId}/recurring-patterns`
+**Endpoint**: `POST /api/households/ea433d78-6001-464c-8071-21d3565b5da3/recurring-patterns`
 
 **Request**:
 ```bash
-curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns \
-  -H "Authorization: Bearer JWT_TOKEN" \
+curl -X POST http://localhost:3030/api/households/ea433d78-6001-464c-8071-21d3565b5da3/recurring-patterns \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk1MTA0MSwiZXhwIjoxNzYyMDM3NDQxfQ.OtOCDtdXCBCX1GbJ1bCz0OGICUa708kS1L6-Hy8znSQ" \
   -H "Content-Type: application/json" \
   -d '{
-    "accountId": "ACCOUNT_ID",
+    "accountId": "9235729d-9109-44a6-b518-c95d314ea8cc",
     "name": "Monthly Rent",
     "description": "Apartment rent payment",
     "frequency": "MONTHLY",
@@ -114,20 +114,20 @@ curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-pattern
 **Request**:
 ```bash
 # First get a category ID
-curl -X GET http://localhost:3000/api/categories \
+curl -X GET http://localhost:3030/api/categories \
   -H "Authorization: Bearer JWT_TOKEN"
 
 # Then create pattern with category
-curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns \
-  -H "Authorization: Bearer JWT_TOKEN" \
+curl -X POST http://localhost:3030/api/households/ea433d78-6001-464c-8071-21d3565b5da3/recurring-patterns \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk1MTA0MSwiZXhwIjoxNzYyMDM3NDQxfQ.OtOCDtdXCBCX1GbJ1bCz0OGICUa708kS1L6-Hy8znSQ" \
   -H "Content-Type: application/json" \
   -d '{
-    "accountId": "ACCOUNT_ID",
+    "accountId": "9235729d-9109-44a6-b518-c95d314ea8cc",
     "name": "Electricity Bill",
     "frequency": "MONTHLY",
     "type": "DEBIT",
     "amount": 150,
-    "categoryId": "CATEGORY_ID",
+    "categoryId": "6d8a5c84-2ada-4bb3-8f2b-4264d987621f",
     "startDate": "2025-11-15T00:00:00Z",
     "dayOfMonth": 15
   }'
@@ -147,7 +147,7 @@ Test each frequency type:
 
 #### 3a. DAILY
 ```bash
-curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns \
+curl -X POST http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns \
   -H "Authorization: Bearer JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -164,7 +164,7 @@ curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-pattern
 
 #### 3b. WEEKLY
 ```bash
-curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns \
+curl -X POST http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns \
   -H "Authorization: Bearer JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -181,7 +181,7 @@ curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-pattern
 
 #### 3c. BIWEEKLY
 ```bash
-curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns \
+curl -X POST http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns \
   -H "Authorization: Bearer JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -198,7 +198,7 @@ curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-pattern
 
 #### 3d. QUARTERLY
 ```bash
-curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns \
+curl -X POST http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns \
   -H "Authorization: Bearer JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -215,7 +215,7 @@ curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-pattern
 
 #### 3e. YEARLY
 ```bash
-curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns \
+curl -X POST http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns \
   -H "Authorization: Bearer JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -238,8 +238,8 @@ curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-pattern
 
 **Request**:
 ```bash
-curl -X GET http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns \
-  -H "Authorization: Bearer JWT_TOKEN"
+curl -X GET http://localhost:3030/api/households/ea433d78-6001-464c-8071-21d3565b5da3/recurring-patterns \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk1MTA0MSwiZXhwIjoxNzYyMDM3NDQxfQ.OtOCDtdXCBCX1GbJ1bCz0OGICUa708kS1L6-Hy8znSQ"
 ```
 
 **Expected Response**: `200 OK`
@@ -265,7 +265,7 @@ curl -X GET http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns
 
 **Request**:
 ```bash
-curl -X GET "http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns?onlyActive=true" \
+curl -X GET "http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns?onlyActive=true" \
   -H "Authorization: Bearer JWT_TOKEN"
 ```
 
@@ -280,7 +280,7 @@ curl -X GET "http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-pattern
 
 **Request**:
 ```bash
-curl -X GET http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns/PATTERN_ID_1 \
+curl -X GET http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns/PATTERN_ID_1 \
   -H "Authorization: Bearer JWT_TOKEN"
 ```
 
@@ -299,7 +299,7 @@ curl -X GET http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns
 
 **Request**:
 ```bash
-curl -X PATCH http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns/PATTERN_ID_1 \
+curl -X PATCH http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns/PATTERN_ID_1 \
   -H "Authorization: Bearer JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -323,7 +323,7 @@ curl -X PATCH http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patter
 
 **Request**:
 ```bash
-curl -X PATCH http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns/PATTERN_ID_1 \
+curl -X PATCH http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns/PATTERN_ID_1 \
   -H "Authorization: Bearer JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -343,7 +343,7 @@ curl -X PATCH http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patter
 
 **Request**:
 ```bash
-curl -X PATCH http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns/PATTERN_ID_1/pause \
+curl -X PATCH http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns/PATTERN_ID_1/pause \
   -H "Authorization: Bearer JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -363,7 +363,7 @@ curl -X PATCH http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patter
 
 **Request**:
 ```bash
-curl -X PATCH http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns/PATTERN_ID_1/pause \
+curl -X PATCH http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns/PATTERN_ID_1/pause \
   -H "Authorization: Bearer JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -383,7 +383,7 @@ curl -X PATCH http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patter
 
 **Request**:
 ```bash
-curl -X GET "http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns/PATTERN_ID_1/logs?limit=10" \
+curl -X GET "http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns/PATTERN_ID_1/logs?limit=10" \
   -H "Authorization: Bearer JWT_TOKEN"
 ```
 
@@ -418,7 +418,7 @@ curl -X GET "http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-pattern
 
 **Request**:
 ```bash
-curl -X DELETE http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns/PATTERN_ID_1 \
+curl -X DELETE http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns/PATTERN_ID_1 \
   -H "Authorization: Bearer JWT_TOKEN"
 ```
 
@@ -444,7 +444,7 @@ curl -X DELETE http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patte
 
 **Request**:
 ```bash
-curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns \
+curl -X POST http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns \
   -H "Authorization: Bearer JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -469,7 +469,7 @@ curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-pattern
 
 **Request**:
 ```bash
-curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns \
+curl -X POST http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns \
   -H "Authorization: Bearer JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -494,7 +494,7 @@ curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-pattern
 
 **Request**:
 ```bash
-curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns \
+curl -X POST http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns \
   -H "Authorization: Bearer JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -515,7 +515,7 @@ curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-pattern
 
 **Request**:
 ```bash
-curl -X GET http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns
+curl -X GET http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns
 ```
 
 **Expected Response**: `401 Unauthorized`
@@ -530,7 +530,7 @@ curl -X GET http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns
 
 **Request**:
 ```bash
-curl -X GET http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns \
+curl -X GET http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns \
   -H "Authorization: Bearer invalid-token"
 ```
 
@@ -544,7 +544,7 @@ curl -X GET http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns
 
 **Request**:
 ```bash
-curl -X GET http://localhost:3000/api/households/HOUSEHOLD_A/recurring-patterns/PATTERN_ID \
+curl -X GET http://localhost:3030/api/households/HOUSEHOLD_A/recurring-patterns/PATTERN_ID \
   -H "Authorization: Bearer TOKEN_FROM_HOUSEHOLD_B"
 ```
 
@@ -559,7 +559,7 @@ curl -X GET http://localhost:3000/api/households/HOUSEHOLD_A/recurring-patterns/
 
 **Request**:
 ```bash
-curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-patterns \
+curl -X POST http://localhost:3030/api/households/HOUSEHOLD_ID/recurring-patterns \
   -H "Authorization: Bearer JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -589,7 +589,7 @@ curl -X POST http://localhost:3000/api/households/HOUSEHOLD_ID/recurring-pattern
 **Manual Test**:
 ```bash
 # Trigger generation manually
-curl -X POST http://localhost:3000/api/recurring-patterns/generate \
+curl -X POST http://localhost:3030/api/recurring-patterns/generate \
   -H "Authorization: Bearer JWT_TOKEN"
 ```
 
@@ -620,7 +620,7 @@ curl -X POST http://localhost:3000/api/recurring-patterns/generate \
 **After running Test 20, verify transactions exist**:
 
 ```bash
-curl -X GET http://localhost:3000/api/accounts/ACCOUNT_ID/transactions \
+curl -X GET http://localhost:3030/api/accounts/ACCOUNT_ID/transactions \
   -H "Authorization: Bearer JWT_TOKEN"
 ```
 

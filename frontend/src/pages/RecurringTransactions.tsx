@@ -18,7 +18,8 @@ import AddRecurringPatternDialog from '../components/Dialogs/AddRecurringPattern
  * Affiche la liste des patterns et permet de créer/éditer/supprimer
  */
 const RecurringTransactionsPage: React.FC = () => {
-  const { householdId } = useParams<{ householdId: string }>();
+  const { id } = useParams<{ id: string }>();
+  const householdId = id;
   const dispatch = useAppDispatch();
   const patterns = useAppSelector(selectRecurringPatterns);
   const loading = useAppSelector(selectLoading);
