@@ -4,7 +4,7 @@ export interface AccountOwner {
   id: string;
   accountId: string;
   userId: string;
-  ownershipShare: number;
+  ownershipPercentage: number;
   user: {
     id: string;
     firstName: string;
@@ -16,10 +16,17 @@ export interface AccountOwner {
 export interface Account {
   id: string;
   name: string;
-  type: 'PERSONAL' | 'JOINT' | 'SAVINGS';
+  type: 'CHECKING' | 'JOINT' | 'SAVINGS';
   householdId: string;
   initialBalance: number;
   owners: AccountOwner[];
+  transactions?: Array<{
+    id: string;
+    description: string;
+    transactionDate: string;
+    type: 'DEBIT' | 'CREDIT';
+    amount: number;
+  }>;
   _count?: {
     transactions: number;
   };

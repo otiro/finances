@@ -60,8 +60,8 @@ export default function AccountDetails() {
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'PERSONAL':
-        return 'Personnel';
+      case 'CHECKING':
+        return 'Compte courant';
       case 'JOINT':
         return 'Joint';
       case 'SAVINGS':
@@ -73,7 +73,7 @@ export default function AccountDetails() {
 
   const getTypeColor = (type: string): 'default' | 'primary' | 'secondary' | 'success' => {
     switch (type) {
-      case 'PERSONAL':
+      case 'CHECKING':
         return 'primary';
       case 'JOINT':
         return 'secondary';
@@ -194,7 +194,7 @@ export default function AccountDetails() {
                         secondary={owner.user.email}
                       />
                       <Chip
-                        label={`${owner.ownershipShare}%`}
+                        label={`${owner.ownershipPercentage}%`}
                         color="primary"
                         size="small"
                       />
@@ -220,13 +220,13 @@ export default function AccountDetails() {
                     <ListItem key={transaction.id}>
                       <ListItemText
                         primary={transaction.description || 'Transaction'}
-                        secondary={new Date(transaction.date).toLocaleDateString('fr-FR')}
+                        secondary={new Date(transaction.transactionDate).toLocaleDateString('fr-FR')}
                       />
                       <Typography
                         variant="body1"
-                        color={transaction.type === 'INCOME' ? 'success.main' : 'error.main'}
+                        color={transaction.type === 'CREDIT' ? 'success.main' : 'error.main'}
                       >
-                        {transaction.type === 'INCOME' ? '+' : '-'}
+                        {transaction.type === 'CREDIT' ? '+' : '-'}
                         {transaction.amount} €
                       </Typography>
                     </ListItem>

@@ -16,6 +16,12 @@ router.use(authenticate);
 router.post('/', validate(createAccountSchema), accountController.createAccount);
 
 /**
+ * GET /api/accounts
+ * Récupère tous les comptes de l'utilisateur
+ */
+router.get('/', accountController.getUserAccounts);
+
+/**
  * GET /api/accounts/household/:householdId
  * Récupère tous les comptes d'un foyer
  */

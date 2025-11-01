@@ -147,6 +147,54 @@ export const createAccount = async (userId: string, data: CreateAccountInput) =>
 };
 
 /**
+ * Récupère tous les comptes de l'utilisateur
+ */
+export const getUserAccounts = async (userId: string) => {
+  const accounts = await prisma.account.findMany({
+    where: {
+      household: {
+        members: {
+          some: {
+            userId: userId,
+          },
+        },
+      },
+    },
+    include: {
+      owners: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+            },
+          },
+        },
+      },
+      household: {
+        select: {
+          id: true,
+          name: true,
+          sharingMode: true,
+        },
+      },
+      _count: {
+        select: {
+          transactions: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+
+  return accounts;
+};
+
+/**
  * Récupère tous les comptes d'un foyer
  */
 export const getHouseholdAccounts = async (householdId: string, userId: string) => {

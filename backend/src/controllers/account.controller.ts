@@ -32,6 +32,34 @@ export const createAccount = async (
 };
 
 /**
+ * Récupère tous les comptes de l'utilisateur
+ */
+export const getUserAccounts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    if (!req.userId) {
+      res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        status: 'error',
+        message: 'Non authentifié',
+      });
+      return;
+    }
+
+    const accounts = await accountService.getUserAccounts(req.userId);
+
+    res.status(HTTP_STATUS.OK).json({
+      status: 'success',
+      data: accounts,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * Récupère tous les comptes d'un foyer
  */
 export const getHouseholdAccounts = async (

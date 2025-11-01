@@ -19,13 +19,10 @@ import {
   IconButton,
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { useHouseholdStore } from '../store/slices/householdSlice';
-import * as householdService from '../services/household.service';
 import * as accountService from '../services/account.service';
 
 export default function Accounts() {
   const navigate = useNavigate();
-  const { households, isLoading } = useHouseholdStore();
   const [allAccounts, setAllAccounts] = useState<any[]>([]);
   const [error, setError] = useState('');
   const [loadingAccounts, setLoadingAccounts] = useState(false);
@@ -35,28 +32,10 @@ export default function Accounts() {
   }, []);
 
   const loadData = async () => {
-    try {
-      await householdService.getUserHouseholds();
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Erreur lors du chargement des données');
-    }
-  };
-
-  useEffect(() => {
-    if (households.length > 0) {
-      loadAllAccounts();
-    }
-  }, [households]);
-
-  const loadAllAccounts = async () => {
     setLoadingAccounts(true);
     try {
-      const accountPromises = households.map((household) =>
-        accountService.getHouseholdAccounts(household.id)
-      );
-      const accountsArrays = await Promise.all(accountPromises);
-      const flatAccounts = accountsArrays.flat();
-      setAllAccounts(flatAccounts);
+      const accounts = await accountService.getUserAccounts();
+      setAllAccounts(accounts);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erreur lors du chargement des comptes');
     } finally {
@@ -90,7 +69,7 @@ export default function Accounts() {
     }
   };
 
-  if (isLoading || loadingAccounts) {
+  if (loadingAccounts) {
     return (
       <Box
         sx={{
@@ -161,7 +140,7 @@ export default function Accounts() {
                     {account.owners.map((owner: any, index: number) => (
                       <Box key={owner.id}>
                         {owner.user.firstName} {owner.user.lastName}
-                        {owner.ownershipShare && ` (${owner.ownershipShare}%)`}
+                        {owner.ownershipPercentage && ` (${owner.ownershipPercentage}%)`}
                         {index < account.owners.length - 1 && ', '}
                       </Box>
                     ))}

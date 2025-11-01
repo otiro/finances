@@ -29,6 +29,15 @@ interface AccountBalance {
 }
 
 /**
+ * Récupère tous les comptes de l'utilisateur
+ */
+export const getUserAccounts = async () => {
+  const response = await api.get<ApiResponse<Account[]>>('/accounts');
+  useAccountStore.getState().setAccounts(response.data.data);
+  return response.data.data;
+};
+
+/**
  * Récupère tous les comptes d'un foyer
  */
 export const getHouseholdAccounts = async (householdId: string) => {
