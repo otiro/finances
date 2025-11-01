@@ -209,15 +209,8 @@ export const updateTransaction = async (
   // Récupérer la transaction et vérifier l'accès
   const transaction = await getTransactionById(transactionId, userId);
 
-  // Vérifier que l'utilisateur est admin du foyer ou créateur de la transaction
-  const userHousehold = await prisma.userHousehold.findUnique({
-    where: {
-      userId_householdId: {
-        userId,
-        householdId: transaction.account.householdId,
-      },
-    },
-  });
+  // Vérifier que l'utilisateur est admin du foyer
+  const userHousehold = await verifyHouseholdMembership(userId, transaction.account.householdId);
 
   if (!userHousehold || userHousehold.role !== 'ADMIN') {
     throw {
@@ -269,15 +262,8 @@ export const deleteTransaction = async (
   // Récupérer la transaction et vérifier l'accès
   const transaction = await getTransactionById(transactionId, userId);
 
-  // Vérifier que l'utilisateur est admin du foyer ou créateur
-  const userHousehold = await prisma.userHousehold.findUnique({
-    where: {
-      userId_householdId: {
-        userId,
-        householdId: transaction.account.householdId,
-      },
-    },
-  });
+  // Vérifier que l'utilisateur est admin du foyer
+  const userHousehold = await verifyHouseholdMembership(userId, transaction.account.householdId);
 
   if (!userHousehold || userHousehold.role !== 'ADMIN') {
     throw {

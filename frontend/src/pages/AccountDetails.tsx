@@ -331,6 +331,7 @@ export default function AccountDetails() {
       <AddTransactionDialog
         open={addTransactionDialogOpen}
         accountId={id || ''}
+        householdId={currentAccount?.household?.id || ''}
         onClose={() => setAddTransactionDialogOpen(false)}
         onSuccess={() => {
           setAddTransactionDialogOpen(false);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -16,10 +16,13 @@ import {
   Typography,
 } from '@mui/material';
 import * as transactionService from '../services/transaction.service';
+import * as categoryService from '../services/category.service';
+import { Category } from '../services/category.service';
 
 interface AddTransactionDialogProps {
   open: boolean;
   accountId: string;
+  householdId: string;
   onClose: () => void;
   onSuccess?: () => void;
 }
@@ -27,18 +30,41 @@ interface AddTransactionDialogProps {
 export default function AddTransactionDialog({
   open,
   accountId,
+  householdId,
   onClose,
   onSuccess,
 }: AddTransactionDialogProps) {
   const [amount, setAmount] = useState('');
   const [type, setType] = useState<'DEBIT' | 'CREDIT'>('DEBIT');
   const [description, setDescription] = useState('');
+  const [categoryId, setCategoryId] = useState('');
   const [transactionDate, setTransactionDate] = useState(
     new Date().toISOString().slice(0, 16)
   );
   const [notes, setNotes] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    if (open && householdId) {
+      loadCategories();
+    }
+  }, [open, householdId]);
+
+  const loadCategories = async () => {
+    setCategoriesLoading(true);
+    try {
+      const result = await categoryService.getAllAvailableCategories(householdId);
+      const allCategories = [...(result.system || []), ...(result.household || [])];
+      setCategories(allCategories);
+    } catch (err) {
+      console.error('Error loading categories:', err);
+    } finally {
+      setCategoriesLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,6 +98,7 @@ export default function AddTransactionDialog({
         amount: parsedAmount,
         type,
         description: description.trim(),
+        categoryId: categoryId || undefined,
         transactionDate: new Date(transactionDate).toISOString(),
         notes: notes.trim() || undefined,
       });
@@ -80,6 +107,7 @@ export default function AddTransactionDialog({
       setAmount('');
       setType('DEBIT');
       setDescription('');
+      setCategoryId('');
       setTransactionDate(new Date().toISOString().slice(0, 16));
       setNotes('');
 
@@ -100,6 +128,7 @@ export default function AddTransactionDialog({
       setAmount('');
       setType('DEBIT');
       setDescription('');
+      setCategoryId('');
       setTransactionDate(new Date().toISOString().slice(0, 16));
       setNotes('');
       onClose();
@@ -149,6 +178,34 @@ export default function AddTransactionDialog({
             rows={2}
             required
           />
+
+          <FormControl fullWidth disabled={categoriesLoading || isLoading}>
+            <InputLabel>Catégorie (optionnel)</InputLabel>
+            <Select
+              value={categoryId}
+              label="Catégorie (optionnel)"
+              onChange={(e) => setCategoryId(e.target.value)}
+            >
+              <MenuItem value="">Aucune catégorie</MenuItem>
+              {categories.map((cat) => (
+                <MenuItem key={cat.id} value={cat.id}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    {cat.color && (
+                      <Box
+                        sx={{
+                          width: 12,
+                          height: 12,
+                          borderRadius: '50%',
+                          backgroundColor: cat.color,
+                        }}
+                      />
+                    )}
+                    {cat.name}
+                  </Box>
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
           <TextField
             label="Date et heure"
