@@ -66,8 +66,8 @@ export default function Accounts() {
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'PERSONAL':
-        return 'Personnel';
+      case 'CHECKING':
+        return 'Compte courant';
       case 'JOINT':
         return 'Joint';
       case 'SAVINGS':
@@ -79,7 +79,7 @@ export default function Accounts() {
 
   const getTypeColor = (type: string): 'default' | 'primary' | 'secondary' | 'success' => {
     switch (type) {
-      case 'PERSONAL':
+      case 'CHECKING':
         return 'primary';
       case 'JOINT':
         return 'secondary';

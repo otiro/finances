@@ -3,7 +3,7 @@ import { useAccountStore, Account } from '../store/slices/accountSlice';
 
 interface CreateAccountData {
   name: string;
-  type: 'PERSONAL' | 'JOINT' | 'SAVINGS';
+  type: 'CHECKING' | 'JOINT' | 'SAVINGS';
   householdId: string;
   initialBalance?: number;
   ownerIds: string[];

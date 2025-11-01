@@ -90,13 +90,13 @@ curl -X POST http://localhost:3030/api/accounts \
 ```bash
 curl -X POST http://localhost:3030/api/accounts \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer VOTRE_TOKEN_JWT" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk1MTA0MSwiZXhwIjoxNzYyMDM3NDQxfQ.OtOCDtdXCBCX1GbJ1bCz0OGICUa708kS1L6-Hy8znSQ" \
   -d '{
     "name": "Compte joint",
     "type": "JOINT",
-    "householdId": "HOUSEHOLD_ID",
-    "initialBalance": 5000,
-    "ownerIds": ["USER_ID_1", "USER_ID_2"]
+    "householdId": "ea433d78-6001-464c-8071-21d3565b5da3",
+    "initialBalance": 0,
+    "ownerIds": ["cd225f8f-8faf-4362-b919-6137029301ea", "056a641b-b322-4f29-b9a1-d05f6bcf0734"]
   }'
 ```
 
@@ -108,8 +108,8 @@ curl -X POST http://localhost:3030/api/accounts \
 ### Test 6 : Récupérer le solde d'un compte
 
 ```bash
-curl http://localhost:3030/api/accounts/ACCOUNT_ID/balance \
-  -H "Authorization: Bearer VOTRE_TOKEN_JWT"
+curl http://localhost:3030/api/accounts/9235729d-9109-44a6-b518-c95d314ea8cc/balance \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk1MTA0MSwiZXhwIjoxNzYyMDM3NDQxfQ.OtOCDtdXCBCX1GbJ1bCz0OGICUa708kS1L6-Hy8znSQ"
 ```
 
 **Résultat attendu :**
@@ -119,9 +119,9 @@ curl http://localhost:3030/api/accounts/ACCOUNT_ID/balance \
 ### Test 7 : Modifier le mode de partage
 
 ```bash
-curl -X PATCH http://localhost:3030/api/households/HOUSEHOLD_ID/sharing-mode \
+curl -X PATCH http://localhost:3030/api/households/ea433d78-6001-464c-8071-21d3565b5da3/sharing-mode \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer VOTRE_TOKEN_JWT" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk1MTA0MSwiZXhwIjoxNzYyMDM3NDQxfQ.OtOCDtdXCBCX1GbJ1bCz0OGICUa708kS1L6-Hy8znSQ" \
   -d '{
     "sharingMode": "EQUAL"
   }'

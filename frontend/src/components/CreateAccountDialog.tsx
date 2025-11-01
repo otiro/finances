@@ -34,7 +34,7 @@ export default function CreateAccountDialog({
   onSuccess,
 }: CreateAccountDialogProps) {
   const [name, setName] = useState('');
-  const [type, setType] = useState<'PERSONAL' | 'JOINT' | 'SAVINGS'>('PERSONAL');
+  const [type, setType] = useState<'CHECKING' | 'JOINT' | 'SAVINGS'>('CHECKING');
   const [initialBalance, setInitialBalance] = useState('0');
   const [selectedOwners, setSelectedOwners] = useState<string[]>([]);
   const [error, setError] = useState('');
@@ -64,7 +64,7 @@ export default function CreateAccountDialog({
         ownerIds: selectedOwners,
       });
       setName('');
-      setType('PERSONAL');
+      setType('CHECKING');
       setInitialBalance('0');
       setSelectedOwners([]);
       onSuccess?.();
@@ -79,7 +79,7 @@ export default function CreateAccountDialog({
   const handleClose = () => {
     if (!isLoading) {
       setName('');
-      setType('PERSONAL');
+      setType('CHECKING');
       setInitialBalance('0');
       setSelectedOwners([]);
       setError('');
@@ -128,7 +128,7 @@ export default function CreateAccountDialog({
               onChange={(e) => setType(e.target.value as any)}
               disabled={isLoading}
             >
-              <MenuItem value="PERSONAL">Personnel</MenuItem>
+              <MenuItem value="CHECKING">Compte courant</MenuItem>
               <MenuItem value="JOINT">Joint</MenuItem>
               <MenuItem value="SAVINGS">Épargne</MenuItem>
             </Select>

@@ -271,21 +271,20 @@ export default function HouseholdDetails() {
       </TabPanel>
 
       {isAdmin && (
-        <>
-          <AddMemberDialog
-            open={addMemberDialogOpen}
-            householdId={currentHousehold.id}
-            onClose={() => setAddMemberDialogOpen(false)}
-            onSuccess={loadHouseholdData}
-          />
-          <CreateAccountDialog
-            open={createAccountDialogOpen}
-            household={currentHousehold}
-            onClose={() => setCreateAccountDialogOpen(false)}
-            onSuccess={loadHouseholdData}
-          />
-        </>
+        <AddMemberDialog
+          open={addMemberDialogOpen}
+          householdId={currentHousehold.id}
+          onClose={() => setAddMemberDialogOpen(false)}
+          onSuccess={loadHouseholdData}
+        />
       )}
+
+      <CreateAccountDialog
+        open={createAccountDialogOpen}
+        household={currentHousehold}
+        onClose={() => setCreateAccountDialogOpen(false)}
+        onSuccess={loadHouseholdData}
+      />
     </Container>
   );
 }
