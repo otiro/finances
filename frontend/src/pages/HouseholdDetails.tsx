@@ -23,6 +23,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useAuth } from '../hooks/useAuth';
 import { useHouseholdStore } from '../store/slices/householdSlice';
 import { useAccountStore } from '../store/slices/accountSlice';
 import * as householdService from '../services/household.service';
@@ -55,6 +56,7 @@ function TabPanel(props: TabPanelProps) {
 export default function HouseholdDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { currentHousehold, isLoading } = useHouseholdStore();
   const { accounts } = useAccountStore();
   const [tabValue, setTabValue] = useState(0);
@@ -254,31 +256,36 @@ export default function HouseholdDetails() {
           </Card>
         ) : (
           <Grid container spacing={2}>
-            {accounts.map((account) => (
-              <Grid item xs={12} sm={6} key={account.id}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      {account.name}
-                    </Typography>
-                    <Chip label={account.type} size="small" sx={{ mb: 1 }} />
-                    <Typography variant="body2" color="text.secondary">
-                      Solde initial : {account.initialBalance} €
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Propriétaires : {account.owners.map(o => o.user.firstName).join(', ')}
-                    </Typography>
-                    <Button
-                      size="small"
-                      onClick={() => navigate(`/accounts/${account.id}`)}
-                      sx={{ mt: 1 }}
-                    >
-                      Voir les détails
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
+            {accounts
+              .filter((account) => {
+                // Ne montrer que les comptes dont l'utilisateur est propriétaire
+                return account.owners.some((owner: any) => owner.userId === user?.id);
+              })
+              .map((account) => (
+                <Grid item xs={12} sm={6} key={account.id}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        {account.name}
+                      </Typography>
+                      <Chip label={account.type} size="small" sx={{ mb: 1 }} />
+                      <Typography variant="body2" color="text.secondary">
+                        Solde initial : {account.initialBalance} €
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Propriétaires : {account.owners.map(o => o.user.firstName).join(', ')}
+                      </Typography>
+                      <Button
+                        size="small"
+                        onClick={() => navigate(`/accounts/${account.id}`)}
+                        sx={{ mt: 1 }}
+                      >
+                        Voir les détails
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
           </Grid>
         )}
       </TabPanel>
