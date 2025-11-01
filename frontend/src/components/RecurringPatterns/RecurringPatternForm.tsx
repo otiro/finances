@@ -122,19 +122,20 @@ const RecurringPatternForm: React.FC<RecurringPatternFormProps> = ({
     // Convert datetime-local format to ISO string if needed
     const convertToISO = (dateStr: string): string => {
       if (!dateStr) return '';
-      // datetime-local format: 2025-11-01T14:30
-      // Need to convert to ISO: 2025-11-01T14:30:00Z
+      // datetime-local format: 2025-11-01T14:30 or date-only: 2025-11-01
+      // Need to convert to ISO: 2025-11-01T14:30:00Z or 2025-11-01T00:00:00Z
       if (dateStr.includes('T')) {
-        // Check if it already has seconds
-        const parts = dateStr.split('T');
-        const timePart = parts[1];
-        if (timePart && !timePart.includes(':00')) {
-          // Add :00 for seconds if missing
+        // Has time component - add seconds and timezone
+        const timeMatch = dateStr.match(/T(\d{2}):(\d{2})(?::(\d{2}))?/);
+        if (timeMatch && !timeMatch[3]) {
+          // Seconds are missing, add them
           return `${dateStr}:00Z`;
         }
+        // Seconds are already present, just add timezone
         return `${dateStr}Z`;
       }
-      return dateStr;
+      // Date-only format, append midnight time and timezone
+      return `${dateStr}T00:00:00Z`;
     };
 
     const submitData: CreateRecurringPatternData = {
