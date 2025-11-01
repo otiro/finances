@@ -79,14 +79,25 @@ export const getUserHouseholds = async (userId: string) => {
  * Récupère un foyer par ID avec vérification d'accès
  */
 export const getHouseholdById = async (householdId: string, userId: string) => {
-  const household = await prisma.household.findFirst({
+  // Récupérer le foyer avec le rôle de l'utilisateur
+  const userHousehold = await prisma.userHousehold.findUnique({
+    where: {
+      userId_householdId: {
+        userId: userId,
+        householdId: householdId,
+      },
+    },
+  });
+
+  if (!userHousehold) {
+    const error = new Error(ERROR_MESSAGES.FORBIDDEN);
+    (error as any).status = HTTP_STATUS.FORBIDDEN;
+    throw error;
+  }
+
+  const household = await prisma.household.findUnique({
     where: {
       id: householdId,
-      members: {
-        some: {
-          userId: userId,
-        },
-      },
     },
     include: {
       members: {
@@ -126,7 +137,10 @@ export const getHouseholdById = async (householdId: string, userId: string) => {
     throw error;
   }
 
-  return household;
+  return {
+    ...household,
+    userRole: userHousehold.role,
+  };
 };
 
 /**

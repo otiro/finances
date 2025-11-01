@@ -132,10 +132,10 @@ export default function HouseholdDetails() {
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Button
         startIcon={<ArrowBackIcon />}
-        onClick={() => navigate('/households')}
+        onClick={() => navigate('/dashboard')}
         sx={{ mb: 2 }}
       >
-        Retour aux foyers
+        Retour au tableau de bord
       </Button>
 
       {error && (
