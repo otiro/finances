@@ -364,7 +364,15 @@ export default function AccountDetails() {
                           {index > 0 && <Divider />}
                           <ListItem
                             secondaryAction={
-                              <Box sx={{ display: 'flex', gap: 1 }}>
+                              <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
+                                <Typography
+                                  variant="body1"
+                                  color={transaction.type === 'CREDIT' ? 'success.main' : 'error.main'}
+                                  sx={{ minWidth: '90px', textAlign: 'right', mr: 1, fontWeight: 500 }}
+                                >
+                                  {transaction.type === 'CREDIT' ? '+' : '-'}
+                                  {Number(transaction.amount).toFixed(2)} €
+                                </Typography>
                                 <IconButton
                                   edge="end"
                                   onClick={() => handleEditTransaction(transaction)}
@@ -386,7 +394,7 @@ export default function AccountDetails() {
                           >
                             <ListItemText
                               primary={
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
                                   <span>{transaction.description || 'Transaction'}</span>
                                   {categoryName && (
                                     <Chip
@@ -402,14 +410,6 @@ export default function AccountDetails() {
                               }
                               secondary={`${new Date(transaction.transactionDate).toLocaleDateString('fr-FR')} à ${new Date(transaction.transactionDate).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} • ${transaction.user.firstName} ${transaction.user.lastName}`}
                             />
-                            <Typography
-                              variant="body1"
-                              color={transaction.type === 'CREDIT' ? 'success.main' : 'error.main'}
-                              sx={{ minWidth: '80px', textAlign: 'right' }}
-                            >
-                              {transaction.type === 'CREDIT' ? '+' : '-'}
-                              {Number(transaction.amount).toFixed(2)} €
-                            </Typography>
                           </ListItem>
                         </Box>
                       );
