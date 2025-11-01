@@ -36,7 +36,7 @@ curl -X POST http://localhost:3030/api/households \
 
 ```bash
 curl http://localhost:3030/api/households \
-  -H "Authorization: Bearer VOTRE_TOKEN_JWT"
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk0OTM3NSwiZXhwIjoxNzYyMDM1Nzc1fQ.MzdcPki7aulKdU4pmf0VjycZNkGljOfXJ4LWnwHqMCk"
 ```
 
 **Résultat attendu :**
@@ -48,11 +48,11 @@ curl http://localhost:3030/api/households \
 **Prérequis :** Créer un deuxième utilisateur via `/api/auth/register`
 
 ```bash
-curl -X POST http://localhost:3030/api/households/HOUSEHOLD_ID/members \
+curl -X POST http://localhost:3030/api/households/ea433d78-6001-464c-8071-21d3565b5da3/members \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer VOTRE_TOKEN_JWT" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk1MTA0MSwiZXhwIjoxNzYyMDM3NDQxfQ.OtOCDtdXCBCX1GbJ1bCz0OGICUa708kS1L6-Hy8znSQ" \
   -d '{
-    "email": "autre.user@example.com",
+    "email": "test@test.com",
     "role": "MEMBER"
   }'
 ```
@@ -66,13 +66,13 @@ curl -X POST http://localhost:3030/api/households/HOUSEHOLD_ID/members \
 ```bash
 curl -X POST http://localhost:3030/api/accounts \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer VOTRE_TOKEN_JWT" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk1MTA0MSwiZXhwIjoxNzYyMDM3NDQxfQ.OtOCDtdXCBCX1GbJ1bCz0OGICUa708kS1L6-Hy8znSQ" \
   -d '{
     "name": "Compte courant Julien",
     "type": "PERSONAL",
-    "householdId": "HOUSEHOLD_ID",
-    "initialBalance": 1500,
-    "ownerIds": ["USER_ID_1"]
+    "householdId": "ea433d78-6001-464c-8071-21d3565b5da3",
+    "initialBalance": 0,
+    "ownerIds": ["cd225f8f-8faf-4362-b919-6137029301ea"]
   }'
 ```
 

@@ -54,7 +54,7 @@ export const addMemberSchema = z.object({
  */
 export const createAccountSchema = z.object({
   name: z.string().min(1, 'Le nom du compte est requis'),
-  type: z.enum(['PERSONAL', 'JOINT', 'SAVINGS'], {
+  type: z.enum(['CHECKING', 'JOINT', 'SAVINGS'], {
     errorMap: () => ({ message: 'Type de compte invalide' }),
   }),
   householdId: z.string().min(1, 'L\'identifiant du foyer est requis'),
