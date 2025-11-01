@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as recurringTransactionService from '../services/recurringTransaction.service';
 import { HTTP_STATUS, ERROR_MESSAGES } from '../utils/constants';
+import { createRecurringPatternSchema, updateRecurringPatternSchema } from '../utils/validators';
 
 declare global {
   namespace Express {
@@ -18,6 +19,21 @@ export const createRecurringPattern = async (req: Request, res: Response) => {
   try {
     const userId = req.userId!;
     const { householdId } = req.params;
+
+    // Valider les données
+    const validationResult = createRecurringPatternSchema.safeParse(req.body);
+
+    if (!validationResult.success) {
+      const errors = validationResult.error.errors.map((err) => ({
+        field: err.path.join('.'),
+        message: err.message,
+      }));
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        status: 'error',
+        message: JSON.stringify(errors),
+      });
+    }
+
     const {
       accountId,
       name,
@@ -30,7 +46,7 @@ export const createRecurringPattern = async (req: Request, res: Response) => {
       endDate,
       dayOfMonth,
       dayOfWeek,
-    } = req.body;
+    } = validationResult.data;
 
     const pattern = await recurringTransactionService.createRecurringPattern(
       householdId,
@@ -42,7 +58,7 @@ export const createRecurringPattern = async (req: Request, res: Response) => {
         frequency,
         type,
         amount,
-        categoryId,
+        categoryId: categoryId || undefined,
         startDate: new Date(startDate),
         endDate: endDate ? new Date(endDate) : undefined,
         dayOfMonth,
@@ -137,7 +153,22 @@ export const updateRecurringPattern = async (req: Request, res: Response) => {
   try {
     const userId = req.userId!;
     const { householdId, patternId } = req.params;
-    const data = req.body;
+
+    // Valider les données
+    const validationResult = updateRecurringPatternSchema.safeParse(req.body);
+
+    if (!validationResult.success) {
+      const errors = validationResult.error.errors.map((err) => ({
+        field: err.path.join('.'),
+        message: err.message,
+      }));
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        status: 'error',
+        message: JSON.stringify(errors),
+      });
+    }
+
+    const data = validationResult.data;
 
     const updated = await recurringTransactionService.updateRecurringPattern(
       patternId,

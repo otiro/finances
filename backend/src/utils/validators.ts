@@ -111,11 +111,17 @@ export const createRecurringPatternSchema = z.object({
     errorMap: () => ({ message: 'Type de transaction invalide' }),
   }),
   amount: z.number().positive('Le montant doit être positif'),
-  categoryId: z.string().optional(),
-  startDate: z.string().datetime('Date de début invalide'),
-  endDate: z.string().datetime('Date de fin invalide').optional(),
-  dayOfMonth: z.number().min(1).max(31).optional(),
-  dayOfWeek: z.number().min(0).max(6).optional(),
+  categoryId: z.string().optional().nullable(),
+  startDate: z.string().refine(
+    (val) => !isNaN(Date.parse(val)),
+    'Date de début invalide'
+  ),
+  endDate: z.string().refine(
+    (val) => !isNaN(Date.parse(val)),
+    'Date de fin invalide'
+  ).optional().nullable(),
+  dayOfMonth: z.number().min(1).max(31).optional().nullable(),
+  dayOfWeek: z.number().min(0).max(6).optional().nullable(),
 });
 
 /**
