@@ -427,6 +427,34 @@ vcgencmd measure_temp
 
 Ce projet est privé et destiné à un usage familial. Pour toute question ou amélioration, créer une issue ou une pull request.
 
+## 📚 Documentation
+
+### Documents Actuels (Phase 4-5)
+
+| Document | Description |
+|----------|-------------|
+| **[ROADMAP_PHASE5_AND_BEYOND.md](ROADMAP_PHASE5_AND_BEYOND.md)** | Vision complète des phases futures |
+| **[WHAT_IS_NEXT.md](WHAT_IS_NEXT.md)** | Guide rapide pour démarrer Phase 5 |
+| **[PROJECT_STATUS.md](PROJECT_STATUS.md)** | État actuel du projet |
+| **[PHASE4_PROGRESS.md](PHASE4_PROGRESS.md)** | Progression Phase 4 complétée |
+| **[STRUCTURE.md](STRUCTURE.md)** | Architecture et organisation du code |
+| **[INSTALLATION.md](INSTALLATION.md)** | Instructions d'installation |
+| **[CONFIGURATION_RASPBERRY_PI.md](CONFIGURATION_RASPBERRY_PI.md)** | Setup Raspberry Pi |
+| **[QUICKSTART.md](QUICKSTART.md)** | Démarrage rapide (2 minutes) |
+| **[TESTING_PHASE4.md](TESTING_PHASE4.md)** | Tests Phase 4 |
+| **[CHANGELOG.md](CHANGELOG.md)** | Historique des versions |
+
+### Archive Documentation
+
+Les documents des phases complétées (Phase 1-3, Flux 8-10, session work) ont été archivés pour garder la racine propre:
+
+👉 **[docs/archive/README.md](docs/archive/README.md)** - Index des documents archivés
+
+Voir les anciens documents:
+```bash
+ls docs/archive/
+```
+
 ## 📄 Licence
 
 Propriétaire - Tous droits réservés

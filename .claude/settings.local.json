@@ -16,7 +16,11 @@
       "Bash(lsof:*)",
       "Bash(xargs kill:*)",
       "Bash(netstat:*)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(for file in TESTING_PHASE2.md TESTING_PHASE3.md PHASE3_PROGRESS.md NEXT_STEPS.md README_JULIEN.md guide.md FLUX_8-10_*.md README_FLUX_8-10.md TESTING_FLUX_8-10.md TESTING_FLUX_8-10_FIX.md CONTINUATION_SUMMARY.md CRITICAL_BUG_FIX_REQUIRED.md DEPLOYMENT_STATUS.md SESSION_COMPLETION_REPORT.md PHASE4_TRANSACTIONS.md TESTING_PHASE4.5.md CLEANUP_PLAN.md)",
+      "Bash(do mv \"$file\" docs/archive/)",
+      "Bash(echo:*)",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []
