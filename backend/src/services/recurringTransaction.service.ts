@@ -348,9 +348,16 @@ export const generateDueRecurringTransactions = async () => {
       nextGenerationDate: {
         lte: now,
       },
-      endDate: {
-        gte: now,
-      },
+      OR: [
+        {
+          endDate: null,
+        },
+        {
+          endDate: {
+            gte: now,
+          },
+        },
+      ],
     },
   });
 
