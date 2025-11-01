@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { authenticateToken } from '../middleware/auth.middleware';
+import { authenticate } from '../middleware/auth.middleware';
 import * as categoryController from '../controllers/category.controller';
 
 const router = Router();
 
 // Protéger toutes les routes avec l'authentification
-router.use(authenticateToken);
+router.use(authenticate);
 
 /**
  * GET /api/categories/system
