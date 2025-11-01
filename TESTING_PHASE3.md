@@ -69,7 +69,7 @@ curl -X POST http://localhost:3030/api/accounts \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk1MTA0MSwiZXhwIjoxNzYyMDM3NDQxfQ.OtOCDtdXCBCX1GbJ1bCz0OGICUa708kS1L6-Hy8znSQ" \
   -d '{
     "name": "Compte courant Julien",
-    "type": "PERSONAL",
+    "type": "CHECKING",
     "householdId": "ea433d78-6001-464c-8071-21d3565b5da3",
     "initialBalance": 0,
     "ownerIds": ["cd225f8f-8faf-4362-b919-6137029301ea"]

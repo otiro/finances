@@ -115,7 +115,7 @@ export const createAccount = async (userId: string, data: CreateAccountInput) =>
       owners: {
         create: data.ownerIds.map((ownerId) => ({
           userId: ownerId,
-          ownershipShare: new Decimal(ownershipShares[ownerId]),
+          ownershipPercentage: new Decimal(ownershipShares[ownerId]),
         })),
       },
     },
