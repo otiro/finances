@@ -437,3 +437,74 @@ export const calculateDebts = async (
 
   return debts;
 };
+
+/**
+ * Marque une dette comme payée
+ */
+export const markDebtAsPaid = async (
+  balancingRecordId: string,
+  householdId: string,
+  userId: string,
+  isPaid: boolean = true
+) => {
+  // Vérifier que l'utilisateur est membre du foyer
+  const userHousehold = await verifyHouseholdMembership(userId, householdId);
+
+  if (!userHousehold) {
+    throw {
+      status: HTTP_STATUS.FORBIDDEN,
+      message: 'Vous ne faites pas partie de ce foyer',
+    };
+  }
+
+  // Vérifier que l'utilisateur est impliqué dans cette dette (créancier ou débiteur)
+  const balancingRecord = await prisma.balancingRecord.findUnique({
+    where: { id: balancingRecordId },
+  });
+
+  if (!balancingRecord) {
+    throw {
+      status: HTTP_STATUS.NOT_FOUND,
+      message: 'Enregistrement de bilan non trouvé',
+    };
+  }
+
+  if (
+    balancingRecord.householdId !== householdId ||
+    (balancingRecord.fromUserId !== userId && balancingRecord.toUserId !== userId)
+  ) {
+    throw {
+      status: HTTP_STATUS.FORBIDDEN,
+      message: 'Vous ne pouvez pas marquer cette dette comme payée',
+    };
+  }
+
+  // Mettre à jour l'enregistrement
+  const updated = await prisma.balancingRecord.update({
+    where: { id: balancingRecordId },
+    data: {
+      isPaid,
+      paidAt: isPaid ? new Date() : null,
+    },
+    include: {
+      fromUser: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+        },
+      },
+      toUser: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+        },
+      },
+    },
+  });
+
+  return updated;
+};

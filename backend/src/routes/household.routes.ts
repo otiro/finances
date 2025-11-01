@@ -69,4 +69,13 @@ router.patch(
  */
 router.get('/:id/debts', transactionController.getHouseholdDebts);
 
+/**
+ * PATCH /api/households/:id/balancing-records/:recordId/mark-paid
+ * Marque une dette comme payée
+ */
+router.patch(
+  '/:id/balancing-records/:recordId/mark-paid',
+  transactionController.markDebtAsPaid
+);
+
 export default router;

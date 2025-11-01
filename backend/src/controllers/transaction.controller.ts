@@ -201,3 +201,36 @@ export const getHouseholdDebts = async (req: Request, res: Response) => {
     });
   }
 };
+
+/**
+ * PATCH /api/households/:householdId/balancing-records/:recordId/mark-paid
+ * Marque une dette comme payée
+ */
+export const markDebtAsPaid = async (req: Request, res: Response) => {
+  try {
+    const userId = req.userId!;
+    const { householdId, recordId } = req.params;
+    const { isPaid } = req.body;
+
+    const result = await transactionService.markDebtAsPaid(
+      recordId,
+      householdId,
+      userId,
+      isPaid !== false
+    );
+
+    res.status(HTTP_STATUS.OK).json({
+      status: 'success',
+      message: isPaid !== false ? 'Dette marquée comme payée' : 'Statut de paiement annulé',
+      data: result,
+    });
+  } catch (error: any) {
+    const status = error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR;
+    const message = error.message || ERROR_MESSAGES.INTERNAL_ERROR;
+
+    res.status(status).json({
+      status: 'error',
+      message,
+    });
+  }
+};

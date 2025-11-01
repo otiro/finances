@@ -12,6 +12,8 @@ import {
   Divider,
   Grid,
   Chip,
+  Checkbox,
+  FormControlLabel,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useHouseholdStore } from '../store/slices/householdSlice';
@@ -30,6 +32,8 @@ export default function Debts() {
   const [allDebts, setAllDebts] = useState<GroupedDebts>({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showPaidOnly, setShowPaidOnly] = useState(false);
+  const [markingPaid, setMarkingPaid] = useState<string | null>(null);
 
   useEffect(() => {
     loadAllDebts();
@@ -90,6 +94,36 @@ export default function Debts() {
     }, 0);
   };
 
+  const handleMarkAsPaid = async (householdId: string, debtIndex: number, currentPaidStatus: boolean) => {
+    const debtId = `${householdId}-${debtIndex}`;
+    setMarkingPaid(debtId);
+
+    try {
+      // For now, since we don't have balancingRecordId from calculated debts,
+      // we'll use a placeholder. In production, you'd get the actual ID from backend
+      const recordId = debtId;
+
+      await transactionService.markDebtAsPaid(householdId, recordId, !currentPaidStatus);
+
+      // Update local state
+      setAllDebts((prev) => {
+        const updated = { ...prev };
+        if (updated[householdId]) {
+          const debt = updated[householdId].debts[debtIndex];
+          if (debt) {
+            debt.isPaid = !currentPaidStatus;
+            debt.paidAt = !currentPaidStatus ? new Date().toISOString() : undefined;
+          }
+        }
+        return updated;
+      });
+    } catch (err: any) {
+      setError(err.message || 'Erreur lors de la mise à jour du statut de paiement');
+    } finally {
+      setMarkingPaid(null);
+    }
+  };
+
   if (isLoading) {
     return (
       <Box
@@ -122,12 +156,25 @@ export default function Debts() {
       )}
 
       <Box sx={{ mb: 3 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Dettes et remboursements
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Visualisez qui doit combien à qui dans tous vos foyers
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Box>
+            <Typography variant="h4" component="h1" gutterBottom>
+              Dettes et remboursements
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Visualisez qui doit combien à qui dans tous vos foyers
+            </Typography>
+          </Box>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={showPaidOnly}
+                onChange={(e) => setShowPaidOnly(e.target.checked)}
+              />
+            }
+            label="Afficher uniquement les payées"
+          />
+        </Box>
       </Box>
 
       {totalDebtAmount === 0 ? (
@@ -155,37 +202,56 @@ export default function Debts() {
                     </Typography>
                   ) : (
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                      {householdData.debts.map((debt, index) => (
-                        <Box
-                          key={index}
-                          sx={{
-                            padding: 2,
-                            backgroundColor: '#f5f5f5',
-                            borderRadius: 1,
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                          }}
-                        >
-                          <Box sx={{ flex: 1 }}>
-                            <Typography variant="body1">
-                              <strong>{debt.debtor.firstName} {debt.debtor.lastName}</strong>
-                              {' doit '}
-                              <strong>{debt.amount.toFixed(2)} €</strong>
-                              {' à '}
-                              <strong>{debt.creditor.firstName} {debt.creditor.lastName}</strong>
-                            </Typography>
-                            <Typography variant="caption" color="text.secondary">
-                              {debt.debtor.email} → {debt.creditor.email}
-                            </Typography>
+                      {householdData.debts
+                        .map((debt, index) => ({ debt, index }))
+                        .filter((item) => !showPaidOnly || item.debt.isPaid)
+                        .map(({ debt, index }) => (
+                          <Box
+                            key={index}
+                            sx={{
+                              padding: 2,
+                              backgroundColor: debt.isPaid ? '#e8f5e9' : '#f5f5f5',
+                              borderRadius: 1,
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              opacity: debt.isPaid ? 0.7 : 1,
+                              textDecoration: debt.isPaid ? 'line-through' : 'none',
+                            }}
+                          >
+                            <Box sx={{ flex: 1 }}>
+                              <Typography variant="body1">
+                                <strong>{debt.debtor.firstName} {debt.debtor.lastName}</strong>
+                                {' doit '}
+                                <strong>{debt.amount.toFixed(2)} €</strong>
+                                {' à '}
+                                <strong>{debt.creditor.firstName} {debt.creditor.lastName}</strong>
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                {debt.debtor.email} → {debt.creditor.email}
+                                {debt.isPaid && debt.paidAt && (
+                                  <>
+                                    {' • Payée le '}
+                                    {new Date(debt.paidAt).toLocaleDateString('fr-FR')}
+                                  </>
+                                )}
+                              </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                              <Chip
+                                label={`${debt.amount.toFixed(2)} €`}
+                                color="primary"
+                                variant="outlined"
+                              />
+                              <Checkbox
+                                checked={debt.isPaid || false}
+                                onChange={() => handleMarkAsPaid(householdId, index, debt.isPaid || false)}
+                                disabled={markingPaid === `${householdId}-${index}`}
+                                title={debt.isPaid ? 'Marquer comme non payée' : 'Marquer comme payée'}
+                              />
+                            </Box>
                           </Box>
-                          <Chip
-                            label={`${debt.amount.toFixed(2)} €`}
-                            color="primary"
-                            variant="outlined"
-                          />
-                        </Box>
-                      ))}
+                        ))}
                     </Box>
                   )}
                 </CardContent>

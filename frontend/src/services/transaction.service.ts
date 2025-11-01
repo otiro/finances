@@ -46,6 +46,8 @@ export interface UpdateTransactionData {
 }
 
 export interface Debt {
+  id?: string;
+  balancingRecordId?: string;
   creditor: {
     id: string;
     firstName: string;
@@ -59,6 +61,8 @@ export interface Debt {
     email: string;
   };
   amount: number;
+  isPaid?: boolean;
+  paidAt?: string;
 }
 
 interface ApiResponse<T> {
@@ -166,5 +170,21 @@ export const getHouseholdDebts = async (householdId: string) => {
   );
 
   useTransactionStore.getState().setDebts(response.data.data);
+  return response.data.data;
+};
+
+/**
+ * Marque une dette comme payée
+ */
+export const markDebtAsPaid = async (
+  householdId: string,
+  recordId: string,
+  isPaid: boolean = true
+) => {
+  const response = await api.patch<ApiResponse<Debt>>(
+    `/households/${householdId}/balancing-records/${recordId}/mark-paid`,
+    { isPaid }
+  );
+
   return response.data.data;
 };
