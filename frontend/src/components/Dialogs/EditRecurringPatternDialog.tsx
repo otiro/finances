@@ -102,16 +102,10 @@ const EditRecurringPatternDialog: React.FC<EditRecurringPatternDialogProps> = ({
     }
   };
 
-  const handleClose = () => {
-    if (!loading) {
-      onClose();
-    }
-  };
-
   return (
     <Dialog
       open={open}
-      onClose={handleClose}
+      onClose={() => {}} // Don't close on any external trigger
       maxWidth="sm"
       fullWidth
       disableEscapeKeyDown

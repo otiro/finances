@@ -83,16 +83,10 @@ const AddRecurringPatternDialog: React.FC<AddRecurringPatternDialogProps> = ({
     }
   };
 
-  const handleClose = () => {
-    if (!loading) {
-      onClose();
-    }
-  };
-
   return (
     <Dialog
       open={open}
-      onClose={handleClose}
+      onClose={() => {}} // Don't close on any external trigger
       maxWidth="sm"
       fullWidth
       disableEscapeKeyDown
