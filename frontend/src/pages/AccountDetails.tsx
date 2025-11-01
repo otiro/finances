@@ -19,6 +19,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useAccountStore } from '../store/slices/accountSlice';
 import * as accountService from '../services/account.service';
+import UpdateAccountOwnersDialog from '../components/UpdateAccountOwnersDialog';
 
 export default function AccountDetails() {
   const { id } = useParams<{ id: string }>();
@@ -27,6 +28,7 @@ export default function AccountDetails() {
   const [balance, setBalance] = useState<any>(null);
   const [error, setError] = useState('');
   const [loadingBalance, setLoadingBalance] = useState(false);
+  const [updateOwnersDialogOpen, setUpdateOwnersDialogOpen] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -179,9 +181,18 @@ export default function AccountDetails() {
         <Grid item xs={12} md={6}>
           <Card>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Propriétaires
-              </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h6">
+                  Propriétaires
+                </Typography>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={() => setUpdateOwnersDialogOpen(true)}
+                >
+                  Gérer
+                </Button>
+              </Box>
               <Divider sx={{ mb: 2 }} />
 
               <List>
@@ -241,6 +252,17 @@ export default function AccountDetails() {
           </Card>
         </Grid>
       </Grid>
+
+      {currentAccount && currentAccount.household && (
+        <UpdateAccountOwnersDialog
+          open={updateOwnersDialogOpen}
+          accountId={currentAccount.id}
+          currentOwners={currentAccount.owners}
+          household={currentAccount.household as any}
+          onClose={() => setUpdateOwnersDialogOpen(false)}
+          onSuccess={loadAccountData}
+        />
+      )}
     </Container>
   );
 }

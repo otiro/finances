@@ -55,4 +55,16 @@ router.patch(
  */
 router.delete('/:id', accountController.deleteAccount);
 
+/**
+ * POST /api/accounts/:id/owners
+ * Ajoute un propriétaire à un compte
+ */
+router.post('/:id/owners', accountController.addAccountOwner);
+
+/**
+ * DELETE /api/accounts/:id/owners/:ownerId
+ * Retire un propriétaire d'un compte
+ */
+router.delete('/:id/owners/:ownerId', accountController.removeAccountOwner);
+
 export default router;

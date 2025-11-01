@@ -17,8 +17,10 @@ import {
   Alert,
   Paper,
   IconButton,
+  Button,
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import * as accountService from '../services/account.service';
 
 export default function Accounts() {
@@ -86,6 +88,14 @@ export default function Accounts() {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Button
+        startIcon={<ArrowBackIcon />}
+        onClick={() => navigate('/dashboard')}
+        sx={{ mb: 2 }}
+      >
+        Retour au tableau de bord
+      </Button>
+
       <Typography variant="h4" component="h1" gutterBottom>
         Tous les comptes
       </Typography>

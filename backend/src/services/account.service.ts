@@ -295,6 +295,21 @@ export const getAccountById = async (accountId: string, userId: string) => {
           id: true,
           name: true,
           sharingMode: true,
+          members: {
+            select: {
+              id: true,
+              userId: true,
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+                  monthlyIncome: true,
+                },
+              },
+            },
+          },
         },
       },
       transactions: {
@@ -448,6 +463,206 @@ export const deleteAccount = async (accountId: string, userId: string) => {
   });
 
   return { success: true };
+};
+
+/**
+ * Ajoute un propriétaire à un compte
+ */
+export const addAccountOwner = async (
+  accountId: string,
+  newOwnerId: string,
+  userId: string
+) => {
+  // Récupérer le compte et vérifier que l'utilisateur est admin du foyer
+  const account = await prisma.account.findFirst({
+    where: {
+      id: accountId,
+      household: {
+        members: {
+          some: {
+            userId: userId,
+            role: 'ADMIN',
+          },
+        },
+      },
+    },
+    include: {
+      household: {
+        select: {
+          sharingMode: true,
+        },
+      },
+      owners: {
+        select: {
+          userId: true,
+        },
+      },
+    },
+  });
+
+  if (!account) {
+    const error = new Error(ERROR_MESSAGES.FORBIDDEN);
+    (error as any).status = HTTP_STATUS.FORBIDDEN;
+    throw error;
+  }
+
+  // Vérifier que le nouvel propriétaire est membre du foyer
+  const isMember = await prisma.userHousehold.findUnique({
+    where: {
+      userId_householdId: {
+        userId: newOwnerId,
+        householdId: account.household.id,
+      },
+    },
+  });
+
+  if (!isMember) {
+    const error = new Error('Cet utilisateur n\'est pas membre du foyer');
+    (error as any).status = HTTP_STATUS.BAD_REQUEST;
+    throw error;
+  }
+
+  // Vérifier qu'il n'est pas déjà propriétaire
+  const existingOwner = account.owners.some((o) => o.userId === newOwnerId);
+  if (existingOwner) {
+    const error = new Error('Cet utilisateur est déjà propriétaire du compte');
+    (error as any).status = HTTP_STATUS.BAD_REQUEST;
+    throw error;
+  }
+
+  // Récupérer les nouveaux propriétaires (actuels + nouveau)
+  const newOwnerIds = [...account.owners.map((o) => o.userId), newOwnerId];
+
+  // Calculer les nouvelles parts
+  const newShares = await calculateOwnershipShares(
+    newOwnerIds,
+    account.household.id,
+    account.household.sharingMode
+  );
+
+  // Créer le nouvel AccountOwner
+  await prisma.accountOwner.create({
+    data: {
+      accountId: accountId,
+      userId: newOwnerId,
+      ownershipPercentage: newShares[newOwnerId],
+    },
+  });
+
+  // Mettre à jour les parts des propriétaires existants
+  for (const ownerId of account.owners.map((o) => o.userId)) {
+    await prisma.accountOwner.update({
+      where: {
+        accountId_userId: {
+          accountId: accountId,
+          userId: ownerId,
+        },
+      },
+      data: {
+        ownershipPercentage: newShares[ownerId],
+      },
+    });
+  }
+
+  // Retourner le compte mis à jour
+  return getAccountById(accountId, userId);
+};
+
+/**
+ * Retire un propriétaire d'un compte
+ */
+export const removeAccountOwner = async (
+  accountId: string,
+  ownerToRemoveId: string,
+  userId: string
+) => {
+  // Récupérer le compte et vérifier que l'utilisateur est admin du foyer
+  const account = await prisma.account.findFirst({
+    where: {
+      id: accountId,
+      household: {
+        members: {
+          some: {
+            userId: userId,
+            role: 'ADMIN',
+          },
+        },
+      },
+    },
+    include: {
+      household: {
+        select: {
+          sharingMode: true,
+        },
+      },
+      owners: {
+        select: {
+          userId: true,
+        },
+      },
+    },
+  });
+
+  if (!account) {
+    const error = new Error(ERROR_MESSAGES.FORBIDDEN);
+    (error as any).status = HTTP_STATUS.FORBIDDEN;
+    throw error;
+  }
+
+  // Vérifier que l'utilisateur est propriétaire
+  const isOwner = account.owners.some((o) => o.userId === ownerToRemoveId);
+  if (!isOwner) {
+    const error = new Error('Cet utilisateur n\'est pas propriétaire du compte');
+    (error as any).status = HTTP_STATUS.BAD_REQUEST;
+    throw error;
+  }
+
+  // Vérifier qu'il y a au moins 2 propriétaires
+  if (account.owners.length <= 1) {
+    const error = new Error('Un compte doit avoir au moins un propriétaire');
+    (error as any).status = HTTP_STATUS.BAD_REQUEST;
+    throw error;
+  }
+
+  // Récupérer les nouveaux propriétaires (sans celui qu'on retire)
+  const newOwnerIds = account.owners
+    .map((o) => o.userId)
+    .filter((id) => id !== ownerToRemoveId);
+
+  // Calculer les nouvelles parts
+  const newShares = await calculateOwnershipShares(
+    newOwnerIds,
+    account.household.id,
+    account.household.sharingMode
+  );
+
+  // Supprimer le propriétaire
+  await prisma.accountOwner.delete({
+    where: {
+      accountId_userId: {
+        accountId: accountId,
+        userId: ownerToRemoveId,
+      },
+    },
+  });
+
+  // Mettre à jour les parts des propriétaires restants
+  for (const ownerId of newOwnerIds) {
+    await prisma.accountOwner.update({
+      where: {
+        accountId_userId: {
+          accountId: accountId,
+          userId: ownerId,
+        },
+      },
+      data: {
+        ownershipPercentage: newShares[ownerId],
+      },
+    });
+  }
+
+  // Retourner le compte mis à jour
+  return getAccountById(accountId, userId);
 };
 
 /**

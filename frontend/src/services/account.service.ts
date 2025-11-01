@@ -84,6 +84,29 @@ export const deleteAccount = async (id: string) => {
 };
 
 /**
+ * Ajoute un propriétaire à un compte
+ */
+export const addAccountOwner = async (accountId: string, userId: string) => {
+  const response = await api.post<ApiResponse<Account>>(
+    `/accounts/${accountId}/owners`,
+    { userId }
+  );
+  useAccountStore.getState().updateAccount(accountId, response.data.data);
+  return response.data.data;
+};
+
+/**
+ * Retire un propriétaire d'un compte
+ */
+export const removeAccountOwner = async (accountId: string, ownerId: string) => {
+  const response = await api.delete<ApiResponse<Account>>(
+    `/accounts/${accountId}/owners/${ownerId}`
+  );
+  useAccountStore.getState().updateAccount(accountId, response.data.data);
+  return response.data.data;
+};
+
+/**
  * Récupère le solde d'un compte
  */
 export const getAccountBalance = async (id: string) => {

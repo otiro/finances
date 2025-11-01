@@ -180,6 +180,72 @@ export const deleteAccount = async (
 };
 
 /**
+ * Ajoute un propriétaire à un compte
+ */
+export const addAccountOwner = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    if (!req.userId) {
+      res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        status: 'error',
+        message: 'Non authentifié',
+      });
+      return;
+    }
+
+    const account = await accountService.addAccountOwner(
+      req.params.id,
+      req.body.userId,
+      req.userId
+    );
+
+    res.status(HTTP_STATUS.OK).json({
+      status: 'success',
+      message: 'Propriétaire ajouté avec succès',
+      data: account,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Retire un propriétaire d'un compte
+ */
+export const removeAccountOwner = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    if (!req.userId) {
+      res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        status: 'error',
+        message: 'Non authentifié',
+      });
+      return;
+    }
+
+    const account = await accountService.removeAccountOwner(
+      req.params.id,
+      req.params.ownerId,
+      req.userId
+    );
+
+    res.status(HTTP_STATUS.OK).json({
+      status: 'success',
+      message: 'Propriétaire retiré avec succès',
+      data: account,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * Récupère le solde d'un compte
  */
 export const getAccountBalance = async (
