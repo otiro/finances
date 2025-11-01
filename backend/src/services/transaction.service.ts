@@ -309,26 +309,28 @@ export const deleteTransaction = async (
   });
 };
 
+// Helper function pour éviter le bug Prisma
+const verifyHouseholdMembership = async (userId: string, householdId: string) => {
+  return await prisma.userHousehold.findUnique({
+    where: {
+      userId_householdId: {
+        userId,
+        householdId,
+      },
+    },
+  });
+};
+
 /**
  * Calcule les dettes d'un foyer basées sur les transactions et les parts de propriété
  * Retourne: qui doit combien à qui
  */
 export const calculateDebts = async (
-  houseId: string,
-  uId: string
+  householdId: string,
+  userId: string
 ) => {
-  const actualHouseId: string = houseId;
-  const actualUserId: string = uId;
-
   // Vérifier que l'utilisateur est membre du foyer
-  const userHousehold = await prisma.userHousehold.findUnique({
-    where: {
-      userId_householdId: {
-        userId: actualUserId,
-        householdId: actualHouseId,
-      },
-    },
-  });
+  const userHousehold = await verifyHouseholdMembership(userId, householdId);
 
   if (!userHousehold) {
     throw {
@@ -339,7 +341,7 @@ export const calculateDebts = async (
 
   // Récupérer tous les comptes du foyer avec leurs transactions et propriétaires
   const accounts = await prisma.account.findMany({
-    where: { householdId: actualHouseId },
+    where: { householdId },
     include: {
       transactions: true,
       owners: {
@@ -436,7 +438,7 @@ export const calculateDebts = async (
   const allUsers = await prisma.user.findMany({
     where: {
       households: {
-        some: { householdId: actualHouseId },
+        some: { householdId },
       },
     },
     select: {
