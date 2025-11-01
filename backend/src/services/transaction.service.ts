@@ -317,12 +317,15 @@ export const calculateDebts = async (
   houseId: string,
   uId: string
 ) => {
+  const actualHouseId: string = houseId;
+  const actualUserId: string = uId;
+
   // Vérifier que l'utilisateur est membre du foyer
   const userHousehold = await prisma.userHousehold.findUnique({
     where: {
       userId_householdId: {
-        userId: uId,
-        householdId: houseId,
+        userId: actualUserId,
+        householdId: actualHouseId,
       },
     },
   });
@@ -336,7 +339,7 @@ export const calculateDebts = async (
 
   // Récupérer tous les comptes du foyer avec leurs transactions et propriétaires
   const accounts = await prisma.account.findMany({
-    where: { householdId: houseId },
+    where: { householdId: actualHouseId },
     include: {
       transactions: true,
       owners: {
@@ -433,7 +436,7 @@ export const calculateDebts = async (
   const allUsers = await prisma.user.findMany({
     where: {
       households: {
-        some: { householdId: houseId },
+        some: { householdId: actualHouseId },
       },
     },
     select: {
