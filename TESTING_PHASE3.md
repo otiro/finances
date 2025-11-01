@@ -246,12 +246,12 @@ SELECT
   a.initial_balance,
   h.name AS household_name,
   u.first_name || ' ' || u.last_name AS owner_name,
-  ao.ownership_share
+  ao.ownership_percentage
 FROM accounts a
 JOIN households h ON a.household_id = h.id
 JOIN account_owners ao ON a.id = ao.account_id
 JOIN users u ON ao.user_id = u.id
-ORDER BY a.name, ao.ownership_share DESC;
+ORDER BY a.name, ao.ownership_percentage DESC;
 ```
 
 **Vérifications importantes :**

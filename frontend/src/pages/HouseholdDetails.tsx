@@ -29,6 +29,7 @@ import * as householdService from '../services/household.service';
 import * as accountService from '../services/account.service';
 import AddMemberDialog from '../components/AddMemberDialog';
 import CreateAccountDialog from '../components/CreateAccountDialog';
+import UpdateSharingModeDialog from '../components/UpdateSharingModeDialog';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -59,6 +60,7 @@ export default function HouseholdDetails() {
   const [tabValue, setTabValue] = useState(0);
   const [addMemberDialogOpen, setAddMemberDialogOpen] = useState(false);
   const [createAccountDialogOpen, setCreateAccountDialogOpen] = useState(false);
+  const [updateSharingModeDialogOpen, setUpdateSharingModeDialogOpen] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -154,7 +156,18 @@ export default function HouseholdDetails() {
             color={currentHousehold.userRole === 'ADMIN' ? 'primary' : 'default'}
           />
         </Box>
-        <Chip label={getSharingModeLabel(currentHousehold.sharingMode)} />
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Chip label={getSharingModeLabel(currentHousehold.sharingMode)} />
+          {isAdmin && (
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={() => setUpdateSharingModeDialogOpen(true)}
+            >
+              Modifier
+            </Button>
+          )}
+        </Box>
       </Box>
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
@@ -285,6 +298,16 @@ export default function HouseholdDetails() {
         onClose={() => setCreateAccountDialogOpen(false)}
         onSuccess={loadHouseholdData}
       />
+
+      {isAdmin && (
+        <UpdateSharingModeDialog
+          open={updateSharingModeDialogOpen}
+          householdId={currentHousehold.id}
+          currentMode={currentHousehold.sharingMode}
+          onClose={() => setUpdateSharingModeDialogOpen(false)}
+          onSuccess={loadHouseholdData}
+        />
+      )}
     </Container>
   );
 }
