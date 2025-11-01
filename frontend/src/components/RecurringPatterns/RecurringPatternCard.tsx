@@ -92,8 +92,9 @@ const RecurringPatternCard: React.FC<RecurringPatternCardProps> = ({
     YEARLY: '📍 Annuel',
   };
 
-  // Format amount with sign
-  const formattedAmount = `${pattern.type === 'DEBIT' ? '-' : '+'} ${pattern.amount.toFixed(2)} €`;
+  // Format amount with sign (amount comes from API as string, needs to be converted to number)
+  const amountNumber = typeof pattern.amount === 'string' ? parseFloat(pattern.amount) : pattern.amount;
+  const formattedAmount = `${pattern.type === 'DEBIT' ? '-' : '+'} ${amountNumber.toFixed(2)} €`;
   const amountColor = pattern.type === 'DEBIT' ? '#d32f2f' : '#388e3c';
 
   return (
