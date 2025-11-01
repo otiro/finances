@@ -10,6 +10,7 @@ import Households from './pages/Households';
 import HouseholdDetails from './pages/HouseholdDetails';
 import Accounts from './pages/Accounts';
 import AccountDetails from './pages/AccountDetails';
+import Debts from './pages/Debts';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages à créer dans les prochaines phases
@@ -90,6 +91,16 @@ function App() {
           element={
             <ProtectedRoute>
               <AccountDetails />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Phase 4 - Transactions */}
+        <Route
+          path="/debts"
+          element={
+            <ProtectedRoute>
+              <Debts />
             </ProtectedRoute>
           }
         />

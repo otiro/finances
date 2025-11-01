@@ -15,11 +15,16 @@ import {
   Alert,
   Divider,
   Grid,
+  IconButton,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 import { useAccountStore } from '../store/slices/accountSlice';
 import * as accountService from '../services/account.service';
+import * as transactionService from '../services/transaction.service';
 import UpdateAccountOwnersDialog from '../components/UpdateAccountOwnersDialog';
+import AddTransactionDialog from '../components/AddTransactionDialog';
 
 export default function AccountDetails() {
   const { id } = useParams<{ id: string }>();
@@ -29,6 +34,9 @@ export default function AccountDetails() {
   const [error, setError] = useState('');
   const [loadingBalance, setLoadingBalance] = useState(false);
   const [updateOwnersDialogOpen, setUpdateOwnersDialogOpen] = useState(false);
+  const [addTransactionDialogOpen, setAddTransactionDialogOpen] = useState(false);
+  const [transactions, setTransactions] = useState<transactionService.Transaction[]>([]);
+  const [loadingTransactions, setLoadingTransactions] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -41,6 +49,7 @@ export default function AccountDetails() {
       if (id) {
         await accountService.getAccountById(id);
         loadBalance();
+        loadTransactions();
       }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erreur lors du chargement des données');
@@ -57,6 +66,32 @@ export default function AccountDetails() {
       console.error('Error loading balance:', err);
     } finally {
       setLoadingBalance(false);
+    }
+  };
+
+  const loadTransactions = async () => {
+    if (!id) return;
+    setLoadingTransactions(true);
+    try {
+      const result = await transactionService.getAccountTransactions(id, 10, 0);
+      setTransactions(result.transactions);
+    } catch (err: any) {
+      console.error('Error loading transactions:', err);
+    } finally {
+      setLoadingTransactions(false);
+    }
+  };
+
+  const handleDeleteTransaction = async (transactionId: string) => {
+    if (!id) return;
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette transaction ?')) return;
+
+    try {
+      await transactionService.deleteTransaction(id, transactionId);
+      setTransactions(transactions.filter((t) => t.id !== transactionId));
+      loadBalance();
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Erreur lors de la suppression');
     }
   };
 
@@ -220,32 +255,61 @@ export default function AccountDetails() {
         <Grid item xs={12}>
           <Card>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Transactions récentes
-              </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h6">
+                  Transactions récentes
+                </Typography>
+                <Button
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  onClick={() => setAddTransactionDialogOpen(true)}
+                  size="small"
+                >
+                  Ajouter
+                </Button>
+              </Box>
               <Divider sx={{ mb: 2 }} />
 
-              {currentAccount.transactions && currentAccount.transactions.length > 0 ? (
+              {loadingTransactions ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
+                  <CircularProgress />
+                </Box>
+              ) : transactions && transactions.length > 0 ? (
                 <List>
-                  {currentAccount.transactions.map((transaction: any) => (
-                    <ListItem key={transaction.id}>
-                      <ListItemText
-                        primary={transaction.description || 'Transaction'}
-                        secondary={new Date(transaction.transactionDate).toLocaleDateString('fr-FR')}
-                      />
-                      <Typography
-                        variant="body1"
-                        color={transaction.type === 'CREDIT' ? 'success.main' : 'error.main'}
+                  {transactions.map((transaction: any, index: number) => (
+                    <Box key={transaction.id}>
+                      {index > 0 && <Divider />}
+                      <ListItem
+                        secondaryAction={
+                          <IconButton
+                            edge="end"
+                            onClick={() => handleDeleteTransaction(transaction.id)}
+                            color="error"
+                            size="small"
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        }
                       >
-                        {transaction.type === 'CREDIT' ? '+' : '-'}
-                        {transaction.amount} €
-                      </Typography>
-                    </ListItem>
+                        <ListItemText
+                          primary={transaction.description || 'Transaction'}
+                          secondary={`${new Date(transaction.transactionDate).toLocaleDateString('fr-FR')} • ${transaction.user.firstName} ${transaction.user.lastName}`}
+                        />
+                        <Typography
+                          variant="body1"
+                          color={transaction.type === 'CREDIT' ? 'success.main' : 'error.main'}
+                          sx={{ minWidth: '80px', textAlign: 'right' }}
+                        >
+                          {transaction.type === 'CREDIT' ? '+' : '-'}
+                          {Number(transaction.amount).toFixed(2)} €
+                        </Typography>
+                      </ListItem>
+                    </Box>
                   ))}
                 </List>
               ) : (
                 <Alert severity="info">
-                  Aucune transaction enregistrée. Les transactions seront disponibles dans la Phase 4.
+                  Aucune transaction enregistrée. Cliquez sur "Ajouter" pour en créer une.
                 </Alert>
               )}
             </CardContent>
@@ -263,6 +327,17 @@ export default function AccountDetails() {
           onSuccess={loadAccountData}
         />
       )}
+
+      <AddTransactionDialog
+        open={addTransactionDialogOpen}
+        accountId={id || ''}
+        onClose={() => setAddTransactionDialogOpen(false)}
+        onSuccess={() => {
+          setAddTransactionDialogOpen(false);
+          loadTransactions();
+          loadBalance();
+        }}
+      />
     </Container>
   );
 }

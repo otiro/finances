@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as householdController from '../controllers/household.controller';
+import * as transactionController from '../controllers/transaction.controller';
 import { authenticate } from '../middleware/auth.middleware';
 import { validate } from '../middleware/validation.middleware';
 import { createHouseholdSchema, addMemberSchema } from '../utils/validators';
@@ -61,5 +62,11 @@ router.patch(
   ),
   householdController.updateSharingMode
 );
+
+/**
+ * GET /api/households/:id/debts
+ * Récupère les dettes d'un foyer
+ */
+router.get('/:id/debts', transactionController.getHouseholdDebts);
 
 export default router;

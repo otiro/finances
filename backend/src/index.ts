@@ -12,7 +12,7 @@ import './config/database'; // Import database connection
 import authRoutes from './routes/auth.routes';
 import householdRoutes from './routes/household.routes';
 import accountRoutes from './routes/account.routes';
-// import transactionRoutes from './routes/transaction.routes';
+import transactionRoutes from './routes/transaction.routes';
 // import categoryRoutes from './routes/category.routes';
 // import budgetRoutes from './routes/budget.routes';
 // import analyticsRoutes from './routes/analytics.routes';
@@ -42,7 +42,7 @@ app.get('/health', (_req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/households', householdRoutes);
 app.use('/api/accounts', accountRoutes);
-// app.use('/api/transactions', transactionRoutes);
+app.use('/api/accounts', transactionRoutes);
 // app.use('/api/categories', categoryRoutes);
 // app.use('/api/budgets', budgetRoutes);
 // app.use('/api/analytics', analyticsRoutes);

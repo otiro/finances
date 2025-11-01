@@ -70,6 +70,32 @@ export const updateAccountSchema = z.object({
   initialBalance: z.number().optional(),
 });
 
+/**
+ * Schéma de validation pour la création d'une transaction
+ */
+export const createTransactionSchema = z.object({
+  amount: z.number().positive('Le montant doit être positif').max(999999.99, 'Montant maximal dépassé'),
+  type: z.enum(['DEBIT', 'CREDIT'], {
+    errorMap: () => ({ message: 'Type de transaction invalide' }),
+  }),
+  description: z.string().min(1, 'La description est requise').max(500),
+  categoryId: z.string().optional(),
+  transactionDate: z.string().datetime().optional(),
+  notes: z.string().max(1000).optional(),
+});
+
+/**
+ * Schéma de validation pour la mise à jour d'une transaction
+ */
+export const updateTransactionSchema = z.object({
+  amount: z.number().positive().max(999999.99).optional(),
+  type: z.enum(['DEBIT', 'CREDIT']).optional(),
+  description: z.string().min(1).max(500).optional(),
+  categoryId: z.string().optional(),
+  transactionDate: z.string().datetime().optional(),
+  notes: z.string().max(1000).optional(),
+}).strict();
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
@@ -77,3 +103,5 @@ export type CreateHouseholdInput = z.infer<typeof createHouseholdSchema>;
 export type AddMemberInput = z.infer<typeof addMemberSchema>;
 export type CreateAccountInput = z.infer<typeof createAccountSchema>;
 export type UpdateAccountInput = z.infer<typeof updateAccountSchema>;
+export type CreateTransactionInput = z.infer<typeof createTransactionSchema>;
+export type UpdateTransactionInput = z.infer<typeof updateTransactionSchema>;

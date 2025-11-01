@@ -297,7 +297,10 @@ Le système calcule automatiquement les parts de propriété selon 3 modes:
 - ✅ Dialogs réutilisables (CreateHousehold, AddMember, CreateAccount, UpdateSharingMode)
 
 ### Phase 3.5 - Prochaine amélioration
-- [ ] Ajouter/retirer propriétaires d'un compte existant (optionnel avant Phase 4)
+- [x] ✅ COMPLÉTÉE - Ajouter/retirer propriétaires d'un compte existant
+  - Endpoints: POST/DELETE `/api/accounts/:id/owners`
+  - Dialog UpdateAccountOwnersDialog implémentée
+  - Recalcul automatique des parts
 
 ### Phase 4 - Transactions
 1. **Créer le modèle Transaction** (montant, date, description, type)
