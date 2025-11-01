@@ -34,7 +34,7 @@ export default function AddTransactionDialog({
   const [type, setType] = useState<'DEBIT' | 'CREDIT'>('DEBIT');
   const [description, setDescription] = useState('');
   const [transactionDate, setTransactionDate] = useState(
-    new Date().toISOString().split('T')[0]
+    new Date().toISOString().slice(0, 16)
   );
   const [notes, setNotes] = useState('');
   const [error, setError] = useState('');
@@ -80,7 +80,7 @@ export default function AddTransactionDialog({
       setAmount('');
       setType('DEBIT');
       setDescription('');
-      setTransactionDate(new Date().toISOString().split('T')[0]);
+      setTransactionDate(new Date().toISOString().slice(0, 16));
       setNotes('');
 
       onSuccess?.();
@@ -100,7 +100,7 @@ export default function AddTransactionDialog({
       setAmount('');
       setType('DEBIT');
       setDescription('');
-      setTransactionDate(new Date().toISOString().split('T')[0]);
+      setTransactionDate(new Date().toISOString().slice(0, 16));
       setNotes('');
       onClose();
     }
@@ -151,13 +151,13 @@ export default function AddTransactionDialog({
           />
 
           <TextField
-            label="Date"
-            type="date"
+            label="Date et heure"
+            type="datetime-local"
             value={transactionDate}
             onChange={(e) => setTransactionDate(e.target.value)}
             disabled={isLoading}
             InputLabelProps={{ shrink: true }}
-            inputProps={{ max: new Date().toISOString().split('T')[0] }}
+            inputProps={{ max: new Date().toISOString().slice(0, 16) }}
           />
 
           <TextField

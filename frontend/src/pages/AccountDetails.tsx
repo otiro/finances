@@ -293,7 +293,7 @@ export default function AccountDetails() {
                       >
                         <ListItemText
                           primary={transaction.description || 'Transaction'}
-                          secondary={`${new Date(transaction.transactionDate).toLocaleDateString('fr-FR')} • ${transaction.user.firstName} ${transaction.user.lastName}`}
+                          secondary={`${new Date(transaction.transactionDate).toLocaleDateString('fr-FR')} à ${new Date(transaction.transactionDate).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} • ${transaction.user.firstName} ${transaction.user.lastName}`}
                         />
                         <Typography
                           variant="body1"
