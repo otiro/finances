@@ -147,16 +147,14 @@ export const createAccount = async (userId: string, data: CreateAccountInput) =>
 };
 
 /**
- * Récupère tous les comptes de l'utilisateur
+ * Récupère tous les comptes de l'utilisateur (comptes dont l'utilisateur est propriétaire)
  */
 export const getUserAccounts = async (userId: string) => {
   const accounts = await prisma.account.findMany({
     where: {
-      household: {
-        members: {
-          some: {
-            userId: userId,
-          },
+      owners: {
+        some: {
+          userId: userId,
         },
       },
     },
@@ -262,17 +260,15 @@ export const getHouseholdAccounts = async (householdId: string, userId: string) 
 };
 
 /**
- * Récupère un compte par ID
+ * Récupère un compte par ID (l'utilisateur doit être propriétaire du compte)
  */
 export const getAccountById = async (accountId: string, userId: string) => {
   const account = await prisma.account.findFirst({
     where: {
       id: accountId,
-      household: {
-        members: {
-          some: {
-            userId: userId,
-          },
+      owners: {
+        some: {
+          userId: userId,
         },
       },
     },
@@ -332,8 +328,8 @@ export const getAccountById = async (accountId: string, userId: string) => {
   });
 
   if (!account) {
-    const error = new Error('Compte non trouvé');
-    (error as any).status = HTTP_STATUS.NOT_FOUND;
+    const error = new Error(ERROR_MESSAGES.FORBIDDEN);
+    (error as any).status = HTTP_STATUS.FORBIDDEN;
     throw error;
   }
 
@@ -668,17 +664,15 @@ export const removeAccountOwner = async (
 };
 
 /**
- * Calcule le solde actuel d'un compte
+ * Calcule le solde actuel d'un compte (l'utilisateur doit être propriétaire)
  */
 export const getAccountBalance = async (accountId: string, userId: string) => {
   const account = await prisma.account.findFirst({
     where: {
       id: accountId,
-      household: {
-        members: {
-          some: {
-            userId: userId,
-          },
+      owners: {
+        some: {
+          userId: userId,
         },
       },
     },
@@ -693,8 +687,8 @@ export const getAccountBalance = async (accountId: string, userId: string) => {
   });
 
   if (!account) {
-    const error = new Error('Compte non trouvé');
-    (error as any).status = HTTP_STATUS.NOT_FOUND;
+    const error = new Error(ERROR_MESSAGES.FORBIDDEN);
+    (error as any).status = HTTP_STATUS.FORBIDDEN;
     throw error;
   }
 

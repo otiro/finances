@@ -18,15 +18,13 @@ export const createTransaction = async (
     notes?: string;
   }
 ) => {
-  // Vérifier que l'utilisateur a accès au compte (est membre du foyer propriétaire)
-  const account = await prisma.account.findUnique({
-    where: { id: accountId },
-    include: {
-      household: {
-        include: {
-          members: {
-            where: { userId },
-          },
+  // Vérifier que l'utilisateur est propriétaire du compte
+  const account = await prisma.account.findFirst({
+    where: {
+      id: accountId,
+      owners: {
+        some: {
+          userId,
         },
       },
     },
@@ -34,15 +32,8 @@ export const createTransaction = async (
 
   if (!account) {
     throw {
-      status: HTTP_STATUS.NOT_FOUND,
-      message: 'Compte non trouvé',
-    };
-  }
-
-  if (account.household.members.length === 0) {
-    throw {
       status: HTTP_STATUS.FORBIDDEN,
-      message: 'Accès refusé : vous ne faites pas partie de ce foyer',
+      message: 'Accès refusé : vous n\'êtes pas propriétaire de ce compte',
     };
   }
 
@@ -81,7 +72,7 @@ export const createTransaction = async (
 };
 
 /**
- * Récupère les transactions d'un compte
+ * Récupère les transactions d'un compte (l'utilisateur doit être propriétaire du compte)
  */
 export const getAccountTransactions = async (
   accountId: string,
@@ -89,15 +80,13 @@ export const getAccountTransactions = async (
   limit: number = 50,
   offset: number = 0
 ) => {
-  // Vérifier l'accès
-  const account = await prisma.account.findUnique({
-    where: { id: accountId },
-    include: {
-      household: {
-        include: {
-          members: {
-            where: { userId },
-          },
+  // Vérifier que l'utilisateur est propriétaire du compte
+  const account = await prisma.account.findFirst({
+    where: {
+      id: accountId,
+      owners: {
+        some: {
+          userId,
         },
       },
     },
@@ -105,15 +94,8 @@ export const getAccountTransactions = async (
 
   if (!account) {
     throw {
-      status: HTTP_STATUS.NOT_FOUND,
-      message: 'Compte non trouvé',
-    };
-  }
-
-  if (account.household.members.length === 0) {
-    throw {
       status: HTTP_STATUS.FORBIDDEN,
-      message: 'Accès refusé : vous ne faites pas partie de ce foyer',
+      message: 'Accès refusé : vous n\'êtes pas propriétaire de ce compte',
     };
   }
 
