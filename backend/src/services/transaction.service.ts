@@ -1,7 +1,7 @@
 import prisma from '../config/database';
 import { Decimal } from '@prisma/client/runtime/library';
 import { TransactionType } from '@prisma/client';
-import { HTTP_STATUS, ERROR_MESSAGES } from '../utils/constants';
+import { HTTP_STATUS } from '../utils/constants';
 
 /**
  * Crée une nouvelle transaction
