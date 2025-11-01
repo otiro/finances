@@ -489,6 +489,7 @@ export const addAccountOwner = async (
     include: {
       household: {
         select: {
+          id: true,
           sharingMode: true,
         },
       },
@@ -592,6 +593,7 @@ export const removeAccountOwner = async (
     include: {
       household: {
         select: {
+          id: true,
           sharingMode: true,
         },
       },
