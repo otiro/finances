@@ -123,9 +123,18 @@ const RecurringPatternForm: React.FC<RecurringPatternFormProps> = ({
     const convertToISO = (dateStr: string): string => {
       if (!dateStr) return '';
       // datetime-local format: 2025-11-01T14:30
-      // Need to convert to ISO: 2025-11-01T14:30:00.000Z or 2025-11-01T14:30:00
-      const isoStr = dateStr.includes('T') ? `${dateStr}:00` : dateStr;
-      return isoStr;
+      // Need to convert to ISO: 2025-11-01T14:30:00Z
+      if (dateStr.includes('T')) {
+        // Check if it already has seconds
+        const parts = dateStr.split('T');
+        const timePart = parts[1];
+        if (timePart && !timePart.includes(':00')) {
+          // Add :00 for seconds if missing
+          return `${dateStr}:00Z`;
+        }
+        return `${dateStr}Z`;
+      }
+      return dateStr;
     };
 
     const submitData: CreateRecurringPatternData = {
