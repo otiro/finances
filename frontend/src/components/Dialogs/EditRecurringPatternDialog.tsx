@@ -102,6 +102,10 @@ const EditRecurringPatternDialog: React.FC<EditRecurringPatternDialogProps> = ({
     }
   };
 
+  const handleCancel = () => {
+    onClose();
+  };
+
   return (
     <Dialog
       open={open}
@@ -157,7 +161,7 @@ const EditRecurringPatternDialog: React.FC<EditRecurringPatternDialogProps> = ({
                 categories={categories}
                 onSubmit={handleSubmit}
                 isLoading={loading}
-                onCancel={handleClose}
+                onCancel={handleCancel}
               />
             ) : (
               <Alert severity="info">
