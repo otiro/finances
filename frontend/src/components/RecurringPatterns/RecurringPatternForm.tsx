@@ -27,16 +27,40 @@ import type { CreateRecurringPatternData } from '../../services/recurringTransac
 const recurringPatternSchema = z.object({
   accountId: z.string().min(1, 'Veuillez sélectionner un compte'),
   name: z.string().min(1, 'Le nom est requis').max(100, 'Le nom ne doit pas dépasser 100 caractères'),
-  description: z.string().max(500, 'La description ne doit pas dépasser 500 caractères').optional(),
+  description: z.string().max(500, 'La description ne doit pas dépasser 500 caractères').optional().or(z.literal('')),
   frequency: z.enum(['DAILY', 'WEEKLY', 'BIWEEKLY', 'MONTHLY', 'QUARTERLY', 'YEARLY']),
   type: z.enum(['DEBIT', 'CREDIT']),
   amount: z.number().positive('Le montant doit être positif'),
-  categoryId: z.string().optional(),
-  startDate: z.string().datetime('Date de début invalide'),
-  endDate: z.string().datetime('Date de fin invalide').optional().or(z.literal('')),
-  dayOfMonth: z.number().min(1).max(31).optional().or(z.literal('')),
-  dayOfWeek: z.number().min(0).max(6).optional().or(z.literal('')),
-});
+  categoryId: z.string().optional().or(z.literal('')),
+  startDate: z.string().min(1, 'La date de début est requise'),
+  endDate: z.string().optional().or(z.literal('')),
+  dayOfMonth: z.union([z.number().min(1).max(31), z.literal('')]).optional(),
+  dayOfWeek: z.union([z.number().min(0).max(6), z.literal('')]).optional(),
+}).refine(
+  (data) => {
+    // Validate dayOfMonth for MONTHLY frequency
+    if (data.frequency === 'MONTHLY') {
+      return data.dayOfMonth !== '' && data.dayOfMonth !== undefined;
+    }
+    return true;
+  },
+  {
+    message: 'Le jour du mois est requis pour les transactions mensuelles',
+    path: ['dayOfMonth'],
+  }
+).refine(
+  (data) => {
+    // Validate dayOfWeek for WEEKLY frequency
+    if (data.frequency === 'WEEKLY') {
+      return data.dayOfWeek !== '' && data.dayOfWeek !== undefined;
+    }
+    return true;
+  },
+  {
+    message: 'Le jour de la semaine est requis pour les transactions hebdomadaires',
+    path: ['dayOfWeek'],
+  }
+);
 
 type RecurringPatternFormData = z.infer<typeof recurringPatternSchema>;
 
@@ -88,13 +112,22 @@ const RecurringPatternForm: React.FC<RecurringPatternFormProps> = ({
   const amount = watch('amount');
 
   const onSubmitForm = async (data: RecurringPatternFormData) => {
+    // Convert datetime-local format to ISO string if needed
+    const convertToISO = (dateStr: string): string => {
+      if (!dateStr) return '';
+      // datetime-local format: 2025-11-01T14:30
+      // Need to convert to ISO: 2025-11-01T14:30:00.000Z or 2025-11-01T14:30:00
+      const isoStr = dateStr.includes('T') ? `${dateStr}:00` : dateStr;
+      return isoStr;
+    };
+
     const submitData: CreateRecurringPatternData = {
       ...data,
       amount: Number(amount),
-      startDate: data.startDate,
-      endDate: data.endDate ? data.endDate : undefined,
-      dayOfMonth: data.dayOfMonth ? Number(data.dayOfMonth) : undefined,
-      dayOfWeek: data.dayOfWeek ? Number(data.dayOfWeek) : undefined,
+      startDate: convertToISO(data.startDate),
+      endDate: data.endDate ? convertToISO(data.endDate) : undefined,
+      dayOfMonth: data.dayOfMonth && data.dayOfMonth !== '' ? Number(data.dayOfMonth) : undefined,
+      dayOfWeek: data.dayOfWeek && data.dayOfWeek !== '' ? Number(data.dayOfWeek) : undefined,
     };
     await onSubmit(submitData);
   };
@@ -241,6 +274,10 @@ const RecurringPatternForm: React.FC<RecurringPatternFormProps> = ({
                 fullWidth
                 helperText="Quel jour du mois ? (1-31)"
                 error={!!errors.dayOfMonth}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  field.onChange(value === '' ? '' : parseInt(value, 10));
+                }}
               />
             )}
           />
@@ -252,13 +289,18 @@ const RecurringPatternForm: React.FC<RecurringPatternFormProps> = ({
             name="dayOfWeek"
             control={control}
             render={({ field }) => (
-              <FormControl fullWidth>
+              <FormControl fullWidth error={!!errors.dayOfWeek}>
                 <InputLabel>Jour de la semaine</InputLabel>
                 <Select
                   {...field}
                   label="Jour de la semaine"
                   value={field.value || ''}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    field.onChange(value === '' ? '' : parseInt(value as string, 10));
+                  }}
                 >
+                  <MenuItem value="">Sélectionner un jour</MenuItem>
                   <MenuItem value={0}>Dimanche</MenuItem>
                   <MenuItem value={1}>Lundi</MenuItem>
                   <MenuItem value={2}>Mardi</MenuItem>
@@ -267,6 +309,9 @@ const RecurringPatternForm: React.FC<RecurringPatternFormProps> = ({
                   <MenuItem value={5}>Vendredi</MenuItem>
                   <MenuItem value={6}>Samedi</MenuItem>
                 </Select>
+                {errors.dayOfWeek && (
+                  <FormHelperText>{errors.dayOfWeek.message}</FormHelperText>
+                )}
               </FormControl>
             )}
           />

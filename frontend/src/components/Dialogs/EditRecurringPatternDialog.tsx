@@ -114,6 +114,8 @@ const EditRecurringPatternDialog: React.FC<EditRecurringPatternDialogProps> = ({
       onClose={handleClose}
       maxWidth="sm"
       fullWidth
+      disableEscapeKeyDown
+      onBackdropClick={() => {}} // Prevent closing on backdrop click
       PaperProps={{
         sx: { minHeight: '600px' },
       }}
