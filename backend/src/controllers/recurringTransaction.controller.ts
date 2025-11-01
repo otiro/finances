@@ -15,7 +15,7 @@ declare global {
  * POST /api/households/:householdId/recurring-patterns
  * Crée un nouveau motif de transaction récurrente
  */
-export const createRecurringPattern = async (req: Request, res: Response) => {
+export const createRecurringPattern = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.userId!;
     const { householdId } = req.params;
@@ -28,10 +28,11 @@ export const createRecurringPattern = async (req: Request, res: Response) => {
         field: err.path.join('.'),
         message: err.message,
       }));
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+      res.status(HTTP_STATUS.BAD_REQUEST).json({
         status: 'error',
         message: JSON.stringify(errors),
       });
+      return;
     }
 
     const {
@@ -61,8 +62,8 @@ export const createRecurringPattern = async (req: Request, res: Response) => {
         categoryId: categoryId || undefined,
         startDate: new Date(startDate),
         endDate: endDate ? new Date(endDate) : undefined,
-        dayOfMonth,
-        dayOfWeek,
+        dayOfMonth: dayOfMonth || undefined,
+        dayOfWeek: dayOfWeek || undefined,
       }
     );
 
@@ -149,7 +150,7 @@ export const getRecurringPattern = async (req: Request, res: Response) => {
  * PATCH /api/households/:householdId/recurring-patterns/:patternId
  * Met à jour un motif récurrent
  */
-export const updateRecurringPattern = async (req: Request, res: Response) => {
+export const updateRecurringPattern = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.userId!;
     const { householdId, patternId } = req.params;
@@ -162,10 +163,11 @@ export const updateRecurringPattern = async (req: Request, res: Response) => {
         field: err.path.join('.'),
         message: err.message,
       }));
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+      res.status(HTTP_STATUS.BAD_REQUEST).json({
         status: 'error',
         message: JSON.stringify(errors),
       });
+      return;
     }
 
     const data = validationResult.data;
@@ -184,8 +186,8 @@ export const updateRecurringPattern = async (req: Request, res: Response) => {
         ...(data.endDate !== undefined && {
           endDate: data.endDate ? new Date(data.endDate) : null,
         }),
-        ...(data.dayOfMonth !== undefined && { dayOfMonth: data.dayOfMonth }),
-        ...(data.dayOfWeek !== undefined && { dayOfWeek: data.dayOfWeek }),
+        ...(data.dayOfMonth !== undefined && { dayOfMonth: data.dayOfMonth || undefined }),
+        ...(data.dayOfWeek !== undefined && { dayOfWeek: data.dayOfWeek || undefined }),
         ...(data.isActive !== undefined && { isActive: data.isActive }),
         ...(data.isPaused !== undefined && { isPaused: data.isPaused }),
       }
