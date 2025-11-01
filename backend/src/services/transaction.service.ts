@@ -359,35 +359,50 @@ export const calculateDebts = async (
       }
     }
 
-    // Pour chaque propriétaire, calculer sa part et sa dette
+    // Pour chaque paire de propriétaires, calculer qui doit à qui
+    const ownerDebts = new Map<string, number>(); // Map<userId, debtAmount>
+
+    // D'abord, calculer la dette pour chaque propriétaire
     for (const owner of account.owners) {
       const ownershipPercent = Number(owner.ownershipPercentage) / 100;
       const ownerShare = totalBalance * ownershipPercent;
       const ownerPaid = userPayments.get(owner.userId) || 0;
       const ownerDebt = ownerShare - ownerPaid;
+      ownerDebts.set(owner.userId, ownerDebt);
+    }
 
-      // Si ownerDebt > 0, le propriétaire doit payer
-      // Si ownerDebt < 0, on lui doit de l'argent
+    // Maintenant, créer les dettes entre propriétaires
+    // ownerDebt > 0 signifie que le propriétaire doit de l'argent
+    // ownerDebt < 0 signifie que le propriétaire doit recevoir de l'argent
+    for (const debtor of account.owners) {
+      const debtorAmount = ownerDebts.get(debtor.userId) || 0;
 
-      // Chercher qui peut payer ce propriétaire (ceux avec des crédits)
+      // Sauter si ce propriétaire n'a rien à payer
+      if (debtorAmount <= 0.01) {
+        continue;
+      }
+
+      // Chercher des créanciers qui doivent recevoir de l'argent
+      let remainingDebt = debtorAmount;
+
       for (const creditor of account.owners) {
-        if (creditor.userId === owner.userId) continue;
+        if (creditor.userId === debtor.userId) continue;
 
-        const creditorOwnershipPercent = Number(creditor.ownershipPercentage) / 100;
-        const creditorShare = totalBalance * creditorOwnershipPercent;
-        const creditorPaid = userPayments.get(creditor.userId) || 0;
-        const creditorDebt = creditorShare - creditorPaid;
+        const creditorAmount = ownerDebts.get(creditor.userId) || 0;
 
-        // Si creditor a un crédit (debt < 0) et owner doit payer (debt > 0)
-        if (creditorDebt < 0 && ownerDebt > 0) {
-          const debtAmount = Math.min(Math.abs(creditorDebt), ownerDebt);
+        // Le créancier doit recevoir de l'argent (montant négatif)
+        if (creditorAmount < -0.01 && remainingDebt > 0.01) {
+          const debtToTransfer = Math.min(remainingDebt, Math.abs(creditorAmount));
 
           if (!debtsMap.has(creditor.userId)) {
             debtsMap.set(creditor.userId, new Map());
           }
 
-          const existing = debtsMap.get(creditor.userId)?.get(owner.userId) || 0;
-          debtsMap.get(creditor.userId)?.set(owner.userId, existing + debtAmount);
+          const existing = debtsMap.get(creditor.userId)?.get(debtor.userId) || 0;
+          debtsMap.get(creditor.userId)?.set(debtor.userId, existing + debtToTransfer);
+
+          remainingDebt -= debtToTransfer;
+          ownerDebts.set(creditor.userId, creditorAmount + debtToTransfer);
         }
       }
     }
