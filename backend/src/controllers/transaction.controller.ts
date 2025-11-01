@@ -40,7 +40,7 @@ export const createTransaction = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     const status = error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR;
-    const message = error.message || ERROR_MESSAGES.INTERNAL_SERVER_ERROR;
+    const message = error.message || ERROR_MESSAGES.INTERNAL_ERROR;
 
     res.status(status).json({
       status: 'error',
@@ -73,7 +73,7 @@ export const getAccountTransactions = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     const status = error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR;
-    const message = error.message || ERROR_MESSAGES.INTERNAL_SERVER_ERROR;
+    const message = error.message || ERROR_MESSAGES.INTERNAL_ERROR;
 
     res.status(status).json({
       status: 'error',
@@ -102,7 +102,7 @@ export const getTransactionById = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     const status = error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR;
-    const message = error.message || ERROR_MESSAGES.INTERNAL_SERVER_ERROR;
+    const message = error.message || ERROR_MESSAGES.INTERNAL_ERROR;
 
     res.status(status).json({
       status: 'error',
@@ -141,7 +141,7 @@ export const updateTransaction = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     const status = error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR;
-    const message = error.message || ERROR_MESSAGES.INTERNAL_SERVER_ERROR;
+    const message = error.message || ERROR_MESSAGES.INTERNAL_ERROR;
 
     res.status(status).json({
       status: 'error',
@@ -167,7 +167,7 @@ export const deleteTransaction = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     const status = error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR;
-    const message = error.message || ERROR_MESSAGES.INTERNAL_SERVER_ERROR;
+    const message = error.message || ERROR_MESSAGES.INTERNAL_ERROR;
 
     res.status(status).json({
       status: 'error',
@@ -193,7 +193,7 @@ export const getHouseholdDebts = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     const status = error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR;
-    const message = error.message || ERROR_MESSAGES.INTERNAL_SERVER_ERROR;
+    const message = error.message || ERROR_MESSAGES.INTERNAL_ERROR;
 
     res.status(status).json({
       status: 'error',
