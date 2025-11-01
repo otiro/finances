@@ -26,8 +26,8 @@ npm run dev
 ### Test 1 : Récupérer les catégories disponibles
 
 ```bash
-curl http://localhost:3030/api/households/HOUSEHOLD_ID/categories \
-  -H "Authorization: Bearer YOUR_TOKEN"
+curl http://localhost:3030/api/households/ea433d78-6001-464c-8071-21d3565b5da3/categories \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk4NjU0MiwiZXhwIjoxNzYyMDcyOTQyfQ.BYb_YZ-iw_tZknQCuXkArmCfYhywJ62bIqh80Oq-U44"
 ```
 
 **Résultat attendu :**
@@ -50,14 +50,14 @@ curl http://localhost:3030/api/households/HOUSEHOLD_ID/categories \
 ### Test 2 : Créer une transaction avec catégorie
 
 ```bash
-curl -X POST http://localhost:3030/api/accounts/ACCOUNT_ID/transactions \
+curl -X POST http://localhost:3030/api/accounts/9235729d-9109-44a6-b518-c95d314ea8cc/transactions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk4NjU0MiwiZXhwIjoxNzYyMDcyOTQyfQ.BYb_YZ-iw_tZknQCuXkArmCfYhywJ62bIqh80Oq-U44" \
   -d '{
-    "amount": 25.50,
+    "amount": 15.50,
     "type": "DEBIT",
-    "description": "Courses alimentaires",
-    "categoryId": "CATEGORY_ID",
+    "description": "Cinéma",
+    "categoryId": "6d8a5c84-2ada-4bb3-8f2b-4264d987621f",
     "transactionDate": "2025-11-01T14:30:00Z"
   }'
 ```
@@ -72,13 +72,13 @@ curl -X POST http://localhost:3030/api/accounts/ACCOUNT_ID/transactions \
 ### Test 3 : Modifier une transaction
 
 ```bash
-curl -X PATCH http://localhost:3030/api/accounts/ACCOUNT_ID/transactions/TRANSACTION_ID \
+curl -X PATCH http://localhost:3030/api/accounts/ACCOUNT_ID/transactions/e39bc7a4-8c29-4c24-b859-02f0d189b41e \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk4NjU0MiwiZXhwIjoxNzYyMDcyOTQyfQ.BYb_YZ-iw_tZknQCuXkArmCfYhywJ62bIqh80Oq-U44" \
   -d '{
-    "description": "Courses - MODIFIÉE",
+    "description": "restaurant - MODIFIÉE",
     "amount": 30.00,
-    "categoryId": "NEW_CATEGORY_ID"
+    "categoryId": "5cc6735d-3c3e-4ece-9e57-a2327eb1229e"
   }'
 ```
 
@@ -92,12 +92,12 @@ curl -X PATCH http://localhost:3030/api/accounts/ACCOUNT_ID/transactions/TRANSAC
 ### Test 4 : Créer une catégorie personnalisée
 
 ```bash
-curl -X POST http://localhost:3030/api/households/HOUSEHOLD_ID/categories \
+curl -X POST http://localhost:3030/api/households/ea433d78-6001-464c-8071-21d3565b5da3/categories \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer ADMIN_TOKEN" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MTk4NjU0MiwiZXhwIjoxNzYyMDcyOTQyfQ.BYb_YZ-iw_tZknQCuXkArmCfYhywJ62bIqh80Oq-U44" \
   -d '{
-    "name": "Sorties",
-    "color": "#FF00FF"
+    "name": "Restaurant",
+    "color": "#FF001B"
   }'
 ```
 

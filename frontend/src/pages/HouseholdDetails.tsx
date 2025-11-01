@@ -28,9 +28,11 @@ import { useHouseholdStore } from '../store/slices/householdSlice';
 import { useAccountStore } from '../store/slices/accountSlice';
 import * as householdService from '../services/household.service';
 import * as accountService from '../services/account.service';
+import * as categoryService from '../services/category.service';
 import AddMemberDialog from '../components/AddMemberDialog';
 import CreateAccountDialog from '../components/CreateAccountDialog';
 import UpdateSharingModeDialog from '../components/UpdateSharingModeDialog';
+import CreateCategoryDialog from '../components/CreateCategoryDialog';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -63,6 +65,8 @@ export default function HouseholdDetails() {
   const [addMemberDialogOpen, setAddMemberDialogOpen] = useState(false);
   const [createAccountDialogOpen, setCreateAccountDialogOpen] = useState(false);
   const [updateSharingModeDialogOpen, setUpdateSharingModeDialogOpen] = useState(false);
+  const [createCategoryDialogOpen, setCreateCategoryDialogOpen] = useState(false);
+  const [categories, setCategories] = useState<categoryService.Category[]>([]);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -76,9 +80,20 @@ export default function HouseholdDetails() {
       if (id) {
         await householdService.getHouseholdById(id);
         await accountService.getHouseholdAccounts(id);
+        await loadCategories(id);
       }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erreur lors du chargement des données');
+    }
+  };
+
+  const loadCategories = async (householdId: string) => {
+    try {
+      const result = await categoryService.getAllAvailableCategories(householdId);
+      const allCategories = [...(result.system || []), ...(result.household || [])];
+      setCategories(allCategories);
+    } catch (err: any) {
+      console.error('Error loading categories:', err);
     }
   };
 
@@ -176,6 +191,7 @@ export default function HouseholdDetails() {
         <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue)}>
           <Tab label="Membres" />
           <Tab label="Comptes" />
+          <Tab label="Catégories" />
         </Tabs>
       </Box>
 
@@ -290,6 +306,56 @@ export default function HouseholdDetails() {
         )}
       </TabPanel>
 
+      <TabPanel value={tabValue} index={2}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography variant="h6">Catégories du foyer</Typography>
+          {isAdmin && (
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={() => setCreateCategoryDialogOpen(true)}
+            >
+              Créer une catégorie
+            </Button>
+          )}
+        </Box>
+
+        {categories.length === 0 ? (
+          <Card>
+            <CardContent sx={{ textAlign: 'center', py: 4 }}>
+              <Typography variant="body1" color="text.secondary">
+                Aucune catégorie créée pour ce foyer
+              </Typography>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card>
+            <List>
+              {categories.map((category, index) => (
+                <Box key={category.id}>
+                  {index > 0 && <Divider />}
+                  <ListItem>
+                    <Box
+                      sx={{
+                        width: 16,
+                        height: 16,
+                        borderRadius: '50%',
+                        backgroundColor: category.color,
+                        mr: 2,
+                      }}
+                    />
+                    <ListItemText
+                      primary={category.name}
+                      secondary={category.isSystem ? 'Catégorie système' : 'Catégorie personnalisée'}
+                    />
+                  </ListItem>
+                </Box>
+              ))}
+            </List>
+          </Card>
+        )}
+      </TabPanel>
+
       {isAdmin && (
         <AddMemberDialog
           open={addMemberDialogOpen}
@@ -312,6 +378,15 @@ export default function HouseholdDetails() {
           householdId={currentHousehold.id}
           currentMode={currentHousehold.sharingMode}
           onClose={() => setUpdateSharingModeDialogOpen(false)}
+          onSuccess={loadHouseholdData}
+        />
+      )}
+
+      {isAdmin && (
+        <CreateCategoryDialog
+          open={createCategoryDialogOpen}
+          householdId={currentHousehold.id}
+          onClose={() => setCreateCategoryDialogOpen(false)}
           onSuccess={loadHouseholdData}
         />
       )}
