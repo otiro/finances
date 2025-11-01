@@ -272,7 +272,65 @@ export const removeMemberFromHousehold = async (
 };
 
 /**
+ * Calcule les parts de propriété pour chaque utilisateur
+ */
+const calculateOwnershipShares = async (
+  ownerIds: string[],
+  _householdId: string,
+  sharingMode: 'EQUAL' | 'PROPORTIONAL' | 'CUSTOM'
+): Promise<Record<string, number>> => {
+  if (sharingMode === 'EQUAL') {
+    const sharePerOwner = 100 / ownerIds.length;
+    return ownerIds.reduce((acc, ownerId) => {
+      acc[ownerId] = sharePerOwner;
+      return acc;
+    }, {} as Record<string, number>);
+  }
+
+  if (sharingMode === 'PROPORTIONAL') {
+    // Récupérer les revenus des propriétaires
+    const owners = await prisma.user.findMany({
+      where: {
+        id: { in: ownerIds },
+      },
+      select: {
+        id: true,
+        monthlyIncome: true,
+      },
+    });
+
+    const totalIncome = owners.reduce(
+      (sum, owner) => sum + Number(owner.monthlyIncome),
+      0
+    );
+
+    if (totalIncome === 0) {
+      // Si personne n'a de revenu, partage égal
+      const sharePerOwner = 100 / ownerIds.length;
+      return ownerIds.reduce((acc, ownerId) => {
+        acc[ownerId] = sharePerOwner;
+        return acc;
+      }, {} as Record<string, number>);
+    }
+
+    return owners.reduce((acc, owner) => {
+      const share = (Number(owner.monthlyIncome) / totalIncome) * 100;
+      acc[owner.id] = Math.round(share * 100) / 100; // Arrondir à 2 décimales
+      return acc;
+    }, {} as Record<string, number>);
+  }
+
+  // CUSTOM: parts égales par défaut, l'utilisateur pourra les modifier plus tard
+  const sharePerOwner = 100 / ownerIds.length;
+  return ownerIds.reduce((acc, ownerId) => {
+    acc[ownerId] = sharePerOwner;
+    return acc;
+  }, {} as Record<string, number>);
+};
+
+/**
  * Met à jour le mode de partage d'un foyer
+ * Recalcule les parts de propriété de tous les comptes du foyer
  */
 export const updateHouseholdSharingMode = async (
   householdId: string,
@@ -295,10 +353,50 @@ export const updateHouseholdSharingMode = async (
     throw error;
   }
 
+  // Récupérer tous les comptes du foyer avec leurs propriétaires
+  const accounts = await prisma.account.findMany({
+    where: { householdId: householdId },
+    include: {
+      owners: {
+        select: {
+          userId: true,
+        },
+      },
+    },
+  });
+
+  // Mettre à jour le mode de partage du foyer
   const household = await prisma.household.update({
     where: { id: householdId },
     data: { sharingMode },
   });
+
+  // Recalculer et mettre à jour les parts de propriété pour chaque compte
+  for (const account of accounts) {
+    const ownerIds = account.owners.map((o) => o.userId);
+
+    // Calculer les nouvelles parts selon le nouveau mode
+    const newShares = await calculateOwnershipShares(
+      ownerIds,
+      householdId,
+      sharingMode
+    );
+
+    // Mettre à jour les parts pour chaque propriétaire
+    for (const ownerId of ownerIds) {
+      await prisma.accountOwner.update({
+        where: {
+          accountId_userId: {
+            accountId: account.id,
+            userId: ownerId,
+          },
+        },
+        data: {
+          ownershipPercentage: newShares[ownerId],
+        },
+      });
+    }
+  }
 
   return household;
 };
