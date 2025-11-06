@@ -104,18 +104,25 @@ export default function BudgetFormDialog({
     try {
       setLocalError(null);
 
+      // Convert empty strings to null for optional fields
+      const submitData = {
+        ...data,
+        description: data.description || undefined,
+        endDate: data.endDate ? data.endDate : undefined,
+      };
+
       if (editingBudget) {
         await updateBudget(householdId, editingBudget.id, {
-          name: data.name,
-          description: data.description,
-          amount: data.amount,
-          period: data.period,
-          endDate: data.endDate,
-          alertThreshold: data.alertThreshold,
-          alertEnabled: data.alertEnabled,
+          name: submitData.name,
+          description: submitData.description,
+          amount: submitData.amount,
+          period: submitData.period,
+          endDate: submitData.endDate,
+          alertThreshold: submitData.alertThreshold,
+          alertEnabled: submitData.alertEnabled,
         });
       } else {
-        await createBudget(householdId, data);
+        await createBudget(householdId, submitData);
       }
 
       reset();
