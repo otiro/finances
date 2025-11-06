@@ -19,7 +19,7 @@ import recurringTransactionRoutes from './routes/recurringTransaction.routes';
 // import analyticsRoutes from './routes/analytics.routes';
 
 // Import jobs
-import { startRecurringTransactionCronJob } from './jobs/recurringTransactionJob';
+import { startRecurringTransactionCronJobDevelopment } from './jobs/recurringTransactionJob';
 
 // Load environment variables
 dotenv.config();
@@ -63,7 +63,7 @@ app.listen(PORT, () => {
 
   // Start cron jobs
   logger.info('Starting background jobs...');
-  startRecurringTransactionCronJob();
+  startRecurringTransactionCronJobDevelopment();
   logger.info('Recurring transaction cron job started');
 });
 
