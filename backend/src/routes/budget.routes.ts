@@ -1,0 +1,52 @@
+import { Router } from 'express';
+import { authenticate } from '../middleware/auth.middleware';
+import * as budgetController from '../controllers/budget.controller';
+
+const router = Router();
+
+// Protéger toutes les routes avec l'authentification
+router.use(authenticate);
+
+/**
+ * GET /api/households/:householdId/budgets
+ * Récupère tous les budgets d'un foyer
+ */
+router.get('/households/:householdId/budgets', budgetController.getHouseholdBudgets);
+
+/**
+ * GET /api/households/:householdId/budgets/summary
+ * Récupère un résumé des budgets avec statuts
+ */
+router.get('/households/:householdId/budgets/summary', budgetController.getHouseholdBudgetsSummary);
+
+/**
+ * GET /api/households/:householdId/budgets/:budgetId
+ * Récupère un budget spécifique avec son statut
+ */
+router.get('/households/:householdId/budgets/:budgetId', budgetController.getBudgetById);
+
+/**
+ * GET /api/households/:householdId/budgets/:budgetId/alerts
+ * Récupère les alertes d'un budget
+ */
+router.get('/households/:householdId/budgets/:budgetId/alerts', budgetController.getBudgetAlerts);
+
+/**
+ * POST /api/households/:householdId/budgets
+ * Crée un nouveau budget pour un foyer
+ */
+router.post('/households/:householdId/budgets', budgetController.createBudget);
+
+/**
+ * PATCH /api/households/:householdId/budgets/:budgetId
+ * Met à jour un budget existant
+ */
+router.patch('/households/:householdId/budgets/:budgetId', budgetController.updateBudget);
+
+/**
+ * DELETE /api/households/:householdId/budgets/:budgetId
+ * Supprime un budget
+ */
+router.delete('/households/:householdId/budgets/:budgetId', budgetController.deleteBudget);
+
+export default router;

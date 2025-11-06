@@ -255,22 +255,66 @@ model RecurringPattern {
 
 // Table des budgets
 model Budget {
-  id          String       @id @default(uuid())
-  householdId String       @map("household_id")
-  categoryId  String       @map("category_id")
-  amount      Decimal      @db.Decimal(10, 2)
-  period      BudgetPeriod @default(MONTHLY)
-  startDate   DateTime     @map("start_date")
-  endDate     DateTime?    @map("end_date")
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime     @updatedAt @map("updated_at")
+  id                String       @id @default(uuid())
+  householdId       String       @map("household_id")
+  categoryId        String       @map("category_id")
+
+  name              String       // "Budget Alimentation"
+  description       String?
+  amount            Decimal      @db.Decimal(10, 2)  // Montant max
+  period            BudgetPeriod @default(MONTHLY)
+
+  startDate         DateTime     @map("start_date")
+  endDate           DateTime?    @map("end_date")
+
+  alertThreshold    Int          @default(80)        // % avant alerte (80%)
+  alertEnabled      Boolean      @default(true)      @map("alert_enabled")
+
+  isActive          Boolean      @default(true)      @map("is_active")
+  createdAt         DateTime     @default(now())     @map("created_at")
+  updatedAt         DateTime     @updatedAt          @map("updated_at")
 
   // Relations
-  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
-  category  Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  household         Household               @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  category          Category                @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  transactions      BudgetTransaction[]
+  alerts            BudgetAlert[]
 
   @@index([householdId, categoryId])
+  @@index([householdId, isActive])
   @@map("budgets")
+}
+
+// Table de liaison budgets-transactions
+model BudgetTransaction {
+  id          String   @id @default(uuid())
+  budgetId    String   @map("budget_id")
+  transactionId String  @map("transaction_id")
+  recordedAt  DateTime @default(now()) @map("recorded_at")
+
+  // Relations
+  budget      Budget   @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+
+  @@unique([budgetId, transactionId])
+  @@map("budget_transactions")
+}
+
+// Table des alertes budgétaires
+model BudgetAlert {
+  id              String   @id @default(uuid())
+  budgetId        String   @map("budget_id")
+
+  currentSpent    Decimal  @db.Decimal(10, 2)
+  percentageUsed  Decimal  @db.Decimal(5, 2)  // 0-100%
+  thresholdReached Boolean
+
+  createdAt       DateTime @default(now())    @map("created_at")
+
+  // Relations
+  budget          Budget   @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+
+  @@index([budgetId, createdAt])
+  @@map("budget_alerts")
 }
 
 // Table des règles de catégorisation

@@ -15,7 +15,7 @@ import accountRoutes from './routes/account.routes';
 import transactionRoutes from './routes/transaction.routes';
 import categoryRoutes from './routes/category.routes';
 import recurringTransactionRoutes from './routes/recurringTransaction.routes';
-// import budgetRoutes from './routes/budget.routes';
+import budgetRoutes from './routes/budget.routes';
 // import analyticsRoutes from './routes/analytics.routes';
 
 // Import jobs
@@ -46,10 +46,10 @@ app.get('/health', (_req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/households', householdRoutes);
 app.use('/api/households', recurringTransactionRoutes);
+app.use('/api/households', budgetRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/accounts', transactionRoutes);
 app.use('/api', categoryRoutes);
-// app.use('/api/budgets', budgetRoutes);
 // app.use('/api/analytics', analyticsRoutes);
 
 // Error handling
