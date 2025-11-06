@@ -1,0 +1,116 @@
+================================================================================
+                   FINANCES APPLICATION - DOCUMENTATION INDEX
+================================================================================
+
+📍 COMMENCEZ ICI
+================================================================================
+START_HERE.md                    ← LIRE EN PREMIER (guide navigation)
+
+📚 DOCUMENTATION PRINCIPALE
+================================================================================
+README.md                        Vue d'ensemble du projet
+QUICKSTART.md                    Guide démarrage rapide
+PROJECT_STATUS.md               État global du projet
+
+🔧 INSTALLATION & CONFIGURATION
+================================================================================
+INSTALLATION.md                 Installation locale + Raspberry Pi
+CONFIGURATION_RASPBERRY_PI.md   Configuration spécifique RPi
+
+📋 PHASE 5 - TRANSACTIONS RÉCURRENTES ✅
+================================================================================
+PHASE5_SUMMARY.md              Résumé exécutif (LIRE)
+PHASE5_COMPLETE.md             Documentation technique complète (RÉFÉRENCE)
+TESTING_PHASE5_1.md            Tests backend (15 cas)
+TESTING_PHASE5_2.md            Tests frontend (40+ cas)
+TESTING_PHASE5_3.md            Tests widget (12 cas)
+CRON_JOB_VERIFICATION.md       Guide vérification cron job
+
+📊 PHASE 6 - PLANNING 🚀
+================================================================================
+PHASE6_VISION.md               Vision & planning Phase 6 (LIRE APRÈS PHASE 5)
+
+🗂️ ORGANISATION
+================================================================================
+DOCUMENTATION_STRUCTURE.md      Organisation complète des docs
+STRUCTURE.md                    Structure du code source
+
+📁 FICHIERS ARCHIVÉS (Historique - Ne pas consulter)
+================================================================================
+PHASE5_PLAN.md
+PHASE5_1_COMPLETE.md
+PHASE5_1_DEPLOYMENT_GUIDE.md
+PHASE5_2_PLAN.md
+PHASE5_2_PROGRESS.md
+PHASE5_2_INTEGRATION_COMPLETE.md
+PHASE4_PROGRESS.md
+TESTING_PHASE4.md
+ROADMAP_PHASE5_AND_BEYOND.md
+WHAT_IS_NEXT.md
+CHANGELOG.md
+CLEANUP_COMPLETE.md
+
+================================================================================
+                            QUICK NAVIGATION
+================================================================================
+
+JE VEUX...                          →  LIRE...
+────────────────────────────────────────────────────────────────────────────
+
+Comprendre le projet               →  README.md
+Installer le projet                →  INSTALLATION.md
+Configurer Raspberry Pi            →  CONFIGURATION_RASPBERRY_PI.md
+Voir l'état global                 →  PROJECT_STATUS.md
+Comprendre Phase 5                 →  PHASE5_SUMMARY.md (résumé)
+                                       PHASE5_COMPLETE.md (détails)
+Tester Phase 5                     →  TESTING_PHASE5_1/2/3.md
+Dépanner cron job                  →  CRON_JOB_VERIFICATION.md
+Planifier Phase 6                  →  PHASE6_VISION.md
+Trouver un fichier                 →  DOCUMENTATION_STRUCTURE.md
+
+================================================================================
+                            STRUCTURE PROJET
+================================================================================
+
+finances/
+├── backend/                  Node.js + Express + PostgreSQL
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── services/
+│   │   ├── routes/
+│   │   └── jobs/
+│   └── prisma/
+│
+├── frontend/                 React + Vite + Material-UI
+│   └── src/
+│       ├── components/
+│       ├── pages/
+│       ├── services/
+│       ├── store/
+│       └── hooks/
+│
+└── docs/                     ← VOUS ÊTES ICI
+
+================================================================================
+                            STATUS PHASES
+================================================================================
+
+Phase 1: Authentification    ✅ COMPLÈTE
+Phase 2: Comptes           ✅ COMPLÈTE
+Phase 3: Transactions      ✅ COMPLÈTE
+Phase 4: Catégories        ✅ COMPLÈTE
+Phase 5: Récurrences       ✅ COMPLÈTE (Testée en production)
+Phase 6: Budgets/Analytics 🚀 PLANNING
+
+================================================================================
+                        CONTACTS & SUPPORT
+================================================================================
+
+Issues                      → GitHub Issues
+Logs Production            → ~/finances/backend/logs/app.log
+Database                   → psql -U postgres -d finances
+API Status                 → curl http://localhost:3000/health
+
+================================================================================
+
+Dernière mise à jour: November 6, 2025
