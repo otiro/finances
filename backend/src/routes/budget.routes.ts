@@ -16,20 +16,22 @@ router.get('/households/:householdId/budgets', budgetController.getHouseholdBudg
 /**
  * GET /api/households/:householdId/budgets/summary
  * Récupère un résumé des budgets avec statuts
+ * DOIT être avant /:budgetId car sinon "summary" sera traité comme un budgetId
  */
 router.get('/households/:householdId/budgets/summary', budgetController.getHouseholdBudgetsSummary);
+
+/**
+ * GET /api/households/:householdId/budgets/:budgetId/alerts
+ * Récupère les alertes d'un budget
+ * DOIT être avant /:budgetId seul car sinon "/alerts" sera traité comme un budgetId
+ */
+router.get('/households/:householdId/budgets/:budgetId/alerts', budgetController.getBudgetAlerts);
 
 /**
  * GET /api/households/:householdId/budgets/:budgetId
  * Récupère un budget spécifique avec son statut
  */
 router.get('/households/:householdId/budgets/:budgetId', budgetController.getBudgetById);
-
-/**
- * GET /api/households/:householdId/budgets/:budgetId/alerts
- * Récupère les alertes d'un budget
- */
-router.get('/households/:householdId/budgets/:budgetId/alerts', budgetController.getBudgetAlerts);
 
 /**
  * POST /api/households/:householdId/budgets

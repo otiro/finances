@@ -1,6 +1,4 @@
-import axios, { AxiosError } from 'axios';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import api from './api';
 
 export interface BudgetAlert {
   id: string;
@@ -86,14 +84,7 @@ class BudgetService {
    */
   async getHouseholdBudgets(householdId: string): Promise<Budget[]> {
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/households/${householdId}/budgets`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }
-      );
+      const response = await api.get(`/households/${householdId}/budgets`);
       return response.data.data || [];
     } catch (error) {
       this.handleError(error);
@@ -106,14 +97,7 @@ class BudgetService {
    */
   async getHouseholdBudgetsSummary(householdId: string): Promise<BudgetsSummary> {
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/households/${householdId}/budgets/summary`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }
-      );
+      const response = await api.get(`/households/${householdId}/budgets/summary`);
       return response.data.data;
     } catch (error) {
       this.handleError(error);
@@ -126,14 +110,7 @@ class BudgetService {
    */
   async getBudgetById(householdId: string, budgetId: string): Promise<BudgetStatus> {
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/households/${householdId}/budgets/${budgetId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }
-      );
+      const response = await api.get(`/households/${householdId}/budgets/${budgetId}`);
       return response.data.data;
     } catch (error) {
       this.handleError(error);
@@ -146,14 +123,7 @@ class BudgetService {
    */
   async getBudgetAlerts(householdId: string, budgetId: string): Promise<BudgetAlert[]> {
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/households/${householdId}/budgets/${budgetId}/alerts`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }
-      );
+      const response = await api.get(`/households/${householdId}/budgets/${budgetId}/alerts`);
       return response.data.data || [];
     } catch (error) {
       this.handleError(error);
@@ -164,21 +134,9 @@ class BudgetService {
   /**
    * Crée un nouveau budget
    */
-  async createBudget(
-    householdId: string,
-    data: CreateBudgetInput
-  ): Promise<Budget> {
+  async createBudget(householdId: string, data: CreateBudgetInput): Promise<Budget> {
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/households/${householdId}/budgets`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const response = await api.post(`/households/${householdId}/budgets`, data);
       return response.data.data;
     } catch (error) {
       this.handleError(error);
@@ -195,16 +153,7 @@ class BudgetService {
     data: UpdateBudgetInput
   ): Promise<Budget> {
     try {
-      const response = await axios.patch(
-        `${API_BASE_URL}/households/${householdId}/budgets/${budgetId}`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const response = await api.patch(`/households/${householdId}/budgets/${budgetId}`, data);
       return response.data.data;
     } catch (error) {
       this.handleError(error);
@@ -217,14 +166,7 @@ class BudgetService {
    */
   async deleteBudget(householdId: string, budgetId: string): Promise<void> {
     try {
-      await axios.delete(
-        `${API_BASE_URL}/households/${householdId}/budgets/${budgetId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }
-      );
+      await api.delete(`/households/${householdId}/budgets/${budgetId}`);
     } catch (error) {
       this.handleError(error);
       throw error;
@@ -235,15 +177,12 @@ class BudgetService {
    * Gère les erreurs API
    */
   private handleError(error: any): void {
-    if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError<any>;
-      const status = axiosError.response?.status;
-      const data = axiosError.response?.data;
+    if (error.response) {
+      const status = error.response.status;
+      const data = error.response.data;
 
       if (status === 401) {
-        // Token expiré
-        localStorage.removeItem('token');
-        window.location.href = '/login';
+        console.error('Token expiré ou invalide');
       } else if (status === 403) {
         console.error('Accès refusé', data?.message);
       } else if (status === 404) {
@@ -253,6 +192,10 @@ class BudgetService {
       } else {
         console.error('Erreur serveur', data?.message);
       }
+    } else if (error.request) {
+      console.error('Pas de réponse du serveur');
+    } else {
+      console.error('Erreur:', error.message);
     }
   }
 }
