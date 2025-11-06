@@ -64,7 +64,8 @@ export default function BudgetFormDialog({
       setCategoriesLoading(true);
       getCategoriesForHousehold(householdId)
         .then((result) => {
-          const categoryList = result.data.household || [];
+          // result is already { system: Category[]; household: Category[] }
+          const categoryList = result.household || [];
           setCategories(categoryList);
         })
         .catch((err) => {
