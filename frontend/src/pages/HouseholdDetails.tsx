@@ -217,6 +217,7 @@ export default function HouseholdDetails() {
           <Tab label="Comptes" />
           <Tab label="Catégories" />
           <Tab label="Transactions Récurrentes" />
+          <Tab label="Budgets" />
         </Tabs>
       </Box>
 
@@ -470,6 +471,26 @@ export default function HouseholdDetails() {
           <CardContent sx={{ textAlign: 'center', py: 4 }}>
             <Typography variant="body1" color="text.secondary">
               Cliquez sur le bouton ci-dessus pour gérer vos transactions récurrentes
+            </Typography>
+          </CardContent>
+        </Card>
+      </TabPanel>
+
+      <TabPanel value={tabValue} index={5}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography variant="h6">Budgets</Typography>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => navigate(`/households/${id}/budgets`)}
+          >
+            Gérer les budgets
+          </Button>
+        </Box>
+        <Card>
+          <CardContent sx={{ textAlign: 'center', py: 4 }}>
+            <Typography variant="body1" color="text.secondary">
+              Cliquez sur le bouton ci-dessus pour gérer vos budgets par catégorie
             </Typography>
           </CardContent>
         </Card>
