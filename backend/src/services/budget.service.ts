@@ -460,7 +460,7 @@ export const getHouseholdBudgetsSummary = async (householdId: string, userId: st
 
   // Calculer les statistiques globales
   const totalBudgeted = summaries.reduce((sum, s) => sum + parseFloat(s.budget.amount.toString()), 0);
-  const totalSpent = summaries.reduce((sum, s) => sum + s.currentSpent, 0);
+  const totalSpent = summaries.reduce((sum, s) => sum + (typeof s.currentSpent === 'number' ? s.currentSpent : parseFloat(s.currentSpent.toString())), 0);
   const budgetsExceeded = summaries.filter(s => s.status === 'exceeded').length;
   const budgetsNearThreshold = summaries.filter(s => s.thresholdReached && s.status !== 'exceeded').length;
 
