@@ -86,17 +86,7 @@ export default function BudgetFormDialog({
     watch,
   } = useForm<BudgetFormData>({
     resolver: zodResolver(createBudgetSchema),
-    defaultValues: editingBudget ? {
-      categoryId: editingBudget.categoryId,
-      name: editingBudget.name,
-      description: editingBudget.description || '',
-      amount: parseFloat(editingBudget.amount.toString()),
-      period: editingBudget.period,
-      startDate: editingBudget.startDate.split('T')[0],
-      endDate: editingBudget.endDate?.split('T')[0] || '',
-      alertThreshold: editingBudget.alertThreshold,
-      alertEnabled: editingBudget.alertEnabled,
-    } : {
+    defaultValues: {
       categoryId: '',
       name: '',
       description: '',
@@ -108,6 +98,35 @@ export default function BudgetFormDialog({
       alertEnabled: true,
     },
   });
+
+  // Reset form when editingBudget changes
+  useEffect(() => {
+    if (editingBudget) {
+      reset({
+        categoryId: editingBudget.categoryId,
+        name: editingBudget.name,
+        description: editingBudget.description || '',
+        amount: parseFloat(editingBudget.amount.toString()),
+        period: editingBudget.period,
+        startDate: editingBudget.startDate.split('T')[0],
+        endDate: editingBudget.endDate?.split('T')[0] || '',
+        alertThreshold: editingBudget.alertThreshold,
+        alertEnabled: editingBudget.alertEnabled,
+      });
+    } else {
+      reset({
+        categoryId: '',
+        name: '',
+        description: '',
+        amount: undefined,
+        period: 'MONTHLY',
+        startDate: new Date().toISOString().split('T')[0],
+        endDate: '',
+        alertThreshold: 80,
+        alertEnabled: true,
+      });
+    }
+  }, [editingBudget, reset]);
 
   const selectedCategory = watch('categoryId');
   const selectedCategoryObj = categories.find((c) => c.id === selectedCategory);
