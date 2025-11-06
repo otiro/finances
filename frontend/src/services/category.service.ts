@@ -26,6 +26,13 @@ export const getAllAvailableCategories = async (householdId: string) => {
 };
 
 /**
+ * Alias pour récupérer les catégories du foyer (système + foyer)
+ */
+export const getCategoriesForHousehold = async (householdId: string) => {
+  return getAllAvailableCategories(householdId);
+};
+
+/**
  * Récupère les catégories système
  */
 export const getSystemCategories = async () => {
