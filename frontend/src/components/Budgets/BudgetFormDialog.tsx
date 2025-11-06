@@ -71,21 +71,21 @@ export default function BudgetFormDialog({
     defaultValues: editingBudget ? {
       categoryId: editingBudget.categoryId,
       name: editingBudget.name,
-      description: editingBudget.description,
+      description: editingBudget.description || '',
       amount: parseFloat(editingBudget.amount.toString()),
       period: editingBudget.period,
       startDate: editingBudget.startDate.split('T')[0],
-      endDate: editingBudget.endDate?.split('T')[0] || null,
+      endDate: editingBudget.endDate?.split('T')[0] || '',
       alertThreshold: editingBudget.alertThreshold,
       alertEnabled: editingBudget.alertEnabled,
     } : {
       categoryId: '',
       name: '',
       description: '',
-      amount: 0,
+      amount: undefined,
       period: 'MONTHLY',
       startDate: new Date().toISOString().split('T')[0],
-      endDate: null,
+      endDate: '',
       alertThreshold: 80,
       alertEnabled: true,
     },
@@ -235,6 +235,10 @@ export default function BudgetFormDialog({
                 fullWidth
                 error={!!errors.amount}
                 helperText={errors.amount?.message}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  field.onChange(value === '' ? undefined : parseFloat(value));
+                }}
               />
             )}
           />
@@ -302,6 +306,10 @@ export default function BudgetFormDialog({
                 fullWidth
                 error={!!errors.alertThreshold}
                 helperText={errors.alertThreshold?.message}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  field.onChange(value === '' ? undefined : parseInt(value));
+                }}
               />
             )}
           />
