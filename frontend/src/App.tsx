@@ -12,6 +12,7 @@ import Accounts from './pages/Accounts';
 import AccountDetails from './pages/AccountDetails';
 import Debts from './pages/Debts';
 import RecurringTransactions from './pages/RecurringTransactions';
+import Budgets from './pages/Budgets';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages à créer dans les prochaines phases
@@ -116,10 +117,19 @@ function App() {
           }
         />
 
+        {/* Phase 6A - Budgets */}
+        <Route
+          path="/households/:householdId/budgets"
+          element={
+            <ProtectedRoute>
+              <Budgets />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Routes à implémenter dans les prochaines phases */}
         {/* <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} /> */}
         {/* <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} /> */}
-        {/* <Route path="/budgets" element={<ProtectedRoute><Budgets /></ProtectedRoute>} /> */}
         {/* <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} /> */}
 
         {/* Catch all - redirige vers l'accueil */}
