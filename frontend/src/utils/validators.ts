@@ -16,7 +16,7 @@ export const createBudgetSchema = z.object({
     'Date de début invalide'
   ),
   endDate: z.string().refine(
-    (val) => !isNaN(Date.parse(val)),
+    (val) => val === '' || !isNaN(Date.parse(val)),
     'Date de fin invalide'
   ).optional().nullable(),
   alertThreshold: z.number().min(0).max(100, 'Seuil d\'alerte entre 0 et 100').default(80),
