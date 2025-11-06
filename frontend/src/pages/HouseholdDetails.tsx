@@ -35,6 +35,7 @@ import CreateAccountDialog from '../components/CreateAccountDialog';
 import UpdateSharingModeDialog from '../components/UpdateSharingModeDialog';
 import CreateCategoryDialog from '../components/CreateCategoryDialog';
 import EditCategoryDialog from '../components/EditCategoryDialog';
+import RecurringPatternWidget from '../components/RecurringPatterns/RecurringPatternWidget';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -211,6 +212,7 @@ export default function HouseholdDetails() {
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
         <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue)}>
+          <Tab label="Aperçu" />
           <Tab label="Membres" />
           <Tab label="Comptes" />
           <Tab label="Catégories" />
@@ -219,6 +221,57 @@ export default function HouseholdDetails() {
       </Box>
 
       <TabPanel value={tabValue} index={0}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <RecurringPatternWidget householdId={id!} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Informations du foyer
+                </Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Mode de partage
+                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
+                      <Chip label={getSharingModeLabel(currentHousehold.sharingMode)} />
+                      {isAdmin && (
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          onClick={() => setUpdateSharingModeDialogOpen(true)}
+                        >
+                          Modifier
+                        </Button>
+                      )}
+                    </Box>
+                  </Box>
+                  <Divider />
+                  <Box>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                      Statistiques
+                    </Typography>
+                    <Typography variant="body2">
+                      Membres : <strong>{currentHousehold.members.length}</strong>
+                    </Typography>
+                    <Typography variant="body2">
+                      Comptes : <strong>{accounts.length}</strong>
+                    </Typography>
+                    <Typography variant="body2">
+                      Catégories : <strong>{categories.length}</strong>
+                    </Typography>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      </TabPanel>
+
+      <TabPanel value={tabValue} index={1}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h6">Membres du foyer</Typography>
           {isAdmin && (
@@ -273,7 +326,7 @@ export default function HouseholdDetails() {
         </Card>
       </TabPanel>
 
-      <TabPanel value={tabValue} index={1}>
+      <TabPanel value={tabValue} index={2}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h6">Comptes du foyer</Typography>
           <Button
@@ -329,7 +382,7 @@ export default function HouseholdDetails() {
         )}
       </TabPanel>
 
-      <TabPanel value={tabValue} index={2}>
+      <TabPanel value={tabValue} index={3}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h6">Catégories du foyer</Typography>
           {isAdmin && (
@@ -402,7 +455,7 @@ export default function HouseholdDetails() {
         )}
       </TabPanel>
 
-      <TabPanel value={tabValue} index={3}>
+      <TabPanel value={tabValue} index={4}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h6">Transactions Récurrentes</Typography>
           <Button
