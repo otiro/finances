@@ -134,7 +134,7 @@ export const createBudget = async (req: Request, res: Response) => {
       validatedData
     );
 
-    res.status(HTTP_STATUS.CREATED).json({
+    return res.status(HTTP_STATUS.CREATED).json({
       status: 'success',
       data: budget,
       message: 'Budget créé avec succès',
@@ -151,7 +151,7 @@ export const createBudget = async (req: Request, res: Response) => {
     const status = error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR;
     const message = error.message || ERROR_MESSAGES.INTERNAL_ERROR;
 
-    res.status(status).json({
+    return res.status(status).json({
       status: 'error',
       message,
     });
@@ -178,7 +178,7 @@ export const updateBudget = async (req: Request, res: Response) => {
       validatedData
     );
 
-    res.status(HTTP_STATUS.OK).json({
+    return res.status(HTTP_STATUS.OK).json({
       status: 'success',
       data: budget,
       message: 'Budget mis à jour avec succès',
@@ -195,7 +195,7 @@ export const updateBudget = async (req: Request, res: Response) => {
     const status = error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR;
     const message = error.message || ERROR_MESSAGES.INTERNAL_ERROR;
 
-    res.status(status).json({
+    return res.status(status).json({
       status: 'error',
       message,
     });
