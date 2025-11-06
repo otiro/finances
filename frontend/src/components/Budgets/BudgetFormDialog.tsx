@@ -24,6 +24,7 @@ import { createBudgetSchema } from '../../utils/validators';
 import { useBudgetStore } from '../../store/slices/budgetSlice';
 import { useAccountStore } from '../../store/slices/accountSlice';
 import { Budget, CreateBudgetInput } from '../../services/budget.service';
+import { getCategoriesForHousehold } from '../../services/category.service';
 
 interface BudgetFormDialogProps {
   open: boolean;
@@ -36,15 +37,11 @@ interface BudgetFormData extends CreateBudgetInput {
   categoryId: string;
 }
 
-// TODO: Import from a unified categories service when available
-const MOCK_CATEGORIES = [
-  { id: '1', name: 'Alimentation', color: '#FF6B6B' },
-  { id: '2', name: 'Transport', color: '#4ECDC4' },
-  { id: '3', name: 'Loisirs', color: '#45B7D1' },
-  { id: '4', name: 'Santé', color: '#FFA07A' },
-  { id: '5', name: 'Logement', color: '#98D8C8' },
-  { id: '6', name: 'Éducation', color: '#F7DC6F' },
-];
+interface Category {
+  id: string;
+  name: string;
+  color: string;
+}
 
 export default function BudgetFormDialog({
   open,
@@ -57,8 +54,28 @@ export default function BudgetFormDialog({
   const isLoading = useBudgetStore((state) => state.isLoading);
   const error = useBudgetStore((state) => state.error);
 
-  const [categories] = useState(MOCK_CATEGORIES);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
+
+  // Load categories when dialog opens
+  useEffect(() => {
+    if (open) {
+      setCategoriesLoading(true);
+      getCategoriesForHousehold(householdId)
+        .then((result) => {
+          const categoryList = result.data.household || [];
+          setCategories(categoryList);
+        })
+        .catch((err) => {
+          console.error('Erreur lors du chargement des catégories:', err);
+          setLocalError('Impossible de charger les catégories');
+        })
+        .finally(() => {
+          setCategoriesLoading(false);
+        });
+    }
+  }, [open, householdId]);
 
   const {
     control,
@@ -94,11 +111,6 @@ export default function BudgetFormDialog({
   const selectedCategory = watch('categoryId');
   const selectedCategoryObj = categories.find((c) => c.id === selectedCategory);
 
-  useEffect(() => {
-    if (open) {
-      setLocalError(null);
-    }
-  }, [open]);
 
   const onSubmit = async (data: BudgetFormData) => {
     try {
