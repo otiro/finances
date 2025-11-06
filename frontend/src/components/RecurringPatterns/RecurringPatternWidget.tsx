@@ -225,48 +225,43 @@ const RecurringPatternWidget: React.FC<RecurringPatternWidgetProps> = ({
             {nextPatterns.map((pattern, index) => (
               <Box key={pattern.id}>
                 {index > 0 && <Divider />}
-                <ListItem sx={{ py: 1.5, px: 0 }}>
-                  <ListItemText
-                    primary={
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant="body2" sx={{ flex: 1 }}>
-                          {pattern.name}
-                        </Typography>
-                        {pattern.isPaused && (
-                          <PauseIcon
-                            fontSize="small"
-                            sx={{ color: 'warning.main' }}
-                          />
-                        )}
-                      </Box>
-                    }
-                    secondary={
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          mt: 0.5,
-                        }}
-                      >
-                        <Typography variant="caption" color="text.secondary">
-                          {formatDate(pattern.nextGenerationDate)}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            fontWeight: 600,
-                            color:
-                              pattern.type === 'DEBIT'
-                                ? 'error.main'
-                                : 'success.main',
-                          }}
-                        >
-                          {formatAmount(pattern.amount, pattern.type)}
-                        </Typography>
-                      </Box>
-                    }
-                  />
+                <ListItem sx={{ py: 1.5, px: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
+                    <Typography variant="body2" sx={{ flex: 1 }}>
+                      {pattern.name}
+                    </Typography>
+                    {pattern.isPaused && (
+                      <PauseIcon
+                        fontSize="small"
+                        sx={{ color: 'warning.main' }}
+                      />
+                    )}
+                  </Box>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      mt: 0.5,
+                      width: '100%',
+                    }}
+                  >
+                    <Typography variant="caption" color="text.secondary">
+                      {formatDate(pattern.nextGenerationDate)}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontWeight: 600,
+                        color:
+                          pattern.type === 'DEBIT'
+                            ? 'error.main'
+                            : 'success.main',
+                      }}
+                    >
+                      {formatAmount(pattern.amount, pattern.type)}
+                    </Typography>
+                  </Box>
                 </ListItem>
               </Box>
             ))}
