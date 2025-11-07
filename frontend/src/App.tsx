@@ -13,12 +13,12 @@ import AccountDetails from './pages/AccountDetails';
 import Debts from './pages/Debts';
 import RecurringTransactions from './pages/RecurringTransactions';
 import Budgets from './pages/Budgets';
+import Analytics from './pages/Analytics';
+import Reports from './pages/Reports';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages à créer dans les prochaines phases
 // import Transactions from '@pages/Transactions'
-// import Analytics from '@pages/Analytics'
-// import Budgets from '@pages/Budgets'
 // import Settings from '@pages/Settings'
 
 function App() {
@@ -127,9 +127,27 @@ function App() {
           }
         />
 
+        {/* Phase 6B - Analytics */}
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <Analytics />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/reports"
+          element={
+            <ProtectedRoute>
+              <Reports />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Routes à implémenter dans les prochaines phases */}
         {/* <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} /> */}
-        {/* <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} /> */}
         {/* <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} /> */}
 
         {/* Catch all - redirige vers l'accueil */}
