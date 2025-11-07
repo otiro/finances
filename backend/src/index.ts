@@ -20,6 +20,7 @@ import analyticsRoutes from './routes/analyticsRoutes';
 
 // Import jobs
 import { startRecurringTransactionCronJob } from './jobs/recurringTransactionJob';
+import { adjustSharingRatiosJob } from './jobs/adjustSharingRatioJob';
 
 // Load environment variables
 dotenv.config();
@@ -65,6 +66,10 @@ app.listen(PORT, () => {
   logger.info('Starting background jobs...');
   startRecurringTransactionCronJob();
   logger.info('Recurring transaction cron job started');
+
+  // Start sharing ratio adjustment job (daily at specified time)
+  adjustSharingRatiosJob();
+  logger.info('Sharing ratio adjustment job started');
 });
 
 export default app;
