@@ -34,11 +34,20 @@ export const BudgetStatusWidget: React.FC<BudgetStatusWidgetProps> = ({ househol
     try {
       setIsLoading(true);
       setError(null);
-      const response = await budgetService.getHouseholdBudgets(householdId);
-      // Budget service returns { data: Budget[] }
-      const budgetList = response?.data || response || [];
-      if (Array.isArray(budgetList) && budgetList.length > 0) {
-        setBudgets(budgetList.slice(0, 5)); // Top 5 budgets
+      // Use summary endpoint which includes spent amounts
+      const summary = await budgetService.getHouseholdBudgetsSummary(householdId);
+      if (summary?.budgets && Array.isArray(summary.budgets)) {
+        // Map to BudgetWithSpent format
+        const mappedBudgets = summary.budgets.map((bs: any) => ({
+          id: bs.budget?.id || bs.id,
+          categoryId: bs.budget?.categoryId || bs.categoryId,
+          categoryName: bs.budget?.category?.name || 'Sans catégorie',
+          categoryColor: bs.budget?.category?.color || '#999',
+          amount: bs.budget?.amount || bs.amount,
+          spent: bs.currentSpent || 0,
+          percentageUsed: bs.percentageUsed || 0,
+        }));
+        setBudgets(mappedBudgets.slice(0, 5)); // Top 5 budgets
       }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erreur lors du chargement des budgets');

@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip } from '@mui/material';
+import React from 'react';
+import { Box, Typography, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { useAccountStore } from '@/store/slices/accountSlice';
 import { useAuth } from '@/hooks/useAuth';
 import { DashboardCard } from './DashboardCard';
@@ -9,81 +10,79 @@ interface AccountsStatusWidgetProps {
 }
 
 export const AccountsStatusWidget: React.FC<AccountsStatusWidgetProps> = ({ householdId }) => {
+  const navigate = useNavigate();
   const { accounts } = useAccountStore();
   const { user } = useAuth();
 
   const householdAccounts = React.useMemo(() => {
     return accounts.filter((account) => {
-      // Filter accounts where user is an owner
       return account.owners?.some((owner: any) => owner.userId === user?.id);
     });
   }, [accounts, user?.id]);
 
-  const totalBalance = React.useMemo(() => {
-    return householdAccounts.reduce((sum, account) => sum + (account.initialBalance || 0), 0);
-  }, [householdAccounts]);
-
-  if (householdAccounts.length === 0) {
-    return (
-      <DashboardCard title="🏦 Comptes">
-        <Typography variant="body2" color="text.secondary">
-          Aucun compte associé
-        </Typography>
-      </DashboardCard>
-    );
-  }
-
   return (
-    <DashboardCard title="🏦 Comptes">
-      <TableContainer>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>Nom</TableCell>
-              <TableCell align="right">Solde</TableCell>
-              <TableCell>Type</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {householdAccounts.map((account) => (
-              <TableRow key={account.id}>
-                <TableCell>
-                  <Typography variant="body2">{account.name}</Typography>
-                </TableCell>
-                <TableCell align="right">
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      fontWeight: 'bold',
-                      color: (account.initialBalance || 0) >= 0 ? '#4caf50' : '#f44336',
-                    }}
-                  >
-                    {(account.initialBalance || 0).toFixed(2)} €
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Chip label={account.type} size="small" variant="outlined" />
-                </TableCell>
-              </TableRow>
-            ))}
-            <TableRow sx={{ backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>
-              <TableCell sx={{ fontWeight: 'bold' }}>Total</TableCell>
-              <TableCell align="right">
-                <Typography
-                  variant="body2"
+    <DashboardCard
+      title="🏦 Comptes"
+      action={
+        <Button size="small" onClick={() => navigate('/accounts')}>
+          Voir tous
+        </Button>
+      }
+    >
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        {householdAccounts.length === 0 ? (
+          <Typography variant="body2" color="text.secondary">
+            Aucun compte associé
+          </Typography>
+        ) : (
+          <>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                Comptes disponibles:
+              </Typography>
+              {householdAccounts.map((account) => (
+                <Box
+                  key={account.id}
                   sx={{
-                    fontWeight: 'bold',
-                    color: totalBalance >= 0 ? '#4caf50' : '#f44336',
+                    p: 2,
+                    backgroundColor: '#f9f9f9',
+                    borderRadius: 1,
+                    borderLeft: '3px solid #2196f3',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
                   }}
                 >
-                  {totalBalance.toFixed(2)} €
-                </Typography>
-              </TableCell>
-              <TableCell />
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
+                  <Box>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                      {account.name}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {account.type}
+                    </Typography>
+                  </Box>
+                  <Typography variant="caption" color="text.secondary">
+                    Solde initial: {(account.initialBalance || 0).toFixed(2)} €
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+
+            <Typography variant="caption" color="text.secondary" sx={{ mt: 1, fontStyle: 'italic' }}>
+              Pour voir le solde actuel (avec transactions), consultez la page Comptes
+            </Typography>
+
+            <Button
+              variant="contained"
+              onClick={() => navigate('/accounts')}
+              fullWidth
+              sx={{ mt: 2 }}
+            >
+              Voir les comptes détaillés
+            </Button>
+          </>
+        )}
+      </Box>
     </DashboardCard>
   );
 };
