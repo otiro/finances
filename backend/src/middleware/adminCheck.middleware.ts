@@ -12,15 +12,16 @@ export const requireHouseholdAdmin = async (
   req: Request & { user?: any },
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   try {
     const userId = req.user?.id;
     const householdId = req.params.householdId || req.params.id;
 
     if (!userId || !householdId) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+      res.status(HTTP_STATUS.BAD_REQUEST).json({
         message: 'Missing user or household ID',
       });
+      return;
     }
 
     // Check if user is member of this household with ADMIN role
@@ -34,15 +35,17 @@ export const requireHouseholdAdmin = async (
     });
 
     if (!userHousehold) {
-      return res.status(HTTP_STATUS.FORBIDDEN).json({
+      res.status(HTTP_STATUS.FORBIDDEN).json({
         message: ERROR_MESSAGES.FORBIDDEN,
       });
+      return;
     }
 
     if (userHousehold.role !== 'ADMIN') {
-      return res.status(HTTP_STATUS.FORBIDDEN).json({
+      res.status(HTTP_STATUS.FORBIDDEN).json({
         message: 'You must be an admin to perform this action',
       });
+      return;
     }
 
     // Attach household info to request for later use
@@ -53,7 +56,7 @@ export const requireHouseholdAdmin = async (
   } catch (error) {
     console.error('Admin check middleware error:', error);
     res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-      message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
+      message: ERROR_MESSAGES.INTERNAL_ERROR,
     });
   }
 };

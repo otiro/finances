@@ -1,6 +1,5 @@
 import prisma from '../config/database';
 import * as incomeCalculationService from '../services/incomeCalculation.service';
-import * as householdService from '../services/household.service';
 
 /**
  * Tâche cron: Ajuste les ratios de partage pour les foyers en PROPORTIONAL
