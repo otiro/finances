@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import * as analyticsService from '@/services/analyticsService';
 import * as reportService from '@/services/reportService';
 import * as projectionService from '@/services/projectionService';
-import { HTTP_STATUS } from '@/utils/httpStatus';
+import { HTTP_STATUS } from '../utils/constants';
 
 // Helper to validate household access
 const validateHouseholdAccess = async (userId: string, householdId: string) => {
