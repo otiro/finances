@@ -215,4 +215,4 @@ export const useAnalyticsStore = create<AnalyticsState>((set, get) => ({
   clearError: () => {
     set({ error: null });
   },
-});
+}));
