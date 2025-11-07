@@ -27,7 +27,6 @@ import { MonthlyBalanceWidget } from '../components/dashboard/MonthlyBalanceWidg
 import { TopCategoriesWidget } from '../components/dashboard/TopCategoriesWidget';
 import { BudgetStatusWidget } from '../components/dashboard/BudgetStatusWidget';
 import { AccountsStatusWidget } from '../components/dashboard/AccountsStatusWidget';
-import { HouseholdDebtsWidget } from '../components/dashboard/HouseholdDebtsWidget';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -181,9 +180,6 @@ export default function Dashboard() {
             </Grid>
             <Grid item xs={12} md={6}>
               <AccountsStatusWidget householdId={selectedHouseholdId} />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <HouseholdDebtsWidget householdId={selectedHouseholdId} />
             </Grid>
           </Grid>
         </Box>

@@ -69,6 +69,7 @@ export const AccountsStatusWidget: React.FC<AccountsStatusWidgetProps> = ({ hous
               {accounts.map((account) => (
                 <Box
                   key={account.accountId}
+                  onClick={() => navigate(`/accounts/${account.accountId}`)}
                   sx={{
                     p: 2,
                     backgroundColor: '#f9f9f9',
@@ -77,6 +78,13 @@ export const AccountsStatusWidget: React.FC<AccountsStatusWidgetProps> = ({ hous
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      backgroundColor: '#f0f0f0',
+                      borderLeftColor: '#1976d2',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                    },
                   }}
                 >
                   <Box sx={{ flex: 1 }}>
