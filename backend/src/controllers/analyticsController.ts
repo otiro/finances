@@ -382,22 +382,26 @@ export const generateReport = async (req: Request, res: Response): Promise<void>
     let content: string;
     let mimeType: string;
     let fileExtension: string;
+    let shouldLog = false;
 
     switch (format) {
       case 'CSV':
         content = reportService.formatAsCSV(reportData);
         mimeType = 'text/csv';
         fileExtension = 'csv';
+        shouldLog = true;
         break;
       case 'JSON':
         content = reportService.formatAsJSON(reportData);
         mimeType = 'application/json';
         fileExtension = 'json';
+        shouldLog = false;
         break;
       case 'TEXT':
         content = reportService.formatAsText(reportData);
         mimeType = 'text/plain';
         fileExtension = 'txt';
+        shouldLog = false;
         break;
       case 'PDF':
         // For now, return a message that PDF requires additional setup
@@ -429,8 +433,8 @@ export const generateReport = async (req: Request, res: Response): Promise<void>
     const fileSize = Buffer.byteLength(content, 'utf-8');
 
     // Only log formats that are supported by the service
-    if (format === 'PDF' || format === 'CSV' || format === 'XLSX') {
-      await reportService.logExport(householdId, userId, format, new Date(startDate), new Date(endDate), fileName, fileSize);
+    if (shouldLog && (format === 'CSV')) {
+      await reportService.logExport(householdId, userId, format as 'PDF' | 'CSV' | 'XLSX', new Date(startDate), new Date(endDate), fileName, fileSize);
     }
 
     // Set response headers for download

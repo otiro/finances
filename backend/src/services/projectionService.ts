@@ -59,10 +59,9 @@ export const projectExpenses = async (
     trend = 'stable';
   }
 
-  // Calculate standard deviation
+  // Calculate variance (standard deviation not used in current implementation)
   const variance = expenses.reduce((sum, e) => sum + Math.pow(e - average, 2), 0) / expenses.length;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _stdDev = Math.sqrt(variance); // Standard deviation calculated but not used in current implementation
+  // Math.sqrt(variance); // Would be standard deviation if needed
 
   // Generate projections
   const lastMonth = new Date();
