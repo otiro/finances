@@ -43,9 +43,9 @@ export const BudgetStatusWidget: React.FC<BudgetStatusWidgetProps> = ({ househol
           categoryId: bs.budget?.categoryId || bs.categoryId,
           categoryName: bs.budget?.category?.name || 'Sans catégorie',
           categoryColor: bs.budget?.category?.color || '#999',
-          amount: bs.budget?.amount || bs.amount,
-          spent: bs.currentSpent || 0,
-          percentageUsed: bs.percentageUsed || 0,
+          amount: Number(bs.budget?.amount || bs.amount || 0),
+          spent: Number(bs.currentSpent || 0),
+          percentageUsed: Number(bs.percentageUsed || 0),
         }));
         setBudgets(mappedBudgets.slice(0, 5)); // Top 5 budgets
       }
