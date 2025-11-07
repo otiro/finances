@@ -23,7 +23,7 @@ export const MonthlyBalanceWidget: React.FC<MonthlyBalanceWidgetProps> = ({ hous
   useEffect(() => {
     if (monthlySpendings && monthlySpendings.length > 0) {
       const sorted = [...monthlySpendings].sort((a, b) =>
-        new Date(b.period).getTime() - new Date(a.period).getTime()
+        new Date(b.month).getTime() - new Date(a.month).getTime()
       );
       setCurrentMonth(sorted[0]);
       setpreviousMonth(sorted[1]);

@@ -17,8 +17,9 @@ export const TopCategoriesWidget: React.FC<TopCategoriesWidgetProps> = ({ househ
   }, [householdId, fetchCategoryBreakdown]);
 
   const topExpenses = React.useMemo(() => {
-    if (!categoryBreakdown?.expenses) return [];
-    return [...categoryBreakdown.expenses]
+    if (!categoryBreakdown || !Array.isArray(categoryBreakdown)) return [];
+    return [...categoryBreakdown]
+      .filter(cat => cat.type === 'EXPENSE')
       .sort((a, b) => b.amount - a.amount)
       .slice(0, 5);
   }, [categoryBreakdown]);

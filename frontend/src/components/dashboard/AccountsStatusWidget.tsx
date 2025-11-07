@@ -20,7 +20,7 @@ export const AccountsStatusWidget: React.FC<AccountsStatusWidgetProps> = ({ hous
   }, [accounts, user?.id]);
 
   const totalBalance = React.useMemo(() => {
-    return householdAccounts.reduce((sum, account) => sum + (account.currentBalance || 0), 0);
+    return householdAccounts.reduce((sum, account) => sum + (account.initialBalance || 0), 0);
   }, [householdAccounts]);
 
   if (householdAccounts.length === 0) {
@@ -55,10 +55,10 @@ export const AccountsStatusWidget: React.FC<AccountsStatusWidgetProps> = ({ hous
                     variant="body2"
                     sx={{
                       fontWeight: 'bold',
-                      color: (account.currentBalance || 0) >= 0 ? '#4caf50' : '#f44336',
+                      color: (account.initialBalance || 0) >= 0 ? '#4caf50' : '#f44336',
                     }}
                   >
-                    {(account.currentBalance || 0).toFixed(2)} €
+                    {(account.initialBalance || 0).toFixed(2)} €
                   </Typography>
                 </TableCell>
                 <TableCell>

@@ -33,12 +33,16 @@ export const BudgetStatusWidget: React.FC<BudgetStatusWidgetProps> = ({ househol
   const loadBudgets = async () => {
     try {
       setIsLoading(true);
-      const data = await budgetService.getHouseholdBudgets(householdId);
-      if (data && Array.isArray(data)) {
-        setBudgets(data.slice(0, 5)); // Top 5 budgets
+      setError(null);
+      const response = await budgetService.getHouseholdBudgets(householdId);
+      // Budget service returns { data: Budget[] }
+      const budgetList = response?.data || response || [];
+      if (Array.isArray(budgetList) && budgetList.length > 0) {
+        setBudgets(budgetList.slice(0, 5)); // Top 5 budgets
       }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erreur lors du chargement des budgets');
+      console.error('Budget loading error:', err);
     } finally {
       setIsLoading(false);
     }
