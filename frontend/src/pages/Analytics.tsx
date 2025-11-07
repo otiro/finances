@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Container,
   Grid,
@@ -44,6 +45,7 @@ function TabPanel(props: TabPanelProps) {
 }
 
 export const Analytics: React.FC = () => {
+  const { householdId: householdIdParam } = useParams<{ householdId?: string }>();
   const selectedHousehold = useHouseholdStore((state) => state.selectedHousehold);
   const {
     categoryBreakdown,
@@ -75,7 +77,8 @@ export const Analytics: React.FC = () => {
     new Date(new Date().getFullYear(), new Date().getMonth() - 1, 0).toISOString().split('T')[0]
   );
 
-  const householdId = selectedHousehold?.id;
+  // Use householdId from URL params if available, otherwise use selected household
+  const householdId = householdIdParam || selectedHousehold?.id;
 
   useEffect(() => {
     if (!householdId) return;

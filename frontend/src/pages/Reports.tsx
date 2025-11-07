@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Container,
   Card,
@@ -28,6 +29,7 @@ import { useHouseholdStore } from '@/store/slices/householdSlice';
 import { analyticsService } from '@/services/analyticsService';
 
 export const Reports: React.FC = () => {
+  const { householdId: householdIdParam } = useParams<{ householdId?: string }>();
   const selectedHousehold = useHouseholdStore((state) => state.selectedHousehold);
   const {
     reportHistory,
@@ -38,7 +40,8 @@ export const Reports: React.FC = () => {
     clearError,
   } = useAnalyticsStore();
 
-  const householdId = selectedHousehold?.id;
+  // Use householdId from URL params if available, otherwise use selected household
+  const householdId = householdIdParam || selectedHousehold?.id;
 
   const [startDate, setStartDate] = useState(
     new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]

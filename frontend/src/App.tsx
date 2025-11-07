@@ -136,9 +136,25 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/households/:householdId/analytics"
+          element={
+            <ProtectedRoute>
+              <Analytics />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/reports"
+          element={
+            <ProtectedRoute>
+              <Reports />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/households/:householdId/reports"
           element={
             <ProtectedRoute>
               <Reports />
