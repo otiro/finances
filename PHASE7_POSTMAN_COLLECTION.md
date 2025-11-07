@@ -7,7 +7,7 @@
 1. **Ouvre Postman ou Insomnia**
 2. **Crée une nouvelle collection**: "Phase 7 - Partage Proportionnel"
 3. **Ajoute une variable d'environnement:**
-   - Nom: `base_url` → Valeur: `http://localhost:3000/api`
+   - Nom: `base_url` → Valeur: `http://localhost:3030/api`
    - Nom: `household_id` → Valeur: `{ton-id-de-foyer}`
    - Nom: `token` → Valeur: `{ton-jwt-token}`
    - Nom: `account_id` → Valeur: `{ton-id-de-compte}` (optionnel)

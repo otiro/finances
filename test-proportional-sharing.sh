@@ -17,7 +17,7 @@ fi
 
 HOUSEHOLD_ID=$1
 TOKEN=$2
-BASE_URL="http://localhost:3000/api"
+BASE_URL="http://localhost:3030/api"
 ACCOUNT_ID=""
 
 # Couleurs pour l'affichage
