@@ -5,7 +5,8 @@ import * as projectionService from '@/services/projectionService';
 import { HTTP_STATUS } from '../utils/constants';
 
 // Helper to validate household access
-const validateHouseholdAccess = async (userId: string, householdId: string) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const validateHouseholdAccess = async (_userId: string, _householdId: string) => {
   // This is a simplified check - adjust based on your actual household service
   // For now, we assume authorization is handled by the middleware
   return true;
@@ -423,11 +424,14 @@ export const generateReport = async (req: Request, res: Response): Promise<void>
         return;
     }
 
-    // Log the export
+    // Log the export (only for supported formats)
     const fileName = `report_${householdId}_${Date.now()}.${fileExtension}`;
     const fileSize = Buffer.byteLength(content, 'utf-8');
 
-    await reportService.logExport(householdId, userId, format as 'PDF' | 'CSV' | 'XLSX' | 'JSON' | 'TEXT', new Date(startDate), new Date(endDate), fileName, fileSize);
+    // Only log formats that are supported by the service
+    if (format === 'PDF' || format === 'CSV' || format === 'XLSX') {
+      await reportService.logExport(householdId, userId, format, new Date(startDate), new Date(endDate), fileName, fileSize);
+    }
 
     // Set response headers for download
     res.setHeader('Content-Type', mimeType);
