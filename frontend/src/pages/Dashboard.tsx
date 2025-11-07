@@ -12,6 +12,10 @@ import {
   CardActions,
   Chip,
   CircularProgress,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import PeopleIcon from '@mui/icons-material/People';
@@ -19,12 +23,18 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import { useAuth } from '../hooks/useAuth';
 import { useHouseholdStore } from '../store/slices/householdSlice';
 import * as householdService from '../services/household.service';
+import { MonthlyBalanceWidget } from '../components/dashboard/MonthlyBalanceWidget';
+import { TopCategoriesWidget } from '../components/dashboard/TopCategoriesWidget';
+import { BudgetStatusWidget } from '../components/dashboard/BudgetStatusWidget';
+import { AccountsStatusWidget } from '../components/dashboard/AccountsStatusWidget';
+import { HouseholdDebtsWidget } from '../components/dashboard/HouseholdDebtsWidget';
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { households, isLoading } = useHouseholdStore();
   const [stats, setStats] = useState({ totalHouseholds: 0, totalAccounts: 0 });
+  const [selectedHouseholdId, setSelectedHouseholdId] = useState<string>('');
 
   useEffect(() => {
     loadHouseholds();
@@ -40,8 +50,12 @@ export default function Dashboard() {
         totalHouseholds: households.length,
         totalAccounts,
       });
+      // Auto-select first household if none selected
+      if (!selectedHouseholdId) {
+        setSelectedHouseholdId(households[0].id);
+      }
     }
-  }, [households]);
+  }, [households, selectedHouseholdId]);
 
   const loadHouseholds = async () => {
     try {
@@ -135,6 +149,45 @@ export default function Dashboard() {
           </Card>
         </Grid>
       </Grid>
+
+      {/* Household Selector & Analytics Widgets */}
+      {households.length > 0 && (
+        <Box sx={{ mb: 4 }}>
+          <FormControl sx={{ minWidth: 300, mb: 3 }}>
+            <InputLabel>Sélectionner un foyer</InputLabel>
+            <Select
+              value={selectedHouseholdId}
+              onChange={(e) => setSelectedHouseholdId(e.target.value)}
+              label="Sélectionner un foyer"
+            >
+              {households.map((household) => (
+                <MenuItem key={household.id} value={household.id}>
+                  {household.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          {/* Analytics Widgets */}
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
+              <MonthlyBalanceWidget householdId={selectedHouseholdId} />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TopCategoriesWidget householdId={selectedHouseholdId} />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <BudgetStatusWidget householdId={selectedHouseholdId} />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <AccountsStatusWidget householdId={selectedHouseholdId} />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <HouseholdDebtsWidget householdId={selectedHouseholdId} />
+            </Grid>
+          </Grid>
+        </Box>
+      )}
 
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
