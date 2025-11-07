@@ -1,4 +1,4 @@
-import prisma from '@/db';
+import prisma from '@/config/database';
 import { getMonthlySpendings } from './analyticsService';
 
 export interface ExpenseProjection {
