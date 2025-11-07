@@ -96,4 +96,37 @@ router.patch(
   transactionController.markDebtAsPaid
 );
 
+/**
+ * GET /api/households/:id/income-analysis
+ * Récupère l'analyse des revenus et les ratios de partage pour un mois
+ */
+router.get('/:id/income-analysis', householdController.getIncomeAnalysis);
+
+/**
+ * GET /api/households/:id/sharing-configuration
+ * Récupère la configuration du partage proportionnel
+ */
+router.get('/:id/sharing-configuration', householdController.getSharingConfiguration);
+
+/**
+ * PATCH /api/households/:id/sharing-configuration
+ * Met à jour la configuration du partage proportionnel
+ */
+router.patch(
+  '/:id/sharing-configuration',
+  householdController.updateSharingConfiguration
+);
+
+/**
+ * GET /api/households/:id/sharing-history
+ * Récupère l'historique des ratios de partage
+ */
+router.get('/:id/sharing-history', householdController.getSharingHistory);
+
+/**
+ * POST /api/households/:id/apply-sharing-ratios
+ * Applique les ratios de partage immédiatement (manuel)
+ */
+router.post('/:id/apply-sharing-ratios', householdController.applySharingRatios);
+
 export default router;
