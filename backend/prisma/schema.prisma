@@ -107,6 +107,8 @@ model Household {
   recurringPatterns     RecurringPattern[]
   analyticsSnapshots    AnalyticsSnapshot[]
   exportLogs            ExportLog[]
+  configuration         HouseholdConfiguration?
+  sharingRatioHistories SharingRatioHistory[]
 
   @@map("households")
 }
@@ -442,4 +444,53 @@ model ExportLog {
   @@index([householdId, createdAt])
   @@index([userId, createdAt])
   @@map("export_logs")
+}
+
+// Table de configuration du partage proportionnel par foyer
+model HouseholdConfiguration {
+  id                      String   @id @default(uuid())
+  householdId             String   @unique @map("household_id")
+  salaryCategoryId        String?  @map("salary_category_id")   // Catégorie pour identifier les salaires
+  autoAdjustRatios        Boolean  @default(true)               @map("auto_adjust_ratios")
+  ratioAdjustmentDay      Int      @default(1)                  @map("ratio_adjustment_day")  // Jour du mois (1-31)
+  proportionalAccounts    String[] @map("proportional_accounts") // IDs des comptes utilisant le partage proportionnel
+
+  createdAt               DateTime @default(now())              @map("created_at")
+  updatedAt               DateTime @updatedAt                   @map("updated_at")
+
+  // Relations
+  household               Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+
+  @@map("household_configurations")
+}
+
+// Table historique des ratios de partage
+model SharingRatioHistory {
+  id            String   @id @default(uuid())
+  householdId   String   @map("household_id")
+  accountId     String?  @map("account_id")  // NULL = configuration au niveau du foyer
+
+  year          Int
+  month         Int     // 1-12
+
+  // JSON pour chaque propriétaire et son ratio
+  ratios        Json    // { "userId-1": 57.14, "userId-2": 42.86 }
+
+  // Source data pour audit
+  incomes       Json    // { "userId-1": 2000, "userId-2": 1500 }
+  totalIncome   Decimal @db.Decimal(12, 2)
+
+  // Tracking
+  calculatedAt  DateTime @default(now()) @map("calculated_at")
+  appliedAt     DateTime? @map("applied_at")
+  appliedBy     String?  @map("applied_by")
+
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  household     Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+
+  @@unique([householdId, accountId, year, month])
+  @@index([householdId, year, month])
+  @@index([accountId, year, month])
+  @@map("sharing_ratio_histories")
 }

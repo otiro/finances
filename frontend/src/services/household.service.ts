@@ -88,3 +88,33 @@ export const updateHouseholdSharingMode = async (
     .updateHousehold(householdId, { sharingMode: response.data.data.sharingMode });
   return response.data.data;
 };
+
+/**
+ * Promeut un MEMBER à ADMIN dans un foyer
+ */
+export const promoteMemberToAdmin = async (
+  householdId: string,
+  memberId: string
+) => {
+  const response = await api.post<ApiResponse<any>>(
+    `/households/${householdId}/members/${memberId}/promote`
+  );
+  // Recharger le foyer pour mettre à jour la liste des membres
+  await getHouseholdById(householdId);
+  return response.data.data;
+};
+
+/**
+ * Rétrograde un ADMIN à MEMBER dans un foyer
+ */
+export const demoteAdminToMember = async (
+  householdId: string,
+  memberId: string
+) => {
+  const response = await api.post<ApiResponse<any>>(
+    `/households/${householdId}/members/${memberId}/demote`
+  );
+  // Recharger le foyer pour mettre à jour la liste des membres
+  await getHouseholdById(householdId);
+  return response.data.data;
+};

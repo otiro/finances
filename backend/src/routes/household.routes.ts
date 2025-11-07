@@ -50,6 +50,24 @@ router.post(
 router.delete('/:id/members/:memberId', householdController.removeMember);
 
 /**
+ * POST /api/households/:id/members/:memberId/promote
+ * Promeut un MEMBER à ADMIN (nécessite que l'utilisateur soit ADMIN)
+ */
+router.post(
+  '/:id/members/:memberId/promote',
+  householdController.promoteMemberToAdmin
+);
+
+/**
+ * POST /api/households/:id/members/:memberId/demote
+ * Rétrograde un ADMIN à MEMBER (nécessite que l'utilisateur soit ADMIN)
+ */
+router.post(
+  '/:id/members/:memberId/demote',
+  householdController.demoteAdminToMember
+);
+
+/**
  * PATCH /api/households/:id/sharing-mode
  * Met à jour le mode de partage d'un foyer
  */

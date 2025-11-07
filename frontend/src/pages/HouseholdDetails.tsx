@@ -24,6 +24,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import SecurityIcon from '@mui/icons-material/Security';
+import KeyOffIcon from '@mui/icons-material/KeyOff';
 import { useAuth } from '../hooks/useAuth';
 import { useHouseholdStore } from '../store/slices/householdSlice';
 import { useAccountStore } from '../store/slices/accountSlice';
@@ -111,6 +113,30 @@ export default function HouseholdDetails() {
       await loadHouseholdData();
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erreur lors de la suppression du membre');
+    }
+  };
+
+  const handlePromoteMember = async (memberId: string) => {
+    if (!id) return;
+    if (!window.confirm('Êtes-vous sûr de vouloir promouvoir ce membre en administrateur ?')) return;
+
+    try {
+      await householdService.promoteMemberToAdmin(id, memberId);
+      await loadHouseholdData();
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Erreur lors de la promotion du membre');
+    }
+  };
+
+  const handleDemoteMember = async (memberId: string) => {
+    if (!id) return;
+    if (!window.confirm('Êtes-vous sûr de vouloir rétrograder cet administrateur en membre ?')) return;
+
+    try {
+      await householdService.demoteAdminToMember(id, memberId);
+      await loadHouseholdData();
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Erreur lors de la rétrogradation');
     }
   };
 
@@ -313,7 +339,45 @@ export default function HouseholdDetails() {
             {currentHousehold.members.map((member, index) => (
               <Box key={member.id}>
                 {index > 0 && <Divider />}
-                <ListItem>
+                <ListItem
+                  secondaryAction={
+                    isAdmin && currentHousehold.members.length > 1 ? (
+                      <Box sx={{ display: 'flex', gap: 0.5 }}>
+                        {/* Promote to Admin Button */}
+                        {member.role !== 'ADMIN' && (
+                          <IconButton
+                            edge="end"
+                            onClick={() => handlePromoteMember(member.userId)}
+                            color="primary"
+                            title="Promouvoir en administrateur"
+                          >
+                            <SecurityIcon />
+                          </IconButton>
+                        )}
+                        {/* Demote to Member Button */}
+                        {member.role === 'ADMIN' && currentHousehold.members.filter(m => m.role === 'ADMIN').length > 1 && (
+                          <IconButton
+                            edge="end"
+                            onClick={() => handleDemoteMember(member.userId)}
+                            color="warning"
+                            title="Rétrograder en membre"
+                          >
+                            <KeyOffIcon />
+                          </IconButton>
+                        )}
+                        {/* Remove Member Button */}
+                        <IconButton
+                          edge="end"
+                          onClick={() => handleRemoveMember(member.userId)}
+                          color="error"
+                          title="Retirer du foyer"
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Box>
+                    ) : null
+                  }
+                >
                   <ListItemText
                     primary={`${member.user.firstName} ${member.user.lastName}`}
                     secondary={
@@ -331,17 +395,6 @@ export default function HouseholdDetails() {
                     size="small"
                     sx={{ mr: 1 }}
                   />
-                  {isAdmin && currentHousehold.members.length > 1 && (
-                    <ListItemSecondaryAction>
-                      <IconButton
-                        edge="end"
-                        onClick={() => handleRemoveMember(member.userId)}
-                        color="error"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  )}
                 </ListItem>
               </Box>
             ))}

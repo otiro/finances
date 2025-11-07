@@ -188,3 +188,69 @@ export const updateSharingMode = async (
     next(error);
   }
 };
+
+/**
+ * Promeut un MEMBER à ADMIN
+ */
+export const promoteMemberToAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    if (!req.userId) {
+      res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        status: 'error',
+        message: 'Non authentifié',
+      });
+      return;
+    }
+
+    const updated = await householdService.promoteMemberToAdmin(
+      req.params.id,
+      req.params.memberId,
+      req.userId
+    );
+
+    res.status(HTTP_STATUS.OK).json({
+      status: 'success',
+      message: 'Membre promu administrateur',
+      data: updated,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Rétrograde un ADMIN à MEMBER
+ */
+export const demoteAdminToMember = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    if (!req.userId) {
+      res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        status: 'error',
+        message: 'Non authentifié',
+      });
+      return;
+    }
+
+    const updated = await householdService.demoteAdminToMember(
+      req.params.id,
+      req.params.memberId,
+      req.userId
+    );
+
+    res.status(HTTP_STATUS.OK).json({
+      status: 'success',
+      message: 'Administrateur rétrogradé en membre',
+      data: updated,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

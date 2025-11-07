@@ -400,3 +400,161 @@ export const updateHouseholdSharingMode = async (
 
   return household;
 };
+
+/**
+ * Promeut un MEMBER à ADMIN dans un foyer
+ * Nécessite que l'utilisateur demandeur soit ADMIN
+ */
+export const promoteMemberToAdmin = async (
+  householdId: string,
+  memberUserId: string,
+  requestingUserId: string
+) => {
+  // Vérifier que l'utilisateur demandeur est admin
+  const requesterMembership = await prisma.userHousehold.findUnique({
+    where: {
+      userId_householdId: {
+        userId: requestingUserId,
+        householdId: householdId,
+      },
+    },
+  });
+
+  if (!requesterMembership || requesterMembership.role !== 'ADMIN') {
+    const error = new Error(ERROR_MESSAGES.FORBIDDEN);
+    (error as any).status = HTTP_STATUS.FORBIDDEN;
+    throw error;
+  }
+
+  // Vérifier que le membre existe dans ce foyer
+  const memberMembership = await prisma.userHousehold.findUnique({
+    where: {
+      userId_householdId: {
+        userId: memberUserId,
+        householdId: householdId,
+      },
+    },
+  });
+
+  if (!memberMembership) {
+    const error = new Error('Membre non trouvé dans ce foyer');
+    (error as any).status = HTTP_STATUS.NOT_FOUND;
+    throw error;
+  }
+
+  if (memberMembership.role === 'ADMIN') {
+    const error = new Error('Cet utilisateur est déjà administrateur');
+    (error as any).status = HTTP_STATUS.BAD_REQUEST;
+    throw error;
+  }
+
+  // Promouvoir le membre
+  const updated = await prisma.userHousehold.update({
+    where: {
+      userId_householdId: {
+        userId: memberUserId,
+        householdId: householdId,
+      },
+    },
+    data: { role: 'ADMIN' },
+    include: {
+      user: {
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+        },
+      },
+    },
+  });
+
+  return updated;
+};
+
+/**
+ * Rétrograde un ADMIN à MEMBER dans un foyer
+ * Vérifie qu'il y aura au moins 1 ADMIN après la rétrogradation
+ */
+export const demoteAdminToMember = async (
+  householdId: string,
+  adminUserId: string,
+  requestingUserId: string
+) => {
+  // Vérifier que l'utilisateur demandeur est admin
+  const requesterMembership = await prisma.userHousehold.findUnique({
+    where: {
+      userId_householdId: {
+        userId: requestingUserId,
+        householdId: householdId,
+      },
+    },
+  });
+
+  if (!requesterMembership || requesterMembership.role !== 'ADMIN') {
+    const error = new Error(ERROR_MESSAGES.FORBIDDEN);
+    (error as any).status = HTTP_STATUS.FORBIDDEN;
+    throw error;
+  }
+
+  // Vérifier que le membre existe dans ce foyer
+  const memberMembership = await prisma.userHousehold.findUnique({
+    where: {
+      userId_householdId: {
+        userId: adminUserId,
+        householdId: householdId,
+      },
+    },
+  });
+
+  if (!memberMembership) {
+    const error = new Error('Membre non trouvé dans ce foyer');
+    (error as any).status = HTTP_STATUS.NOT_FOUND;
+    throw error;
+  }
+
+  if (memberMembership.role !== 'ADMIN') {
+    const error = new Error('Cet utilisateur n\'est pas administrateur');
+    (error as any).status = HTTP_STATUS.BAD_REQUEST;
+    throw error;
+  }
+
+  // Vérifier qu'il y aura au moins 1 ADMIN après la rétrogradation
+  const adminCount = await prisma.userHousehold.count({
+    where: {
+      householdId: householdId,
+      role: 'ADMIN',
+    },
+  });
+
+  if (adminCount <= 1) {
+    const error = new Error(
+      'Impossible de rétrograder le dernier administrateur du foyer. Il doit y avoir au moins un administrateur.'
+    );
+    (error as any).status = HTTP_STATUS.BAD_REQUEST;
+    throw error;
+  }
+
+  // Rétrograder le membre
+  const updated = await prisma.userHousehold.update({
+    where: {
+      userId_householdId: {
+        userId: adminUserId,
+        householdId: householdId,
+      },
+    },
+    data: { role: 'MEMBER' },
+    include: {
+      user: {
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+        },
+      },
+    },
+  });
+
+  return updated;
+};
