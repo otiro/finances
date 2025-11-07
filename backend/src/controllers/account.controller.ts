@@ -91,6 +91,37 @@ export const getHouseholdAccounts = async (
 };
 
 /**
+ * Récupère les soldes de tous les comptes d'un foyer
+ */
+export const getHouseholdBalances = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    if (!req.userId) {
+      res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        status: 'error',
+        message: 'Non authentifié',
+      });
+      return;
+    }
+
+    const balances = await accountService.getHouseholdBalances(
+      req.params.householdId,
+      req.userId
+    );
+
+    res.status(HTTP_STATUS.OK).json({
+      status: 'success',
+      data: balances,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * Récupère un compte par ID
  */
 export const getAccountById = async (

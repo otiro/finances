@@ -28,6 +28,19 @@ interface AccountBalance {
   transactionCount: number;
 }
 
+interface HouseholdAccountBalance {
+  accountId: string;
+  accountName: string;
+  accountType: string;
+  initialBalance: number;
+  currentBalance: number;
+  owners: Array<{
+    id: string;
+    firstName: string;
+    lastName: string;
+  }>;
+}
+
 /**
  * Récupère tous les comptes de l'utilisateur
  */
@@ -112,6 +125,16 @@ export const removeAccountOwner = async (accountId: string, ownerId: string) => 
 export const getAccountBalance = async (id: string) => {
   const response = await api.get<ApiResponse<AccountBalance>>(
     `/accounts/${id}/balance`
+  );
+  return response.data.data;
+};
+
+/**
+ * Récupère les soldes de tous les comptes d'un foyer
+ */
+export const getHouseholdBalances = async (householdId: string) => {
+  const response = await api.get<ApiResponse<HouseholdAccountBalance[]>>(
+    `/accounts/household/${householdId}/balances`
   );
   return response.data.data;
 };

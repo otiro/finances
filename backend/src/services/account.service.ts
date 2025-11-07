@@ -709,3 +709,74 @@ export const getAccountBalance = async (accountId: string, userId: string) => {
     transactionCount: account.transactions.length,
   };
 };
+
+/**
+ * Récupère les soldes de tous les comptes d'un foyer pour l'utilisateur
+ */
+export const getHouseholdBalances = async (householdId: string, userId: string) => {
+  // Vérifier que l'utilisateur est membre du foyer
+  const household = await prisma.household.findUnique({
+    where: { id: householdId },
+    include: {
+      members: {
+        select: { userId: true },
+      },
+    },
+  });
+
+  if (!household || !household.members.some((m) => m.userId === userId)) {
+    const error = new Error(ERROR_MESSAGES.FORBIDDEN);
+    (error as any).status = HTTP_STATUS.FORBIDDEN;
+    throw error;
+  }
+
+  // Récupérer tous les comptes du foyer
+  const accounts = await prisma.account.findMany({
+    where: { householdId },
+    include: {
+      transactions: {
+        select: {
+          amount: true,
+          type: true,
+        },
+      },
+      owners: {
+        select: {
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  // Calculer le solde pour chaque compte
+  const balances = accounts.map((account) => {
+    const balance = account.transactions.reduce((sum, transaction) => {
+      if (transaction.type === TransactionType.CREDIT) {
+        return sum + Number(transaction.amount);
+      } else {
+        return sum - Number(transaction.amount);
+      }
+    }, Number(account.initialBalance));
+
+    return {
+      accountId: account.id,
+      accountName: account.name,
+      accountType: account.type,
+      initialBalance: Number(account.initialBalance),
+      currentBalance: balance,
+      owners: account.owners.map((o) => ({
+        id: o.user.id,
+        firstName: o.user.firstName,
+        lastName: o.user.lastName,
+      })),
+    };
+  });
+
+  return balances;
+};

@@ -28,6 +28,12 @@ router.get('/', accountController.getUserAccounts);
 router.get('/household/:householdId', accountController.getHouseholdAccounts);
 
 /**
+ * GET /api/accounts/household/:householdId/balances
+ * Récupère les soldes de tous les comptes d'un foyer
+ */
+router.get('/household/:householdId/balances', accountController.getHouseholdBalances);
+
+/**
  * GET /api/accounts/:id
  * Récupère un compte par ID
  */

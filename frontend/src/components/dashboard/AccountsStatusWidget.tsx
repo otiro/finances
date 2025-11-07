@@ -1,28 +1,57 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useAccountStore } from '@/store/slices/accountSlice';
-import { useAuth } from '@/hooks/useAuth';
+import * as accountService from '@/services/account.service';
 import { DashboardCard } from './DashboardCard';
 
 interface AccountsStatusWidgetProps {
   householdId: string;
 }
 
+interface AccountBalance {
+  accountId: string;
+  accountName: string;
+  accountType: string;
+  initialBalance: number;
+  currentBalance: number;
+  owners: Array<{
+    id: string;
+    firstName: string;
+    lastName: string;
+  }>;
+}
+
 export const AccountsStatusWidget: React.FC<AccountsStatusWidgetProps> = ({ householdId }) => {
   const navigate = useNavigate();
-  const { accounts } = useAccountStore();
-  const { user } = useAuth();
+  const [accounts, setAccounts] = useState<AccountBalance[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const householdAccounts = React.useMemo(() => {
-    return accounts.filter((account) => {
-      return account.owners?.some((owner: any) => owner.userId === user?.id);
-    });
-  }, [accounts, user?.id]);
+  useEffect(() => {
+    if (householdId) {
+      loadAccounts();
+    }
+  }, [householdId]);
+
+  const loadAccounts = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const data = await accountService.getHouseholdBalances(householdId);
+      setAccounts(data || []);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Erreur lors du chargement des comptes');
+      console.error('Account loading error:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <DashboardCard
       title="🏦 Comptes"
+      isLoading={isLoading}
+      error={error}
       action={
         <Button size="small" onClick={() => navigate('/accounts')}>
           Voir tous
@@ -30,19 +59,16 @@ export const AccountsStatusWidget: React.FC<AccountsStatusWidgetProps> = ({ hous
       }
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {householdAccounts.length === 0 ? (
+        {accounts.length === 0 ? (
           <Typography variant="body2" color="text.secondary">
             Aucun compte associé
           </Typography>
         ) : (
           <>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                Comptes disponibles:
-              </Typography>
-              {householdAccounts.map((account) => (
+              {accounts.map((account) => (
                 <Box
-                  key={account.id}
+                  key={account.accountId}
                   sx={{
                     p: 2,
                     backgroundColor: '#f9f9f9',
@@ -53,24 +79,32 @@ export const AccountsStatusWidget: React.FC<AccountsStatusWidgetProps> = ({ hous
                     alignItems: 'center',
                   }}
                 >
-                  <Box>
+                  <Box sx={{ flex: 1 }}>
                     <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                      {account.name}
+                      {account.accountName}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {account.type}
+                      {account.accountType}
                     </Typography>
                   </Box>
-                  <Typography variant="caption" color="text.secondary">
-                    Solde initial: {(account.initialBalance || 0).toFixed(2)} €
-                  </Typography>
+                  <Box sx={{ textAlign: 'right' }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontWeight: 'bold',
+                        color: account.currentBalance >= 0 ? '#4caf50' : '#f44336',
+                      }}
+                    >
+                      {account.currentBalance >= 0 ? '+' : ''}
+                      {account.currentBalance.toFixed(2)} €
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      initial: {account.initialBalance.toFixed(2)} €
+                    </Typography>
+                  </Box>
                 </Box>
               ))}
             </Box>
-
-            <Typography variant="caption" color="text.secondary" sx={{ mt: 1, fontStyle: 'italic' }}>
-              Pour voir le solde actuel (avec transactions), consultez la page Comptes
-            </Typography>
 
             <Button
               variant="contained"
