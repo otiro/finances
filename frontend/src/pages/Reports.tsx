@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Container,
   Card,
@@ -24,11 +24,13 @@ import {
   Paper,
 } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useAnalyticsStore } from '@/store/slices/analyticsSlice';
 import { useHouseholdStore } from '@/store/slices/householdSlice';
 import { analyticsService } from '@/services/analyticsService';
 
 export const Reports: React.FC = () => {
+  const navigate = useNavigate();
   const { householdId: householdIdParam } = useParams<{ householdId?: string }>();
   const selectedHousehold = useHouseholdStore((state) => state.selectedHousehold);
   const {
@@ -106,9 +108,24 @@ export const Reports: React.FC = () => {
     );
   }
 
+  const handleGoBack = () => {
+    if (householdIdParam) {
+      navigate(`/households/${householdIdParam}`);
+    } else {
+      navigate('/dashboard');
+    }
+  };
+
   return (
     <Container maxWidth="lg">
       <Box sx={{ py: 4 }}>
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={handleGoBack}
+          sx={{ mb: 2 }}
+        >
+          Retour
+        </Button>
         <h1>📄 Génération de Rapports</h1>
 
         {error && (

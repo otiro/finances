@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Container,
   Grid,
@@ -15,6 +15,7 @@ import {
   Tab,
   Paper,
 } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useAnalyticsStore } from '@/store/slices/analyticsSlice';
 import { useHouseholdStore } from '@/store/slices/householdSlice';
 import { CategoryBreakdownChart } from '@/components/analytics/Charts/CategoryBreakdownChart';
@@ -45,6 +46,7 @@ function TabPanel(props: TabPanelProps) {
 }
 
 export const Analytics: React.FC = () => {
+  const navigate = useNavigate();
   const { householdId: householdIdParam } = useParams<{ householdId?: string }>();
   const selectedHousehold = useHouseholdStore((state) => state.selectedHousehold);
   const {
@@ -121,9 +123,24 @@ export const Analytics: React.FC = () => {
     );
   }
 
+  const handleGoBack = () => {
+    if (householdIdParam) {
+      navigate(`/households/${householdIdParam}`);
+    } else {
+      navigate('/dashboard');
+    }
+  };
+
   return (
     <Container maxWidth="lg">
       <Box sx={{ py: 4 }}>
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={handleGoBack}
+          sx={{ mb: 2 }}
+        >
+          Retour
+        </Button>
         <h1>📊 Analytics du Foyer</h1>
 
         {error && (

@@ -126,20 +126,6 @@ export default function Dashboard() {
                 <Button
                   size="small"
                   variant="outlined"
-                  onClick={() => navigate('/analytics')}
-                >
-                  📊 Analytics
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={() => navigate('/reports')}
-                >
-                  📄 Rapports
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
                   onClick={() => navigate('/debts')}
                 >
                   Voir les dettes
