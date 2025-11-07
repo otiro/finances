@@ -265,6 +265,28 @@ export default function HouseholdDetails() {
                       Catégories : <strong>{categories.length}</strong>
                     </Typography>
                   </Box>
+                  <Divider />
+                  <Box>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                      Analyses et Rapports
+                    </Typography>
+                    <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column' }}>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        onClick={() => navigate(`/households/${id}/analytics`)}
+                      >
+                        📊 Voir l'analyse
+                      </Button>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        onClick={() => navigate(`/households/${id}/reports`)}
+                      >
+                        📄 Générer un rapport
+                      </Button>
+                    </Box>
+                  </Box>
                 </Box>
               </CardContent>
             </Card>
