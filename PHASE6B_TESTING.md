@@ -45,9 +45,9 @@ Expected: `{"status":"ok","timestamp":"..."}`
 
 Export token as variable:
 ```bash
-TOKEN="your_jwt_token_here"
-HOUSEHOLD_ID="your_household_id"
-CATEGORY_ID="your_category_id"
+TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZDIyNWY4Zi04ZmFmLTQzNjItYjkxOS02MTM3MDI5MzAxZWEiLCJlbWFpbCI6Imp1bGllbkB0ZXN0LmNvbSIsImlhdCI6MTc2MjQ1NTgwNiwiZXhwIjoxNzYyNTQyMjA2fQ.xrOIT2jRRCymjmXALMtTq7DOO39ISUWkZfMrdJnILZg"
+HOUSEHOLD_ID="ea433d78-6001-464c-8071-21d3565b5da3"
+CATEGORY_ID="6d8a5c84-2ada-4bb3-8f2b-4264d987621f"
 ```
 
 #### 1.2.1 Get Category Breakdown (Current Month)

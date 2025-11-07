@@ -24,10 +24,11 @@ export const getCategoryBreakdown = async (req: Request, res: Response) => {
     // Validate access
     const hasAccess = await validateHouseholdAccess(userId, householdId);
     if (!hasAccess) {
-      return res.status(HTTP_STATUS.FORBIDDEN).json({
+      res.status(HTTP_STATUS.FORBIDDEN).json({
         status: 'error',
         message: 'Access denied to this household',
       });
+      return;
     }
 
     const breakdown = await analyticsService.getCategoryBreakdown(householdId, type);
@@ -48,7 +49,7 @@ export const getCategoryBreakdown = async (req: Request, res: Response) => {
  * GET /api/households/:householdId/analytics/monthly
  * Get monthly income and expense totals
  */
-export const getMonthlySpendings = async (req: Request, res: Response) => {
+export const getMonthlySpendings = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.userId!;
     const { householdId } = req.params;
@@ -57,10 +58,11 @@ export const getMonthlySpendings = async (req: Request, res: Response) => {
     // Validate access
     const hasAccess = await validateHouseholdAccess(userId, householdId);
     if (!hasAccess) {
-      return res.status(HTTP_STATUS.FORBIDDEN).json({
+      res.status(HTTP_STATUS.FORBIDDEN).json({
         status: 'error',
         message: 'Access denied to this household',
       });
+      return;
     }
 
     const monthsCount = months ? parseInt(months, 10) : 12;
@@ -82,7 +84,7 @@ export const getMonthlySpendings = async (req: Request, res: Response) => {
  * GET /api/households/:householdId/analytics/trends/:categoryId
  * Get spending trends for a category
  */
-export const getCategoryTrends = async (req: Request, res: Response) => {
+export const getCategoryTrends = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.userId!;
     const { householdId, categoryId } = req.params;
@@ -91,10 +93,11 @@ export const getCategoryTrends = async (req: Request, res: Response) => {
     // Validate access
     const hasAccess = await validateHouseholdAccess(userId, householdId);
     if (!hasAccess) {
-      return res.status(HTTP_STATUS.FORBIDDEN).json({
+      res.status(HTTP_STATUS.FORBIDDEN).json({
         status: 'error',
         message: 'Access denied to this household',
       });
+      return;
     }
 
     const monthsCount = months ? parseInt(months, 10) : 12;
@@ -116,7 +119,7 @@ export const getCategoryTrends = async (req: Request, res: Response) => {
  * GET /api/households/:householdId/analytics/compare
  * Compare spending between two periods
  */
-export const comparePeriods = async (req: Request, res: Response) => {
+export const comparePeriods = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.userId!;
     const { householdId } = req.params;
@@ -125,17 +128,19 @@ export const comparePeriods = async (req: Request, res: Response) => {
     // Validate access
     const hasAccess = await validateHouseholdAccess(userId, householdId);
     if (!hasAccess) {
-      return res.status(HTTP_STATUS.FORBIDDEN).json({
+      res.status(HTTP_STATUS.FORBIDDEN).json({
         status: 'error',
         message: 'Access denied to this household',
       });
+      return;
     }
 
     if (!startDate1 || !endDate1 || !startDate2 || !endDate2) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+      res.status(HTTP_STATUS.BAD_REQUEST).json({
         status: 'error',
         message: 'Missing required date parameters',
       });
+      return;
     }
 
     const comparison = await analyticsService.comparePeriods(
@@ -162,7 +167,7 @@ export const comparePeriods = async (req: Request, res: Response) => {
  * GET /api/households/:householdId/analytics/snapshot/:period
  * Get or generate snapshot for a period
  */
-export const getSnapshot = async (req: Request, res: Response) => {
+export const getSnapshot = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.userId!;
     const { householdId, period } = req.params;
@@ -170,19 +175,21 @@ export const getSnapshot = async (req: Request, res: Response) => {
     // Validate access
     const hasAccess = await validateHouseholdAccess(userId, householdId);
     if (!hasAccess) {
-      return res.status(HTTP_STATUS.FORBIDDEN).json({
+      res.status(HTTP_STATUS.FORBIDDEN).json({
         status: 'error',
         message: 'Access denied to this household',
       });
+      return;
     }
 
     // Parse period (YYYY-MM format)
     const [year, month] = period.split('-').map(Number);
     if (!year || !month || month < 1 || month > 12) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+      res.status(HTTP_STATUS.BAD_REQUEST).json({
         status: 'error',
         message: 'Invalid period format. Use YYYY-MM',
       });
+      return;
     }
 
     const snapshot = await analyticsService.generateSnapshot(householdId, year, month, 'MONTHLY');
@@ -203,7 +210,7 @@ export const getSnapshot = async (req: Request, res: Response) => {
  * GET /api/households/:householdId/analytics/snapshots
  * Get snapshot history
  */
-export const getSnapshots = async (req: Request, res: Response) => {
+export const getSnapshots = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.userId!;
     const { householdId } = req.params;
@@ -212,10 +219,11 @@ export const getSnapshots = async (req: Request, res: Response) => {
     // Validate access
     const hasAccess = await validateHouseholdAccess(userId, householdId);
     if (!hasAccess) {
-      return res.status(HTTP_STATUS.FORBIDDEN).json({
+      res.status(HTTP_STATUS.FORBIDDEN).json({
         status: 'error',
         message: 'Access denied to this household',
       });
+      return;
     }
 
     const limitCount = limit ? parseInt(limit, 10) : 12;
@@ -237,7 +245,7 @@ export const getSnapshots = async (req: Request, res: Response) => {
  * GET /api/households/:householdId/analytics/projections
  * Get expense projections
  */
-export const getProjections = async (req: Request, res: Response) => {
+export const getProjections = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.userId!;
     const { householdId } = req.params;
@@ -246,10 +254,11 @@ export const getProjections = async (req: Request, res: Response) => {
     // Validate access
     const hasAccess = await validateHouseholdAccess(userId, householdId);
     if (!hasAccess) {
-      return res.status(HTTP_STATUS.FORBIDDEN).json({
+      res.status(HTTP_STATUS.FORBIDDEN).json({
         status: 'error',
         message: 'Access denied to this household',
       });
+      return;
     }
 
     const monthsCount = months ? parseInt(months, 10) : 6;
@@ -271,7 +280,7 @@ export const getProjections = async (req: Request, res: Response) => {
  * GET /api/households/:householdId/analytics/anomalies
  * Detect spending anomalies
  */
-export const getAnomalies = async (req: Request, res: Response) => {
+export const getAnomalies = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.userId!;
     const { householdId } = req.params;
@@ -280,10 +289,11 @@ export const getAnomalies = async (req: Request, res: Response) => {
     // Validate access
     const hasAccess = await validateHouseholdAccess(userId, householdId);
     if (!hasAccess) {
-      return res.status(HTTP_STATUS.FORBIDDEN).json({
+      res.status(HTTP_STATUS.FORBIDDEN).json({
         status: 'error',
         message: 'Access denied to this household',
       });
+      return;
     }
 
     const sens = sensitivity || 'medium';
@@ -305,7 +315,7 @@ export const getAnomalies = async (req: Request, res: Response) => {
  * GET /api/households/:householdId/analytics/suggestions/budgets
  * Get budget suggestions based on spending patterns
  */
-export const getBudgetSuggestions = async (req: Request, res: Response) => {
+export const getBudgetSuggestions = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.userId!;
     const { householdId } = req.params;
@@ -313,10 +323,11 @@ export const getBudgetSuggestions = async (req: Request, res: Response) => {
     // Validate access
     const hasAccess = await validateHouseholdAccess(userId, householdId);
     if (!hasAccess) {
-      return res.status(HTTP_STATUS.FORBIDDEN).json({
+      res.status(HTTP_STATUS.FORBIDDEN).json({
         status: 'error',
         message: 'Access denied to this household',
       });
+      return;
     }
 
     const suggestions = await projectionService.suggestBudgets(householdId);
@@ -337,7 +348,7 @@ export const getBudgetSuggestions = async (req: Request, res: Response) => {
  * POST /api/households/:householdId/reports/generate
  * Generate a report for export
  */
-export const generateReport = async (req: Request, res: Response) => {
+export const generateReport = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.userId!;
     const { householdId } = req.params;
@@ -350,17 +361,19 @@ export const generateReport = async (req: Request, res: Response) => {
     // Validate access
     const hasAccess = await validateHouseholdAccess(userId, householdId);
     if (!hasAccess) {
-      return res.status(HTTP_STATUS.FORBIDDEN).json({
+      res.status(HTTP_STATUS.FORBIDDEN).json({
         status: 'error',
         message: 'Access denied to this household',
       });
+      return;
     }
 
     if (!startDate || !endDate || !format) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+      res.status(HTTP_STATUS.BAD_REQUEST).json({
         status: 'error',
         message: 'Missing required fields: startDate, endDate, format',
       });
+      return;
     }
 
     const reportData = await reportService.prepareReportData(householdId, new Date(startDate), new Date(endDate));
@@ -387,31 +400,34 @@ export const generateReport = async (req: Request, res: Response) => {
         break;
       case 'PDF':
         // For now, return a message that PDF requires additional setup
-        return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        res.status(HTTP_STATUS.BAD_REQUEST).json({
           status: 'error',
           message: 'PDF export requires additional configuration',
           supportedFormats: ['CSV', 'JSON', 'TEXT'],
         });
+        return;
       case 'XLSX':
         // For now, return a message that XLSX requires additional setup
-        return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        res.status(HTTP_STATUS.BAD_REQUEST).json({
           status: 'error',
           message: 'XLSX export requires additional configuration',
           supportedFormats: ['CSV', 'JSON', 'TEXT'],
         });
+        return;
       default:
-        return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        res.status(HTTP_STATUS.BAD_REQUEST).json({
           status: 'error',
           message: `Unsupported format: ${format}`,
           supportedFormats: ['CSV', 'JSON', 'TEXT'],
         });
+        return;
     }
 
     // Log the export
     const fileName = `report_${householdId}_${Date.now()}.${fileExtension}`;
     const fileSize = Buffer.byteLength(content, 'utf-8');
 
-    await reportService.logExport(householdId, userId, format, new Date(startDate), new Date(endDate), fileName, fileSize);
+    await reportService.logExport(householdId, userId, format as 'PDF' | 'CSV' | 'XLSX' | 'JSON' | 'TEXT', new Date(startDate), new Date(endDate), fileName, fileSize);
 
     // Set response headers for download
     res.setHeader('Content-Type', mimeType);
@@ -431,7 +447,7 @@ export const generateReport = async (req: Request, res: Response) => {
  * GET /api/households/:householdId/reports/history
  * Get report export history
  */
-export const getReportHistory = async (req: Request, res: Response) => {
+export const getReportHistory = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.userId!;
     const { householdId } = req.params;
@@ -440,10 +456,11 @@ export const getReportHistory = async (req: Request, res: Response) => {
     // Validate access
     const hasAccess = await validateHouseholdAccess(userId, householdId);
     if (!hasAccess) {
-      return res.status(HTTP_STATUS.FORBIDDEN).json({
+      res.status(HTTP_STATUS.FORBIDDEN).json({
         status: 'error',
         message: 'Access denied to this household',
       });
+      return;
     }
 
     const limitCount = limit ? parseInt(limit, 10) : 20;

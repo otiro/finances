@@ -61,7 +61,7 @@ export const projectExpenses = async (
 
   // Calculate standard deviation
   const variance = expenses.reduce((sum, e) => sum + Math.pow(e - average, 2), 0) / expenses.length;
-  const stdDev = Math.sqrt(variance);
+  const _stdDev = Math.sqrt(variance); // Standard deviation calculated but not used in current implementation
 
   // Generate projections
   const lastMonth = new Date();
