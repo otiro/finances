@@ -84,6 +84,7 @@ model User {
   transactions       Transaction[]
   balancesFrom       BalancingRecord[] @relation("BalancingFrom")
   balancesTo         BalancingRecord[] @relation("BalancingTo")
+  exportLogs         ExportLog[]
 
   @@map("users")
 }
@@ -104,6 +105,8 @@ model Household {
   categorizationRules   CategorizationRule[]
   balancingRecords      BalancingRecord[]
   recurringPatterns     RecurringPattern[]
+  analyticsSnapshots    AnalyticsSnapshot[]
+  exportLogs            ExportLog[]
 
   @@map("households")
 }
@@ -179,6 +182,7 @@ model Category {
   recurringPatterns   RecurringPattern[]
   budgets             Budget[]
   categorizationRules CategorizationRule[]
+  analyticsDetails    AnalyticsDetail[]
 
   @@map("categories")
 }
@@ -370,4 +374,72 @@ model BalancingRecord {
   toUser    User      @relation("BalancingTo", fields: [toUserId], references: [id], onDelete: Cascade)
 
   @@map("balancing_records")
+}
+
+// Table des snapshots d'analytics
+model AnalyticsSnapshot {
+  id          String   @id @default(uuid())
+  householdId String   @map("household_id")
+  period      String   // YYYY-MM format (e.g., "2025-11")
+  periodType  String   @default("MONTHLY") // MONTHLY, QUARTERLY, YEARLY
+
+  totalIncome    Decimal @db.Decimal(10, 2)
+  totalExpense   Decimal @db.Decimal(10, 2)
+  netCashFlow    Decimal @db.Decimal(10, 2)
+
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  household   Household           @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  details     AnalyticsDetail[]
+
+  @@unique([householdId, period])
+  @@index([householdId, createdAt])
+  @@map("analytics_snapshots")
+}
+
+// Table des détails d'analytics (par catégorie)
+model AnalyticsDetail {
+  id              String   @id @default(uuid())
+  snapshotId      String   @map("snapshot_id")
+  categoryId      String   @map("category_id")
+
+  amount          Decimal  @db.Decimal(10, 2)
+  type            String   // INCOME or EXPENSE
+  transactionCount Int      @default(0) @map("transaction_count")
+
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  // Relations
+  snapshot        AnalyticsSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  category        Category         @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([snapshotId, categoryId])
+  @@map("analytics_details")
+}
+
+// Table des logs d'export
+model ExportLog {
+  id          String   @id @default(uuid())
+  householdId String   @map("household_id")
+  userId      String   @map("user_id")
+
+  format      String   // PDF, CSV, XLSX
+  periodStart DateTime @map("period_start")
+  periodEnd   DateTime @map("period_end")
+
+  fileName    String   @map("file_name")
+  fileSize    Int      @map("file_size")
+  downloadUrl String?  @map("download_url")
+
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relations
+  household   Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([householdId, createdAt])
+  @@index([userId, createdAt])
+  @@map("export_logs")
 }

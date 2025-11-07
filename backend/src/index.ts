@@ -16,7 +16,7 @@ import transactionRoutes from './routes/transaction.routes';
 import categoryRoutes from './routes/category.routes';
 import recurringTransactionRoutes from './routes/recurringTransaction.routes';
 import budgetRoutes from './routes/budget.routes';
-// import analyticsRoutes from './routes/analytics.routes';
+import analyticsRoutes from './routes/analyticsRoutes';
 
 // Import jobs
 import { startRecurringTransactionCronJob } from './jobs/recurringTransactionJob';
@@ -47,10 +47,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/households', householdRoutes);
 app.use('/api/households', recurringTransactionRoutes);
 app.use('/api/households', budgetRoutes);
+app.use('/api/households', analyticsRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/accounts', transactionRoutes);
 app.use('/api', categoryRoutes);
-// app.use('/api/analytics', analyticsRoutes);
 
 // Error handling
 app.use(notFoundHandler);
