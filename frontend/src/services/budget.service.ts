@@ -200,4 +200,17 @@ class BudgetService {
   }
 }
 
-export default new BudgetService();
+const budgetService = new BudgetService();
+
+// Export individual functions for easier use
+export const getHouseholdBudgets = (householdId: string) => budgetService.getHouseholdBudgets(householdId);
+export const getHouseholdBudgetsSummary = (householdId: string) => budgetService.getHouseholdBudgetsSummary(householdId);
+export const getBudgetById = (householdId: string, budgetId: string) => budgetService.getBudgetById(householdId, budgetId);
+export const getBudgetAlerts = (householdId: string, budgetId: string) => budgetService.getBudgetAlerts(householdId, budgetId);
+export const createBudget = (householdId: string, data: CreateBudgetInput) => budgetService.createBudget(householdId, data);
+export const updateBudget = (householdId: string, budgetId: string, data: UpdateBudgetInput) => budgetService.updateBudget(householdId, budgetId, data);
+export const deleteBudget = (householdId: string, budgetId: string) => budgetService.deleteBudget(householdId, budgetId);
+export const addBudgetOwner = (budgetId: string, userId: string) => budgetService.addBudgetOwner(budgetId, userId);
+export const removeBudgetOwner = (budgetId: string, ownerId: string) => budgetService.removeBudgetOwner(budgetId, ownerId);
+
+export default budgetService;

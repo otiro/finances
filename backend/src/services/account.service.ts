@@ -730,9 +730,16 @@ export const getHouseholdBalances = async (householdId: string, userId: string) 
     throw error;
   }
 
-  // Récupérer tous les comptes du foyer
+  // Récupérer tous les comptes du foyer où l'utilisateur est propriétaire
   const accounts = await prisma.account.findMany({
-    where: { householdId },
+    where: {
+      householdId,
+      owners: {
+        some: {
+          userId,
+        },
+      },
+    },
     include: {
       transactions: {
         select: {
