@@ -59,8 +59,8 @@ export const projectExpenses = async (
     trend = 'stable';
   }
 
-  // Calculate variance (standard deviation not used in current implementation)
-  const variance = expenses.reduce((sum, e) => sum + Math.pow(e - average, 2), 0) / expenses.length;
+  // Note: variance and standard deviation not used in current implementation
+  // const variance = expenses.reduce((sum, e) => sum + Math.pow(e - average, 2), 0) / expenses.length;
   // Math.sqrt(variance); // Would be standard deviation if needed
 
   // Generate projections
