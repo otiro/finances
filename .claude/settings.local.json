@@ -11,7 +11,8 @@
       "Bash(find:*)",
       "Bash(cat:*)",
       "Bash(npx prisma migrate:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(echo:*)"
     ],
     "deny": [],
     "ask": []
