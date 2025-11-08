@@ -1,11 +1,15 @@
 import axios from 'axios';
 
-declare const import.meta: {
-  env: {
-    VITE_API_URL?: string;
-    VITE_API_TIMEOUT?: string;
-  };
-};
+interface ImportMetaEnv {
+  VITE_API_URL?: string;
+  VITE_API_TIMEOUT?: string;
+}
+
+declare global {
+  interface ImportMeta {
+    env: ImportMetaEnv;
+  }
+}
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 const API_TIMEOUT = Number(import.meta.env.VITE_API_TIMEOUT) || 30000;

@@ -59,7 +59,6 @@ export default function BudgetFormDialog({
   // Load categories when dialog opens
   useEffect(() => {
     if (open) {
-      setCategoriesLoading(true);
       getCategoriesForHousehold(householdId)
         .then((result) => {
           // result is already { system: Category[]; household: Category[] }
@@ -69,9 +68,6 @@ export default function BudgetFormDialog({
         .catch((err) => {
           console.error('Erreur lors du chargement des catégories:', err);
           setLocalError('Impossible de charger les catégories');
-        })
-        .finally(() => {
-          setCategoriesLoading(false);
         });
     }
   }, [open, householdId]);
