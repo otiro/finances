@@ -47,6 +47,11 @@ export const calculateMonthlyIncome = async (
     }
   }
 
+  // Si aucune catégorie de salaire trouvée, retourner 0
+  if (!categoryId) {
+    return new Decimal(0);
+  }
+
   // Calculer le début et la fin du mois
   const startDate = new Date(year, month - 1, 1);
   const endDate = new Date(year, month, 0);
@@ -69,7 +74,7 @@ export const calculateMonthlyIncome = async (
 
   const accountIds = userAccounts.map((a) => a.id);
 
-  // Chercher toutes les transactions CREDIT du mois
+  // Chercher toutes les transactions CREDIT du mois dans la catégorie de salaire
   const transactions = await prisma.transaction.findMany({
     where: {
       accountId: { in: accountIds },
@@ -78,7 +83,7 @@ export const calculateMonthlyIncome = async (
         gte: startDate,
         lte: endDate,
       },
-      ...(categoryId && { categoryId }),
+      categoryId: categoryId,
     },
     select: {
       amount: true,

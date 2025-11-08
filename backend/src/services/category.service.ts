@@ -59,6 +59,7 @@ export const createCategory = async (
     name: string;
     color?: string;
     icon?: string;
+    isSalaryCategory?: boolean;
   }
 ) => {
   // Vérifier que l'utilisateur est admin du foyer
@@ -83,6 +84,7 @@ export const createCategory = async (
       color: data.color || '#3f51b5',
       icon: data.icon,
       isSystem: false,
+      isSalaryCategory: data.isSalaryCategory || false,
     },
   });
 
@@ -142,6 +144,7 @@ export const updateCategory = async (
     name?: string;
     color?: string;
     icon?: string;
+    isSalaryCategory?: boolean;
   }
 ) => {
   // Vérifier que l'utilisateur est admin du foyer
@@ -177,6 +180,7 @@ export const updateCategory = async (
       ...(data.name && { name: data.name }),
       ...(data.color && { color: data.color }),
       ...(data.icon && { icon: data.icon }),
+      ...(data.isSalaryCategory !== undefined && { isSalaryCategory: data.isSalaryCategory }),
     },
   });
 
@@ -235,5 +239,52 @@ export const deleteCategory = async (
   await prisma.category.delete({
     where: { id: categoryId },
   });
+};
+
+/**
+ * Récupère la catégorie de salaire configurée pour un foyer
+ */
+export const getSalaryCategoryForHousehold = async (
+  householdId: string,
+  userId: string
+) => {
+  // Vérifier que l'utilisateur est membre du foyer
+  const userHousehold = await prisma.userHousehold.findFirst({
+    where: {
+      userId,
+      householdId,
+    },
+  });
+
+  if (!userHousehold) {
+    throw {
+      status: HTTP_STATUS.FORBIDDEN,
+      message: ERROR_MESSAGES.FORBIDDEN,
+    };
+  }
+
+  // Chercher d'abord une catégorie marquée comme isSalaryCategory = true
+  const salaryCategory = await prisma.category.findFirst({
+    where: {
+      householdId: householdId,
+      isSalaryCategory: true,
+    },
+  });
+
+  if (salaryCategory) {
+    return salaryCategory;
+  }
+
+  // Fallback: Chercher une catégorie nommée "Salary" ou "Revenu"
+  const namedSalaryCategory = await prisma.category.findFirst({
+    where: {
+      householdId: householdId,
+      name: {
+        in: ['Salary', 'Revenu', 'SALARY', 'REVENU'],
+      },
+    },
+  });
+
+  return namedSalaryCategory || null;
 };
 

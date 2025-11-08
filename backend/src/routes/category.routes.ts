@@ -20,6 +20,12 @@ router.get('/system', categoryController.getSystemCategories);
 router.get('/households/:householdId/categories', categoryController.getAllAvailableCategories);
 
 /**
+ * GET /api/households/:householdId/salary-category
+ * Récupère la catégorie de salaire configurée
+ */
+router.get('/households/:householdId/salary-category', categoryController.getSalaryCategory);
+
+/**
  * GET /api/households/:householdId/categories/household
  * Récupère les catégories du foyer
  */
