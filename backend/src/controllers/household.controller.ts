@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import * as householdService from '../services/household.service';
 import { HTTP_STATUS } from '../utils/constants';
+import prisma from '../config/database';
 
 /**
  * Crée un nouveau foyer
