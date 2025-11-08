@@ -30,10 +30,10 @@ export const RecentTransactionsWidget: React.FC<RecentTransactionsWidgetProps> =
   const loadRecentTransactions = async () => {
     try {
       setIsLoading(true);
-      const data = await transactionService.getHouseholdTransactionsSummary(householdId);
-      if (data && Array.isArray(data)) {
-        setTransactions(data);
-      }
+      // Note: Transaction service doesn't have household-level endpoint
+      // Would need API update to fetch transactions across all accounts in a household
+      // For now, showing empty state
+      setTransactions([]);
     } catch (err: any) {
       console.error('Error loading transactions:', err);
       // Don't show error if transactions endpoint is not available yet
