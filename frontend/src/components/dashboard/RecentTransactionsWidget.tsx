@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import * as transactionService from '@/services/transaction.service';
 import { DashboardCard } from './DashboardCard';
 
 interface RecentTransactionsWidgetProps {
