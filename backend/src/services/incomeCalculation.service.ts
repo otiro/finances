@@ -19,23 +19,25 @@ export const calculateMonthlyIncome = async (
   month: number,
   salaryCategoryId?: string
 ): Promise<Decimal> => {
-  // Déterminer la catégorie salaire
-  let categoryId = salaryCategoryId;
+  // Déterminer les catégories de salaire
+  let categoryIds: string[] = [];
 
-  if (!categoryId) {
-    // Chercher d'abord une catégorie marquée comme isSalaryCategory = true
-    const salaryCategory = await prisma.category.findFirst({
+  if (salaryCategoryId) {
+    categoryIds = [salaryCategoryId];
+  } else {
+    // Chercher toutes les catégories marquées comme isSalaryCategory = true
+    const salaryCategories = await prisma.category.findMany({
       where: {
         householdId: householdId,
         isSalaryCategory: true,
       },
     });
 
-    if (salaryCategory) {
-      categoryId = salaryCategory.id;
+    if (salaryCategories.length > 0) {
+      categoryIds = salaryCategories.map((c) => c.id);
     } else {
-      // Fallback: Chercher une catégorie nommée "Salary" ou "Revenu"
-      const namedSalaryCategory = await prisma.category.findFirst({
+      // Fallback: Chercher des catégories nommées "Salary" ou "Revenu"
+      const namedSalaryCategories = await prisma.category.findMany({
         where: {
           householdId: householdId,
           name: {
@@ -43,12 +45,12 @@ export const calculateMonthlyIncome = async (
           },
         },
       });
-      categoryId = namedSalaryCategory?.id;
+      categoryIds = namedSalaryCategories.map((c) => c.id);
     }
   }
 
   // Si aucune catégorie de salaire trouvée, retourner 0
-  if (!categoryId) {
+  if (categoryIds.length === 0) {
     return new Decimal(0);
   }
 
@@ -74,7 +76,7 @@ export const calculateMonthlyIncome = async (
 
   const accountIds = userAccounts.map((a) => a.id);
 
-  // Chercher toutes les transactions CREDIT du mois dans la catégorie de salaire
+  // Chercher toutes les transactions CREDIT du mois dans les catégories de salaire
   const transactions = await prisma.transaction.findMany({
     where: {
       accountId: { in: accountIds },
@@ -83,7 +85,7 @@ export const calculateMonthlyIncome = async (
         gte: startDate,
         lte: endDate,
       },
-      categoryId: categoryId,
+      categoryId: { in: categoryIds },
     },
     select: {
       amount: true,

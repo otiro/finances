@@ -242,9 +242,9 @@ export const deleteCategory = async (
 };
 
 /**
- * Récupère la catégorie de salaire configurée pour un foyer
+ * Récupère les catégories de salaire configurées pour un foyer
  */
-export const getSalaryCategoryForHousehold = async (
+export const getSalaryCategoriesForHousehold = async (
   householdId: string,
   userId: string
 ) => {
@@ -263,20 +263,20 @@ export const getSalaryCategoryForHousehold = async (
     };
   }
 
-  // Chercher d'abord une catégorie marquée comme isSalaryCategory = true
-  const salaryCategory = await prisma.category.findFirst({
+  // Chercher d'abord toutes les catégories marquées comme isSalaryCategory = true
+  const salaryCategories = await prisma.category.findMany({
     where: {
       householdId: householdId,
       isSalaryCategory: true,
     },
   });
 
-  if (salaryCategory) {
-    return salaryCategory;
+  if (salaryCategories.length > 0) {
+    return salaryCategories;
   }
 
-  // Fallback: Chercher une catégorie nommée "Salary" ou "Revenu"
-  const namedSalaryCategory = await prisma.category.findFirst({
+  // Fallback: Chercher des catégories nommées "Salary" ou "Revenu"
+  const namedSalaryCategories = await prisma.category.findMany({
     where: {
       householdId: householdId,
       name: {
@@ -285,6 +285,6 @@ export const getSalaryCategoryForHousehold = async (
     },
   });
 
-  return namedSalaryCategory || null;
+  return namedSalaryCategories;
 };
 

@@ -187,18 +187,18 @@ export const deleteCategory = async (req: Request, res: Response) => {
 
 /**
  * GET /api/households/:householdId/salary-category
- * Récupère la catégorie de salaire configurée pour le foyer
+ * Récupère les catégories de salaire configurées pour le foyer
  */
 export const getSalaryCategory = async (req: Request, res: Response) => {
   try {
     const userId = req.userId!;
     const { householdId } = req.params;
 
-    const category = await categoryService.getSalaryCategoryForHousehold(householdId, userId);
+    const categories = await categoryService.getSalaryCategoriesForHousehold(householdId, userId);
 
     res.status(HTTP_STATUS.OK).json({
       status: 'success',
-      data: category,
+      data: categories,
     });
   } catch (error: any) {
     const status = error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR;

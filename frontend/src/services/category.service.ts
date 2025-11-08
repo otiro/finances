@@ -98,10 +98,10 @@ export const deleteCategory = async (householdId: string, categoryId: string) =>
 };
 
 /**
- * Récupère la catégorie de salaire configurée pour le foyer
+ * Récupère les catégories de salaire configurées pour le foyer
  */
-export const getSalaryCategory = async (householdId: string) => {
-  const response = await api.get<ApiResponse<Category | null>>(
+export const getSalaryCategories = async (householdId: string) => {
+  const response = await api.get<ApiResponse<Category[]>>(
     `/households/${householdId}/salary-category`
   );
   return response.data.data;
