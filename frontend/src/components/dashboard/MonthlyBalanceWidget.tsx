@@ -57,7 +57,7 @@ export const MonthlyBalanceWidget: React.FC<MonthlyBalanceWidgetProps> = ({ hous
   };
 
   return (
-    <DashboardCard title="💰 Bilan du Mois" isLoading={isLoading || isLoadingIncome} error={error}>
+    <DashboardCard title="💰 Bilan du Mois" isLoading={isLoading} error={error}>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6} md={4}>
           <Box>
