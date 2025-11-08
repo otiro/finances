@@ -23,6 +23,7 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import { useAuth } from '../hooks/useAuth';
 import { useHouseholdStore } from '../store/slices/householdSlice';
 import * as householdService from '../services/household.service';
+import { getIncomeAnalysis } from '../services/household.service';
 import { MonthlyBalanceWidget } from '../components/dashboard/MonthlyBalanceWidget';
 import { TopCategoriesWidget } from '../components/dashboard/TopCategoriesWidget';
 import { BudgetStatusWidget } from '../components/dashboard/BudgetStatusWidget';
@@ -34,6 +35,8 @@ export default function Dashboard() {
   const { households, isLoading } = useHouseholdStore();
   const [stats, setStats] = useState({ totalHouseholds: 0, totalAccounts: 0 });
   const [selectedHouseholdId, setSelectedHouseholdId] = useState<string>('');
+  const [monthlyIncome, setMonthlyIncome] = useState<number | null>(null);
+  const [isLoadingIncome, setIsLoadingIncome] = useState(false);
 
   useEffect(() => {
     loadHouseholds();
@@ -55,6 +58,28 @@ export default function Dashboard() {
       }
     }
   }, [households, selectedHouseholdId]);
+
+  // Load user's monthly income for current month
+  useEffect(() => {
+    if (selectedHouseholdId && user?.id) {
+      setIsLoadingIncome(true);
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+
+      getIncomeAnalysis(selectedHouseholdId, year, month)
+        .then((analysis) => {
+          // Find the current user's income in the analysis
+          const userIncomeData = analysis.members.find(m => m.userId === user.id);
+          setMonthlyIncome(userIncomeData?.salary ?? 0);
+        })
+        .catch((error) => {
+          console.error('Error fetching income analysis:', error);
+          setMonthlyIncome(0);
+        })
+        .finally(() => setIsLoadingIncome(false));
+    }
+  }, [selectedHouseholdId, user?.id]);
 
   const loadHouseholds = async () => {
     try {
@@ -109,7 +134,16 @@ export default function Dashboard() {
                 Revenu Mensuel
               </Typography>
               <Typography variant="h5">
-                {user?.monthlyIncome} €
+                {isLoadingIncome ? (
+                  <CircularProgress size={32} />
+                ) : monthlyIncome !== null ? (
+                  `${monthlyIncome?.toFixed(2)} €`
+                ) : (
+                  '0.00 €'
+                )}
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                {selectedHouseholdId ? 'Revenu réel du foyer' : 'Aucun foyer sélectionné'}
               </Typography>
             </CardContent>
           </Card>
