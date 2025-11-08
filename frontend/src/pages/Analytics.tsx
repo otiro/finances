@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Container,
@@ -48,7 +48,7 @@ function TabPanel(props: TabPanelProps) {
 export const Analytics: React.FC = () => {
   const navigate = useNavigate();
   const { householdId: householdIdParam } = useParams<{ householdId?: string }>();
-  const selectedHousehold = useHouseholdStore((state) => state.selectedHousehold);
+  const currentHousehold = useHouseholdStore((state) => state.currentHousehold);
   const {
     categoryBreakdown,
     monthlySpendings,
@@ -79,8 +79,8 @@ export const Analytics: React.FC = () => {
     new Date(new Date().getFullYear(), new Date().getMonth() - 1, 0).toISOString().split('T')[0]
   );
 
-  // Use householdId from URL params if available, otherwise use selected household
-  const householdId = householdIdParam || selectedHousehold?.id;
+  // Use householdId from URL params if available, otherwise use current household
+  const householdId = householdIdParam || currentHousehold?.id;
 
   useEffect(() => {
     if (!householdId) return;
@@ -90,7 +90,7 @@ export const Analytics: React.FC = () => {
     fetchMonthlySpendings(householdId);
   }, [householdId, fetchCategoryBreakdown, fetchMonthlySpendings]);
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 
@@ -248,7 +248,7 @@ export const Analytics: React.FC = () => {
                         value={compareStartDate1}
                         onChange={(e) => setCompareStartDate1(e.target.value)}
                         fullWidth
-                        slotProps={{ input: { inputProps: { min: '' } } }}
+                        inputProps={{ min: '' }}
                       />
                       <TextField
                         label="Date de fin"
@@ -257,7 +257,7 @@ export const Analytics: React.FC = () => {
                         onChange={(e) => setCompareEndDate1(e.target.value)}
                         fullWidth
                         sx={{ mt: 2 }}
-                        slotProps={{ input: { inputProps: { min: '' } } }}
+                        inputProps={{ min: '' }}
                       />
                     </Grid>
 
@@ -269,7 +269,7 @@ export const Analytics: React.FC = () => {
                         value={compareStartDate2}
                         onChange={(e) => setCompareStartDate2(e.target.value)}
                         fullWidth
-                        slotProps={{ input: { inputProps: { min: '' } } }}
+                        inputProps={{ min: '' }}
                       />
                       <TextField
                         label="Date de fin"
@@ -278,7 +278,7 @@ export const Analytics: React.FC = () => {
                         onChange={(e) => setCompareEndDate2(e.target.value)}
                         fullWidth
                         sx={{ mt: 2 }}
-                        slotProps={{ input: { inputProps: { min: '' } } }}
+                        inputProps={{ min: '' }}
                       />
                     </Grid>
 

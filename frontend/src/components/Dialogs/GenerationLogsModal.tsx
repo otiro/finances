@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  Dialog,
   DialogTitle,
   DialogContent,
   Table,
@@ -98,12 +97,12 @@ const GenerationLogsModal: React.FC<GenerationLogsModalProps> = ({
       }}
     >
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <div sx={{ fontWeight: 600 }}>Historique de génération</div>
-          <div sx={{ fontSize: '0.875rem', color: 'textSecondary', fontWeight: 400 }}>
+        <Box>
+          <Box sx={{ fontWeight: 600 }}>Historique de génération</Box>
+          <Box sx={{ fontSize: '0.875rem', color: 'textSecondary', fontWeight: 400 }}>
             {pattern.name}
-          </div>
-        </div>
+          </Box>
+        </Box>
         <Button onClick={onClose} startIcon={<CloseIcon />} />
       </DialogTitle>
 

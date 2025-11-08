@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -6,11 +6,9 @@ import {
   CardActions,
   Typography,
   Box,
-  Chip,
   Button,
   List,
   ListItem,
-  ListItemText,
   CircularProgress,
   Alert,
   Grid,

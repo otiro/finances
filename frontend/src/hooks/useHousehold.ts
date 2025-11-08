@@ -1,10 +1,6 @@
 import { useMemo } from 'react';
 import { useAccountStore } from '../store/slices/accountSlice';
 
-interface Account {
-  id: string;
-  name: string;
-}
 
 interface Category {
   id: string;

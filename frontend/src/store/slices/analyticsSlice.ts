@@ -56,7 +56,7 @@ interface AnalyticsState {
   clearError: () => void;
 }
 
-export const useAnalyticsStore = create<AnalyticsState>((set, get) => ({
+export const useAnalyticsStore = create<AnalyticsState>((set) => ({
   // Initial state
   categoryBreakdown: [],
   monthlySpendings: [],

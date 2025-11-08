@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Box, Typography, LinearProgress, Grid, Chip } from '@mui/material';
+import { useMemo, useEffect } from 'react';
+import { Box, Typography, LinearProgress } from '@mui/material';
 import { useAnalyticsStore } from '@/store/slices/analyticsSlice';
 import { DashboardCard } from './DashboardCard';
 
@@ -16,7 +16,7 @@ export const TopCategoriesWidget: React.FC<TopCategoriesWidgetProps> = ({ househ
     }
   }, [householdId, fetchCategoryBreakdown]);
 
-  const topExpenses = React.useMemo(() => {
+  const topExpenses = useMemo(() => {
     if (!categoryBreakdown || !Array.isArray(categoryBreakdown)) return [];
     return [...categoryBreakdown]
       .filter(cat => cat.type === 'EXPENSE')
@@ -43,7 +43,7 @@ export const TopCategoriesWidget: React.FC<TopCategoriesWidgetProps> = ({ househ
   return (
     <DashboardCard title="📊 Top Catégories de Dépenses" isLoading={isLoading} error={error}>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {topExpenses.map((category, index) => (
+        {topExpenses.map((category) => (
           <Box key={category.categoryId}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1 }}>

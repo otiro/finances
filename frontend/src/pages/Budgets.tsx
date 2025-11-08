@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -32,11 +32,9 @@ import {
   Delete as DeleteIcon,
   Edit as EditIcon,
   ArrowBack as ArrowBackIcon,
-  MoreVert as MoreVertIcon,
 } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useBudgetStore } from '../store/slices/budgetSlice';
-import { useAccountStore } from '../store/slices/accountSlice';
 import BudgetFormDialog from '../components/Budgets/BudgetFormDialog';
 import BudgetProgressCard from '../components/Budgets/BudgetProgressCard';
 import BudgetAlertDialog from '../components/Budgets/BudgetAlertDialog';
@@ -192,7 +190,7 @@ export default function Budgets() {
       <Paper sx={{ mb: 2 }}>
         <Tabs
           value={tabValue}
-          onChange={(e, val) => setTabValue(val)}
+          onChange={(_e, val) => setTabValue(val)}
           aria-label="budget tabs"
         >
           <Tab label="Vue d'ensemble" id="budget-tab-0" aria-controls="budget-tabpanel-0" />

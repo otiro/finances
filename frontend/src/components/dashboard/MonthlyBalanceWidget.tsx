@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Typography, Chip, Grid } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Box, Typography, Grid } from '@mui/material';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import { useAnalyticsStore } from '@/store/slices/analyticsSlice';
@@ -47,7 +47,7 @@ export const MonthlyBalanceWidget: React.FC<MonthlyBalanceWidgetProps> = ({ hous
   const netCashFlow = currentMonth.income - currentMonth.expense;
   const previousNetCashFlow = previousMonth ? (previousMonth.income - previousMonth.expense) : 0;
   const netCashFlowChange = previousMonth
-    ? (((netCashFlow - previousNetCashFlow) / Math.abs(previousNetCashFlow)) * 100).toFixed(1)
+    ? parseFloat((((netCashFlow - previousNetCashFlow) / Math.abs(previousNetCashFlow)) * 100).toFixed(1))
     : 0;
 
   const getNetCashFlowColor = () => {

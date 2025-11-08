@@ -210,7 +210,5 @@ export const getBudgetAlerts = (householdId: string, budgetId: string) => budget
 export const createBudget = (householdId: string, data: CreateBudgetInput) => budgetService.createBudget(householdId, data);
 export const updateBudget = (householdId: string, budgetId: string, data: UpdateBudgetInput) => budgetService.updateBudget(householdId, budgetId, data);
 export const deleteBudget = (householdId: string, budgetId: string) => budgetService.deleteBudget(householdId, budgetId);
-export const addBudgetOwner = (budgetId: string, userId: string) => budgetService.addBudgetOwner(budgetId, userId);
-export const removeBudgetOwner = (budgetId: string, ownerId: string) => budgetService.removeBudgetOwner(budgetId, ownerId);
 
 export default budgetService;

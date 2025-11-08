@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Container,
@@ -32,7 +32,7 @@ import { analyticsService } from '@/services/analyticsService';
 export const Reports: React.FC = () => {
   const navigate = useNavigate();
   const { householdId: householdIdParam } = useParams<{ householdId?: string }>();
-  const selectedHousehold = useHouseholdStore((state) => state.selectedHousehold);
+  const currentHousehold = useHouseholdStore((state) => state.currentHousehold);
   const {
     reportHistory,
     isLoading,
@@ -42,8 +42,8 @@ export const Reports: React.FC = () => {
     clearError,
   } = useAnalyticsStore();
 
-  // Use householdId from URL params if available, otherwise use selected household
-  const householdId = householdIdParam || selectedHousehold?.id;
+  // Use householdId from URL params if available, otherwise use current household
+  const householdId = householdIdParam || currentHousehold?.id;
 
   const [startDate, setStartDate] = useState(
     new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]
@@ -71,7 +71,7 @@ export const Reports: React.FC = () => {
       );
 
       // Download the file
-      const fileName = `rapport_${selectedHousehold?.name || 'foyer'}_${Date.now()}.${format.toLowerCase()}`;
+      const fileName = `rapport_${currentHousehold?.name || 'foyer'}_${Date.now()}.${format.toLowerCase()}`;
       analyticsService.downloadFile(blob, fileName);
     } catch (err) {
       console.error('Erreur lors de la génération du rapport:', err);
@@ -151,7 +151,7 @@ export const Reports: React.FC = () => {
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
                       fullWidth
-                      slotProps={{ input: { inputProps: { min: '' } } }}
+                      inputProps={{ min: '' }}
                     />
                   </Grid>
 
@@ -162,7 +162,7 @@ export const Reports: React.FC = () => {
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
                       fullWidth
-                      slotProps={{ input: { inputProps: { min: '' } } }}
+                      inputProps={{ min: '' }}
                     />
                   </Grid>
 

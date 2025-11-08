@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import * as recurringTransactionService from '../../services/recurringTransaction.service';
 import type { RecurringPattern } from '../../services/recurringTransaction.service';
 import type { RootState } from '../store';

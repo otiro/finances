@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Grid,
   Box,
@@ -13,7 +13,6 @@ import {
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { useAppDispatch } from '../../store/hooks';
 import {
-  updateRecurringPattern,
   deleteRecurringPattern,
   pauseRecurringPattern,
   resumeRecurringPattern,

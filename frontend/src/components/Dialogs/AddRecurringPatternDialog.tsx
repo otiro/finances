@@ -43,7 +43,6 @@ const AddRecurringPatternDialog: React.FC<AddRecurringPatternDialogProps> = ({
   const { accounts } = useHousehold(householdId);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [loadingCategories, setLoadingCategories] = useState(false);
 
   useEffect(() => {
     if (open && householdId) {
@@ -55,15 +54,12 @@ const AddRecurringPatternDialog: React.FC<AddRecurringPatternDialogProps> = ({
   }, [open, householdId]);
 
   const loadCategories = async () => {
-    setLoadingCategories(true);
     try {
       const result = await categoryService.getAllAvailableCategories(householdId);
       const allCategories = [...(result.system || []), ...(result.household || [])];
       setCategories(allCategories);
     } catch (err) {
       console.error('Error loading categories:', err);
-    } finally {
-      setLoadingCategories(false);
     }
   };
 

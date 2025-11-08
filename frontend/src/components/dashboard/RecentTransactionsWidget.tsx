@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, Button } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import * as transactionService from '@/services/transaction.service';
 import { DashboardCard } from './DashboardCard';
@@ -19,10 +19,8 @@ interface Transaction {
 }
 
 export const RecentTransactionsWidget: React.FC<RecentTransactionsWidgetProps> = ({ householdId }) => {
-  const navigate = useNavigate();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (householdId) {
@@ -33,11 +31,7 @@ export const RecentTransactionsWidget: React.FC<RecentTransactionsWidgetProps> =
   const loadRecentTransactions = async () => {
     try {
       setIsLoading(true);
-      const data = await transactionService.getHouseholdTransactions(householdId, {
-        limit: 5,
-        sortBy: 'transactionDate',
-        sortOrder: 'desc',
-      });
+      const data = await transactionService.getHouseholdTransactionsSummary(householdId);
       if (data && Array.isArray(data)) {
         setTransactions(data);
       }
@@ -60,7 +54,7 @@ export const RecentTransactionsWidget: React.FC<RecentTransactionsWidgetProps> =
   }
 
   return (
-    <DashboardCard title="📝 Transactions Récentes" isLoading={isLoading} error={error}>
+    <DashboardCard title="📝 Transactions Récentes" isLoading={isLoading}>
       <TableContainer>
         <Table size="small">
           <TableHead>

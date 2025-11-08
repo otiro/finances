@@ -1,9 +1,7 @@
-import React from 'react';
 import {
   FormControl,
   FormLabel,
   RadioGroup,
-  FormControlLabel,
   Radio,
   Box,
   Typography,

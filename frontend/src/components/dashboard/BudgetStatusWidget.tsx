@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Typography, LinearProgress, Chip, Grid } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Box, Typography, LinearProgress, Grid } from '@mui/material';
 import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import * as budgetService from '@/services/budget.service';

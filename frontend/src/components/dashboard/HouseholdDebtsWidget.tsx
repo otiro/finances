@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { DashboardCard } from './DashboardCard';
@@ -7,7 +6,7 @@ interface HouseholdDebtsWidgetProps {
   householdId: string;
 }
 
-export const HouseholdDebtsWidget: React.FC<HouseholdDebtsWidgetProps> = ({ householdId }) => {
+export const HouseholdDebtsWidget: React.FC<HouseholdDebtsWidgetProps> = () => {
   const navigate = useNavigate();
 
   return (
