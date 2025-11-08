@@ -286,16 +286,23 @@ export const getIncomeAnalysis = async (
       '../services/incomeCalculation.service'
     );
 
+    // Récupérer la configuration du foyer pour obtenir la catégorie salaire configurée
+    const config = await prisma.householdConfiguration.findUnique({
+      where: { householdId },
+    });
+
     const incomes = await incomeCalculationService.getHouseholdMonthlyIncomes(
       householdId,
       Number(year),
-      Number(month)
+      Number(month),
+      config?.salaryCategoryId
     );
 
     const ratios = await incomeCalculationService.calculateSharingRatios(
       householdId,
       Number(year),
-      Number(month)
+      Number(month),
+      config?.salaryCategoryId
     );
 
     // Récupérer les infos des membres
