@@ -130,3 +130,30 @@ export const deleteHousehold = async (householdId: string) => {
   useHouseholdStore.getState().removeHousehold(householdId);
   return response.data;
 };
+
+/**
+ * Récupère l'analyse des revenus pour un foyer et un mois donné
+ * Inclut le revenu mensuel de chaque membre et les ratios de partage
+ */
+export interface IncomeAnalysisResponse {
+  month: string;
+  members: Array<{
+    userId: string;
+    name: string;
+    email: string;
+    salary: number;
+    ratio: number;
+  }>;
+  totalIncome: number;
+}
+
+export const getIncomeAnalysis = async (
+  householdId: string,
+  year: number,
+  month: number
+): Promise<IncomeAnalysisResponse> => {
+  const response = await api.get<ApiResponse<IncomeAnalysisResponse>>(
+    `/households/${householdId}/income-analysis?year=${year}&month=${month}`
+  );
+  return response.data.data;
+};
