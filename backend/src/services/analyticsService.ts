@@ -1,5 +1,5 @@
 import { Decimal } from '@prisma/client/runtime/library';
-import prisma from '@/config/database';
+import prisma from '../config/database';
 import { TransactionType, BudgetPeriod } from '@prisma/client';
 
 export interface CategoryBreakdown {
