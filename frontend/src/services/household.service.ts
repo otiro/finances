@@ -118,3 +118,15 @@ export const demoteAdminToMember = async (
   await getHouseholdById(householdId);
   return response.data.data;
 };
+
+/**
+ * Supprime un foyer (DEV only - pour tests)
+ */
+export const deleteHousehold = async (householdId: string) => {
+  const response = await api.delete<ApiResponse<any>>(
+    `/households/${householdId}`
+  );
+  // Retirer le foyer du store
+  useHouseholdStore.getState().removeHousehold(householdId);
+  return response.data;
+};

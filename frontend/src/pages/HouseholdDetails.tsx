@@ -158,6 +158,39 @@ export default function HouseholdDetails() {
     }
   };
 
+  const handleDeleteHousehold = async () => {
+    if (!id) return;
+
+    // Double confirmation pour éviter les erreurs
+    const firstConfirm = window.confirm(
+      'Êtes-vous absolument sûr de vouloir supprimer ce foyer ?\n\nCette action est irréversible et supprimera tous les comptes, transactions et données associées.'
+    );
+
+    if (!firstConfirm) return;
+
+    const secondConfirm = window.confirm(
+      `Confirmer la suppression du foyer "${currentHousehold?.name}" ?\n\nEntrez "OUI" dans la boîte de dialogue suivante pour confirmer.`
+    );
+
+    if (!secondConfirm) return;
+
+    const userInput = window.prompt(
+      'Tapez "OUI" pour confirmer la suppression définitive :'
+    );
+
+    if (userInput !== 'OUI') {
+      setError('Suppression annulée. Vous devez taper "OUI" pour confirmer.');
+      return;
+    }
+
+    try {
+      await householdService.deleteHousehold(id);
+      navigate('/');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Erreur lors de la suppression du foyer');
+    }
+  };
+
   const getSharingModeLabel = (mode: string) => {
     switch (mode) {
       case 'EQUAL':
@@ -225,13 +258,24 @@ export default function HouseholdDetails() {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Chip label={getSharingModeLabel(currentHousehold.sharingMode)} />
           {isAdmin && (
-            <Button
-              size="small"
-              variant="outlined"
-              onClick={() => setUpdateSharingModeDialogOpen(true)}
-            >
-              Modifier
-            </Button>
+            <>
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={() => setUpdateSharingModeDialogOpen(true)}
+              >
+                Modifier
+              </Button>
+              <Button
+                size="small"
+                variant="outlined"
+                color="error"
+                startIcon={<DeleteIcon />}
+                onClick={handleDeleteHousehold}
+              >
+                Supprimer le foyer
+              </Button>
+            </>
           )}
         </Box>
       </Box>
