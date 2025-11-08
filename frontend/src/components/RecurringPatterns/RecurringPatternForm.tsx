@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { } from 'react';
 import {
   Box,
   TextField,
@@ -96,9 +96,8 @@ const RecurringPatternForm: React.FC<RecurringPatternFormProps> = ({
     handleSubmit,
     watch,
     formState: { errors },
-    reset,
   } = useForm<RecurringPatternFormData>({
-    resolver: zodResolver(recurringPatternSchema),
+    resolver: zodResolver(recurringPatternSchema) as any,
     defaultValues: {
       accountId: initialData?.accountId || '',
       name: initialData?.name || '',
@@ -143,14 +142,14 @@ const RecurringPatternForm: React.FC<RecurringPatternFormProps> = ({
       amount: Number(amount),
       startDate: convertToISO(data.startDate),
       endDate: data.endDate ? convertToISO(data.endDate) : undefined,
-      dayOfMonth: data.dayOfMonth && data.dayOfMonth !== '' ? Number(data.dayOfMonth) : undefined,
-      dayOfWeek: data.dayOfWeek && data.dayOfWeek !== '' ? Number(data.dayOfWeek) : undefined,
+      dayOfMonth: typeof data.dayOfMonth === 'number' ? data.dayOfMonth : (data.dayOfMonth && data.dayOfMonth !== '' ? Number(data.dayOfMonth) : undefined),
+      dayOfWeek: typeof data.dayOfWeek === 'number' ? data.dayOfWeek : (data.dayOfWeek && data.dayOfWeek !== '' ? Number(data.dayOfWeek) : undefined),
     };
     await onSubmit(submitData);
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit(onSubmitForm)} sx={{ width: '100%' }}>
+    <Box component="form" onSubmit={handleSubmit((data) => onSubmitForm(data as RecurringPatternFormData))} sx={{ width: '100%' }}>
       <Stack spacing={3}>
         {/* Account Selection */}
         <Controller

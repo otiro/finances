@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -22,7 +22,6 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createBudgetSchema } from '../../utils/validators';
 import { useBudgetStore } from '../../store/slices/budgetSlice';
-import { useAccountStore } from '../../store/slices/accountSlice';
 import { Budget, CreateBudgetInput } from '../../services/budget.service';
 import { getCategoriesForHousehold } from '../../services/category.service';
 
@@ -55,7 +54,6 @@ export default function BudgetFormDialog({
   const error = useBudgetStore((state) => state.error);
 
   const [categories, setCategories] = useState<Category[]>([]);
-  const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
 
   // Load categories when dialog opens
@@ -85,7 +83,7 @@ export default function BudgetFormDialog({
     formState: { errors },
     watch,
   } = useForm<BudgetFormData>({
-    resolver: zodResolver(createBudgetSchema),
+    resolver: zodResolver(createBudgetSchema) as any,
     defaultValues: {
       categoryId: '',
       name: '',
@@ -194,7 +192,7 @@ export default function BudgetFormDialog({
                 options={categories}
                 getOptionLabel={(option) => option.name}
                 value={selectedCategoryObj || null}
-                onChange={(e, value) => {
+                onChange={(_e, value) => {
                   field.onChange(value?.id || '');
                 }}
                 renderOption={(props, option) => (
@@ -372,7 +370,7 @@ export default function BudgetFormDialog({
           Annuler
         </Button>
         <Button
-          onClick={handleSubmit(onSubmit)}
+          onClick={handleSubmit((data) => onSubmit(data as BudgetFormData))}
           variant="contained"
           disabled={isLoading}
           startIcon={isLoading ? <CircularProgress size={20} /> : undefined}

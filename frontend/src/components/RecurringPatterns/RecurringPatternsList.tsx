@@ -3,7 +3,6 @@ import {
   Grid,
   Box,
   Button,
-  Stack,
   FormControl,
   InputLabel,
   Select,
@@ -41,8 +40,8 @@ const RecurringPatternsList: React.FC<RecurringPatternsListProps> = ({
   onRefresh,
 }) => {
   const dispatch = useAppDispatch();
-  const [frequencyFilter, setFrequencyFilter] = React.useState<FrequencyFilter>('ALL');
-  const [statusFilter, setStatusFilter] = React.useState<StatusFilter>('ALL');
+  const [frequencyFilter, setFrequencyFilter] = useState<FrequencyFilter>('ALL');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
   const [editingPattern, setEditingPattern] = useState<RecurringPattern | null>(null);
   const [deletingPattern, setDeletingPattern] = useState<RecurringPattern | null>(null);
   const [viewingLogsPattern, setViewingLogsPattern] = useState<RecurringPattern | null>(null);

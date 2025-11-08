@@ -52,7 +52,7 @@ export const TopCategoriesWidget: React.FC<TopCategoriesWidgetProps> = ({ househ
                     width: 12,
                     height: 12,
                     borderRadius: '50%',
-                    backgroundColor: category.color || '#999',
+                    backgroundColor: (category as any).color || '#999',
                   }}
                 />
                 <Typography variant="body2">{category.categoryName}</Typography>

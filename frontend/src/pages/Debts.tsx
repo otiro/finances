@@ -264,29 +264,30 @@ export default function Debts() {
                 <Divider sx={{ mb: 2 }} />
 
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  {Object.values(allDebts)
-                    .flatMap((h) => h.debts)
-                    .reduce(
-                      (users: Map<string, { name: string; email: string }>, debt) => {
-                        if (
-                          !users.has(debt.debtor.id) &&
-                          !users.has(debt.creditor.id)
-                        ) {
-                          users.set(debt.debtor.id, {
-                            name: `${debt.debtor.firstName} ${debt.debtor.lastName}`,
-                            email: debt.debtor.email,
-                          });
-                          users.set(debt.creditor.id, {
-                            name: `${debt.creditor.firstName} ${debt.creditor.lastName}`,
-                            email: debt.creditor.email,
-                          });
-                        }
-                        return users;
-                      },
-                      new Map()
-                    )
-                    .entries()
-                    .map(([userId, user]) => {
+                  {Array.from(
+                    Object.values(allDebts)
+                      .flatMap((h) => h.debts)
+                      .reduce(
+                        (users: Map<string, { name: string; email: string }>, debt) => {
+                          if (
+                            !users.has(debt.debtor.id) &&
+                            !users.has(debt.creditor.id)
+                          ) {
+                            users.set(debt.debtor.id, {
+                              name: `${debt.debtor.firstName} ${debt.debtor.lastName}`,
+                              email: debt.debtor.email,
+                            });
+                            users.set(debt.creditor.id, {
+                              name: `${debt.creditor.firstName} ${debt.creditor.lastName}`,
+                              email: debt.creditor.email,
+                            });
+                          }
+                          return users;
+                        },
+                        new Map()
+                      )
+                      .entries()
+                  ).map(([userId, user]: [string, { name: string; email: string }]) => {
                       const owes = getTotalUserDebts(userId);
                       const owed = getTotalUserCredits(userId);
                       const net = owed - owes;
