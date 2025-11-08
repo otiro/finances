@@ -7,6 +7,7 @@ export interface Category {
   color: string;
   icon?: string;
   isSystem: boolean;
+  isSalaryCategory?: boolean;
   createdAt?: string;
 }
 
@@ -59,6 +60,7 @@ export const createCategory = async (
     name: string;
     color?: string;
     icon?: string;
+    isSalaryCategory?: boolean;
   }
 ) => {
   const response = await api.post<ApiResponse<Category>>(
@@ -78,6 +80,7 @@ export const updateCategory = async (
     name?: string;
     color?: string;
     icon?: string;
+    isSalaryCategory?: boolean;
   }
 ) => {
   const response = await api.patch<ApiResponse<Category>>(

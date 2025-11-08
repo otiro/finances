@@ -23,16 +23,28 @@ export const calculateMonthlyIncome = async (
   let categoryId = salaryCategoryId;
 
   if (!categoryId) {
-    // Chercher une catégorie nommée "Salary" ou "Revenu"
+    // Chercher d'abord une catégorie marquée comme isSalaryCategory = true
     const salaryCategory = await prisma.category.findFirst({
       where: {
         householdId: householdId,
-        name: {
-          in: ['Salary', 'Revenu', 'SALARY', 'REVENU'],
-        },
+        isSalaryCategory: true,
       },
     });
-    categoryId = salaryCategory?.id;
+
+    if (salaryCategory) {
+      categoryId = salaryCategory.id;
+    } else {
+      // Fallback: Chercher une catégorie nommée "Salary" ou "Revenu"
+      const namedSalaryCategory = await prisma.category.findFirst({
+        where: {
+          householdId: householdId,
+          name: {
+            in: ['Salary', 'Revenu', 'SALARY', 'REVENU'],
+          },
+        },
+      });
+      categoryId = namedSalaryCategory?.id;
+    }
   }
 
   // Calculer le début et la fin du mois

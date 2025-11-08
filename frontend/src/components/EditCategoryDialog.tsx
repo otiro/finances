@@ -10,6 +10,8 @@ import {
   CircularProgress,
   Box,
   Typography,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 import * as categoryService from '../services/category.service';
 
@@ -30,6 +32,7 @@ export default function EditCategoryDialog({
 }: EditCategoryDialogProps) {
   const [name, setName] = useState('');
   const [color, setColor] = useState('#3357FF');
+  const [isSalaryCategory, setIsSalaryCategory] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -37,6 +40,7 @@ export default function EditCategoryDialog({
     if (open && category) {
       setName(category.name);
       setColor(category.color);
+      setIsSalaryCategory(category.isSalaryCategory || false);
     }
   }, [open, category]);
 
@@ -59,6 +63,7 @@ export default function EditCategoryDialog({
       await categoryService.updateCategory(householdId, category.id, {
         name: name.trim(),
         color,
+        isSalaryCategory,
       });
 
       onSuccess?.();
@@ -110,6 +115,19 @@ export default function EditCategoryDialog({
               </Typography>
             </Box>
           </Box>
+
+          {!category?.isSystem && (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={isSalaryCategory}
+                  onChange={(e) => setIsSalaryCategory(e.target.checked)}
+                  disabled={isLoading}
+                />
+              }
+              label="Marquer comme catégorie de salaire"
+            />
+          )}
         </DialogContent>
 
         <DialogActions>
