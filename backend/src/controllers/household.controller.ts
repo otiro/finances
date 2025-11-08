@@ -511,3 +511,32 @@ export const applySharingRatios = async (
     next(error);
   }
 };
+
+/**
+ * Supprime un foyer (DEV only - pour tests)
+ */
+export const deleteHousehold = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    if (!req.userId) {
+      res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        status: 'error',
+        message: 'Non authentifié',
+      });
+      return;
+    }
+
+    const householdId = req.params.id;
+    await householdService.deleteHousehold(householdId, req.userId);
+
+    res.status(HTTP_STATUS.OK).json({
+      status: 'success',
+      message: 'Foyer supprimé avec succès',
+    });
+  } catch (error) {
+    next(error);
+  }
+};

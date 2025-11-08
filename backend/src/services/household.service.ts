@@ -558,3 +558,32 @@ export const demoteAdminToMember = async (
 
   return updated;
 };
+
+/**
+ * Supprime un foyer et toutes ses données associées (DEV only)
+ * Seulement les admins du foyer peuvent le supprimer
+ */
+export const deleteHousehold = async (householdId: string, requestingUserId: string) => {
+  // Vérifier que l'utilisateur est admin du foyer
+  const userHousehold = await prisma.userHousehold.findUnique({
+    where: {
+      userId_householdId: {
+        userId: requestingUserId,
+        householdId,
+      },
+    },
+  });
+
+  if (!userHousehold || userHousehold.role !== 'ADMIN') {
+    const error = new Error('Vous devez être administrateur du foyer pour le supprimer');
+    (error as any).status = 403;
+    throw error;
+  }
+
+  // Supprimer le foyer (cascade supprimera les données liées)
+  const deleted = await prisma.household.delete({
+    where: { id: householdId },
+  });
+
+  return deleted;
+};

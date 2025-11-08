@@ -129,4 +129,10 @@ router.get('/:id/sharing-history', householdController.getSharingHistory);
  */
 router.post('/:id/apply-sharing-ratios', householdController.applySharingRatios);
 
+/**
+ * DELETE /api/households/:id
+ * Supprime un foyer (DEV only - pour tests)
+ */
+router.delete('/:id', householdController.deleteHousehold);
+
 export default router;
