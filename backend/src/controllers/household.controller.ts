@@ -292,18 +292,20 @@ export const getIncomeAnalysis = async (
       where: { householdId },
     });
 
+    const salaryCategoryId = config?.salaryCategoryId || undefined;
+
     const incomes = await incomeCalculationService.getHouseholdMonthlyIncomes(
       householdId,
       Number(year),
       Number(month),
-      config?.salaryCategoryId
+      salaryCategoryId
     );
 
     const ratios = await incomeCalculationService.calculateSharingRatios(
       householdId,
       Number(year),
       Number(month),
-      config?.salaryCategoryId
+      salaryCategoryId
     );
 
     // Récupérer les infos des membres
