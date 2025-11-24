@@ -13,6 +13,7 @@ Bienvenue ! Ce fichier guide vous aide à naviguer dans la documentation du proj
 **Configuration Raspberry Pi** | [CONFIGURATION_RASPBERRY_PI.md](CONFIGURATION_RASPBERRY_PI.md)
 **État global du projet** | [PROJECT_STATUS.md](PROJECT_STATUS.md)
 **Structure du code** | [STRUCTURE.md](STRUCTURE.md)
+**Autostart sur RPi (⭐ NEW)** | [QUICK_AUTOSTART.md](QUICK_AUTOSTART.md) puis [AUTOSTART_GUIDE.md](AUTOSTART_GUIDE.md)
 
 ---
 
