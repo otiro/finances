@@ -13,7 +13,9 @@
       "Bash(npx prisma migrate:*)",
       "Bash(git checkout:*)",
       "Bash(echo:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(__NEW_LINE__ cd \"e:\\GoogleDrive\\Webapps\\finances\")",
+      "Bash(__NEW_LINE__ ls -1 \"e:\\GoogleDrive\\Webapps\\finances\")"
     ],
     "deny": [],
     "ask": []

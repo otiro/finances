@@ -18,35 +18,33 @@ Bienvenue ! Ce fichier guide vous aide à naviguer dans la documentation du proj
 
 ## 📚 Documentation par Fonctionnalité
 
-### Phase 5 - Transactions Récurrentes ✅ COMPLÈTE
+### Phase 5-6 - Transactions Récurrentes & Budgets ✅ COMPLÈTE
 
-**Résumé exécutif** → [PHASE5_SUMMARY.md](PHASE5_SUMMARY.md) ⭐
-- État final
-- Fonctionnalités livrées
-- Statistiques
-
-**Documentation technique** → [PHASE5_COMPLETE.md](PHASE5_COMPLETE.md) ⭐
-- Architecture backend
-- Architecture frontend
-- Tous les endpoints
-- Tous les composants
-- Comment ça marche
-
-**Tests & Validation**
-- [TESTING_PHASE5_1.md](TESTING_PHASE5_1.md) - Backend tests (15 cas)
-- [TESTING_PHASE5_2.md](TESTING_PHASE5_2.md) - Frontend tests (40+ cas)
-- [TESTING_PHASE5_3.md](TESTING_PHASE5_3.md) - Widget tests (12 cas)
-- [CRON_JOB_VERIFICATION.md](CRON_JOB_VERIFICATION.md) - Vérifier cron job
+Documentation archivée → [docs/phases/phase4-6/](docs/phases/phase4-6/)
+- PHASE5_SUMMARY.md
+- PHASE5_COMPLETE.md
+- PHASE6_MASTER.md
+- Et tous les fichiers de test
 
 ---
 
-## 🚀 Phase 6 - À Venir
+## 📋 Phase 7 - Multi-Admin & Partage Proportionnel ✅ COMPLÈTE
 
-**Vision & Planning** → [PHASE6_VISION.md](PHASE6_VISION.md)
-- 3 options (Budgets, Analytiques, Notifications)
-- Recommandation
-- Roadmap détaillée
-- Architecture proposée
+**État du développement** → [PHASE7_IMPLEMENTATION_SUMMARY.md](PHASE7_IMPLEMENTATION_SUMMARY.md)
+- Architecture implémentée
+- Fonctionnalités complètes
+- Endpoints disponibles
+
+**Guides pratiques:**
+- [PHASE7_QUICK_START.md](PHASE7_QUICK_START.md) - Démarrage rapide
+- [PHASE7_PROPORTIONAL_SHARING_TEST_GUIDE.md](PHASE7_PROPORTIONAL_SHARING_TEST_GUIDE.md) - Guide de test
+- [PHASE7_TESTING_SUMMARY.md](PHASE7_TESTING_SUMMARY.md) - Résumé des tests
+- [PHASE7_POSTMAN_COLLECTION.md](PHASE7_POSTMAN_COLLECTION.md) - Collection Postman
+
+**Référence technique** → [PHASE7_FILES_REFERENCE.md](PHASE7_FILES_REFERENCE.md)
+- Fichiers modifiés
+- Nouvelles fonctionnalités
+- Endpoints API
 
 ---
 
